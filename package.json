@@ -1,7 +1,6 @@
 {
   "name": "lowrouter",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -10,9 +9,9 @@
   "keywords": [],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "turbo run build",
-    "build:watch": "turbo run build -- --watch",
-    "dev": "turbo run dev",
+    "build": "FORCE_COLOR=1 turbo run build",
+    "build:watch": "FORCE_COLOR=1 turbo run build --filter=@wbe/* -- --watch",
+    "dev": "FORCE_COLOR=1 turbo run dev",
     "test:watch": "vitest --reporter verbose",
     "test": "vitest run",
     "size": "size-limit",
@@ -38,9 +37,9 @@
   },
   "size-limit": [
     {
-      "name": "@wbe/repo",
-      "path": "packages/repo/dist/index.js",
-      "limit": "3.5 KB"
+      "name": "@wbe/lowrouter",
+      "path": "packages/lowrouter/dist/lowrouter.js",
+      "limit": "2 KB"
     }
   ]
 }

@@ -3,6 +3,7 @@ import { createMatcher } from "./createMatcher"
 export interface Route {
   path: string
   name: string
+  params?: RouteParams
   action: (context: RouteContext) => void
 }
 
@@ -14,12 +15,10 @@ export interface RouteParams {
 }
 
 export interface RouteContext {
-  pathname: string // url
+  pathname: string
   router: Router
   route: Route
   baseUrl: string
-  path: string
-  params: RouteParams
 }
 
 export interface RouterOptions {
@@ -37,8 +36,12 @@ export class Router {
   #routes: Route[]
   #options: Partial<RouterOptions>
   #matcher = createMatcher()
+  #currentRoute: Route
 
-  constructor(routes: Route[], options: Partial<RouterOptions> = {}) {
+  constructor(
+    routes: Route[],
+    options: Partial<RouterOptions> = { baseUrl: "/", errorHandler: () => {} }
+  ) {
     this.#routes = routes
     this.#options = options
 
@@ -51,16 +54,20 @@ export class Router {
    * public
    *
    */
-
   // push route to...
   // TODO add object name & params
   public async resolve(pathname: string) {
     // get route from pathname
-    const route: Route = this.#getRouteFromPathname(pathname)
+    this.#currentRoute = this.#getRouteFromPathname(pathname)
     window.history.pushState({}, null, pathname)
 
     // TODO retourner un truc
-    await route.action(null)
+    await this.#currentRoute.action({
+      pathname,
+      router: this,
+      baseUrl: this.#options.baseUrl,
+      route: this.#currentRoute,
+    })
   }
 
   stop() {
@@ -96,8 +103,12 @@ export class Router {
     let matchingRoute: Route
 
     for (let route of this.#routes) {
-      const [isMatch] = this.#matcher(route.path, pathname)
-      if (isMatch) return route
+      const [isMatch, params] = this.#matcher(route.path, pathname)
+
+      if (isMatch) {
+        route.params = params
+        return route
+      }
     }
 
     if (!matchingRoute) {
