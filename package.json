@@ -6,7 +6,6 @@
     "type": "git",
     "url": "git://github.com/willybrauner/lowrouter.git"
   },
-  "keywords": [],
   "scripts": {
     "clean": "rm -rf dist",
     "build": "FORCE_COLOR=1 turbo run build",

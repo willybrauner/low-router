@@ -1,29 +1,25 @@
 import { createMatcher } from "./createMatcher"
+import debug from "@wbe/debug"
+const log = debug("lowrouter:Router")
+
+export type RouteParams = { [paramName: string]: string }
+
+export interface RouteContext {
+  pathname: string
+  params: RouteParams
+  baseUrl: string
+  route: Route
+}
 
 export interface Route {
   path: string
   name: string
-  params?: RouteParams
   action: (context: RouteContext) => void
-}
-
-/**
- * Params is a key/value object that represents extracted URL parameters.
- */
-export interface RouteParams {
-  [paramName: string]: string | string[]
-}
-
-export interface RouteContext {
-  pathname: string
-  router: Router
-  route: Route
-  baseUrl: string
 }
 
 export interface RouterOptions {
   baseUrl: string
-  errorHandler: (context?) => void
+  errorHandler: (error) => void
 }
 
 /**
@@ -36,18 +32,22 @@ export class Router {
   #routes: Route[]
   #options: Partial<RouterOptions>
   #matcher = createMatcher()
-  #currentRoute: Route
+  #currentRouteContext: RouteContext
 
   constructor(
     routes: Route[],
-    options: Partial<RouterOptions> = { baseUrl: "/", errorHandler: () => {} }
+    options: Partial<RouterOptions> = { baseUrl: "/", errorHandler: (error) => {} }
   ) {
     this.#routes = routes
     this.#options = options
-
     this.#patchHistory()
-    this.#handleHistory(window.location.pathname || "/")
     this.#listenEvents()
+    // First resolve
+    try {
+      this.resolve(window.location.pathname || "/")
+    } catch (e) {
+      this.#options.errorHandler(e)
+    }
   }
 
   /**
@@ -56,18 +56,25 @@ export class Router {
    */
   // push route to...
   // TODO add object name & params
-  public async resolve(pathname: string) {
+  public async resolve(pathname: string): Promise<void> {
     // get route from pathname
-    this.#currentRoute = this.#getRouteFromPathname(pathname)
-    window.history.pushState({}, null, pathname)
 
-    // TODO retourner un truc
-    await this.#currentRoute.action({
-      pathname,
-      router: this,
-      baseUrl: this.#options.baseUrl,
-      route: this.#currentRoute,
-    })
+    const routeContext = this.#getRouteContextFromPathname(pathname)
+    if (!routeContext) {
+      throw new Error(`No matching route found with pathname ${pathname}, return`)
+    } else {
+      log("current route context", routeContext)
+      this.#currentRouteContext = routeContext
+
+      window.history.pushState({}, null, pathname)
+
+      await this.#currentRouteContext.route.action({
+        pathname,
+        baseUrl: this.#options.baseUrl,
+        route: this.#currentRouteContext.route,
+        params: this.#currentRouteContext.params,
+      })
+    }
   }
 
   stop() {
@@ -93,27 +100,30 @@ export class Router {
 
   async #handleHistory(event) {
     const pathname = event?.["arguments"]?.[2] || window.location.pathname
-    if (!pathname) return
-    //   const route = this.#getRouteFromPathname(pathname)
-    // window.history.pushState({}, null, pathname)
-    //      await route.action(null)
+    if (!pathname || pathname === this.#currentRouteContext?.pathname) return
+    this.resolve(pathname)
   }
 
-  #getRouteFromPathname(pathname: string): Route {
-    let matchingRoute: Route
+  #getRouteContextFromPathname(pathname: string, baseUrl = this.#options.baseUrl): RouteContext {
+    let hasMatch = false
 
     for (let route of this.#routes) {
-      const [isMatch, params] = this.#matcher(route.path, pathname)
+      // remove double slash if exist
+      const formatRoutePath = `${baseUrl}${route.path}`.replace(/(\/)+/g, "/")
+      const [isMatch, params] = this.#matcher(formatRoutePath, pathname)
+      // log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
 
       if (isMatch) {
-        route.params = params
-        return route
+        hasMatch = true
+        return {
+          pathname,
+          params,
+          route,
+          baseUrl: this.#options.baseUrl,
+        }
       }
     }
-
-    if (!matchingRoute) {
-      console.warn("No matching route found with pathname", pathname)
-    }
+    if (!hasMatch) return
   }
 
   /**
