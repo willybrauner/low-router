@@ -3,6 +3,7 @@ import debug from "@wbe/debug"
 const log = debug("lowrouter:Router")
 
 export type RouteParams = { [paramName: string]: string }
+export type RouteProps = { [name: string]: any }
 
 export interface RouteContext {
   pathname: string
@@ -14,6 +15,7 @@ export interface RouteContext {
 export interface Route {
   path: string
   name: string
+  props: RouteProps
   action: (context: RouteContext) => void
 }
 
