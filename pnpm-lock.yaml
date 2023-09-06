@@ -52,6 +52,22 @@ importers:
         specifier: ^4.4.5
         version: 4.4.9(@types/node@20.1.0)(terser@5.19.2)
 
+  examples/lowrouter-compose:
+    dependencies:
+      '@wbe/compose':
+        specifier: latest
+        version: 0.15.2
+      '@wbe/lowrouter':
+        specifier: latest
+        version: link:../../packages/lowrouter
+    devDependencies:
+      typescript:
+        specifier: ^5.0.2
+        version: 5.0.4
+      vite:
+        specifier: ^4.4.5
+        version: 4.4.9(@types/node@20.1.0)(terser@5.19.2)
+
   packages/lowrouter:
     dependencies:
       '@wbe/debug':
@@ -99,7 +115,6 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.13.11
-    dev: true
 
   /@changesets/apply-release-plan@6.1.4:
     resolution: {integrity: sha512-FMpKF1fRlJyCZVYHr3CbinpZZ+6MwvOtWUuO8uo+svcATEoc1zRDcj23pAurJ2TZ/uVz1wFHH6K3NlACy0PLew==}
@@ -873,6 +888,13 @@ packages:
       loupe: 2.3.6
       pretty-format: 27.5.1
     dev: true
+
+  /@wbe/compose@0.15.2:
+    resolution: {integrity: sha512-hccp9/tgOZ9F4UkFJM1DAyoKC7qIGME7BxWO8XZ72Op0DtX4dPHNeNq0QZeQOrrqyrBb/viY+NSkWfXwMLMvoQ==}
+    dependencies:
+      '@wbe/debug': 1.1.0
+      history: 5.3.0
+    dev: false
 
   /@wbe/debug@1.1.0:
     resolution: {integrity: sha512-jX50ED5hW5JtHnkLgbZaT0qYKh/GiXkpYcsuQEkulsA7cx2r0DANKkqdXIkzpD6+QtssCpHmznKVK+fS+etp3Q==}
@@ -1785,6 +1807,12 @@ packages:
       function-bind: 1.1.1
     dev: true
 
+  /history@5.3.0:
+    resolution: {integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==}
+    dependencies:
+      '@babel/runtime': 7.22.6
+    dev: false
+
   /hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
     dev: true
@@ -2669,7 +2697,6 @@ packages:
 
   /regenerator-runtime@0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
-    dev: true
 
   /regexp.prototype.flags@1.5.0:
     resolution: {integrity: sha512-0SutC3pNudRKgquxGoRGIz946MZVHqbNfPjBdxeOhBrdgDKlRoXmYLQN9xRbrR09ZXWeGAdPuif7egofn6v5LA==}

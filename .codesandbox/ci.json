@@ -1,6 +1,10 @@
 {
   "buildCommand": "build",
   "packages": ["./packages/*"],
-  "sandboxes": [],
+  "sandboxes": [
+    "./examples/lowrouter-basic",
+    "./examples/lowrouter-compose"
+  ],
+
   "node": "18"
 }
