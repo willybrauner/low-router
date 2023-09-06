@@ -1,0 +1,33 @@
+{
+  "name": "@wbe/repo",
+  "version": "0.7.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "main": "./dist/repo.cjs",
+  "module": "./dist/repo.js",
+  "types": "./dist/repo.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/willybrauner/repo.git"
+  },
+  "keywords": [
+    "repo"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup",
+    "build:watch": "tsup --watch --sourcemap"
+  },
+  "dependencies": {
+    "@wbe/debug": "^1.1.0"
+  },
+  "devDependencies": {
+    "terser": "^5.19.2",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4",
+    "vitest": "^0.31.0"
+  }
+}
