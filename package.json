@@ -1,18 +1,16 @@
 {
-  "name": "mono-repo-template",
+  "name": "low-router",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git://github.com/willybrauner/mono-repo-template.git"
+    "url": "git://github.com/willybrauner/low-router.git"
   },
-  "keywords": [],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "turbo run build",
-    "build:watch": "turbo run build -- --watch",
-    "dev": "turbo run dev",
+    "build": "FORCE_COLOR=1 turbo run build --filter=@wbe/*",
+    "build:watch": "FORCE_COLOR=1 turbo run build --filter=@wbe/* -- --watch",
+    "dev": "FORCE_COLOR=1 turbo run dev",
     "test:watch": "vitest --reporter verbose",
     "test": "vitest run",
     "size": "size-limit",
@@ -22,15 +20,16 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
+    "@size-limit/esbuild-why": "^9.0.0",
     "@size-limit/preset-small-lib": "^8.2.4",
     "@types/node": "^20.1.0",
+    "jsdom": "^22.1.0",
     "prettier": "^2.8.8",
     "size-limit": "^8.2.4",
     "turbo": "^1.9.9",
     "typescript": "^5.0.4",
     "vite": "^4.3.5",
-    "vitest": "^0.31.0",
-    "jsdom": "^22.1.0"
+    "vitest": "^0.31.0"
   },
   "prettier": {
     "semi": false,
@@ -38,9 +37,9 @@
   },
   "size-limit": [
     {
-      "name": "@wbe/repo",
-      "path": "packages/repo/dist/index.js",
-      "limit": "3.5 KB"
+      "name": "@wbe/low-router",
+      "path": "packages/low-router/dist/low-router.js",
+      "limit": "2.5 KB"
     }
   ]
 }

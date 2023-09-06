@@ -1,17 +1,17 @@
 {
-  "name": "@wbe/repo",
-  "version": "0.7.0",
+  "name": "@wbe/low-router",
+  "version": "0.1.0",
   "type": "module",
   "files": [
     "dist"
   ],
   "sideEffects": false,
-  "main": "./dist/repo.cjs",
-  "module": "./dist/repo.js",
-  "types": "./dist/repo.d.ts",
+  "main": "./dist/low-router.cjs",
+  "module": "./dist/low-router.js",
+  "types": "./dist/low-router.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/willybrauner/repo.git"
+    "url": "git://github.com/willybrauner/low-router.git"
   },
   "keywords": [
     "repo"
@@ -22,9 +22,10 @@
     "build:watch": "tsup --watch --sourcemap"
   },
   "dependencies": {
-    "@wbe/debug": "^1.1.0"
+    "@wbe/debug": "^1.2.0"
   },
   "devDependencies": {
+    "path-to-regexp": "^6.2.1",
     "terser": "^5.19.2",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4",

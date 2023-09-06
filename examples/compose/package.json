@@ -1,0 +1,21 @@
+{
+  "name": "low-router-compose",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@wbe/interpol": "^0.7.0",
+    "@wbe/low-router": "latest"
+  },
+  "devDependencies": {
+    "@wbe/debug": "^1.2.0",
+    "gsap": "^3.12.2",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  }
+}
