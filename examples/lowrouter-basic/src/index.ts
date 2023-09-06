@@ -15,8 +15,9 @@ const routes = [
   {
     path: "/about",
     name: "about",
+    props: { foo: "bar" }, // add props to route
     action: async (context) => {
-      //      await new Promise((resolve) => setTimeout(resolve, 500))
+      await new Promise((resolve) => setTimeout(resolve, 100))
       stack.innerHTML = context.route.name
       console.log(stack.innerHTML, context)
     },
@@ -31,14 +32,15 @@ const routes = [
   },
 ]
 
+/**
+ * Create router
+ */
 const router = new Router(routes, { baseUrl: "/" })
 
 /**
- * links
+ * Listen links
  */
 const links = document.querySelectorAll(".link")
-console.log(links)
-
 for (let link of links) {
   link.addEventListener("click", (e) => {
     e.preventDefault()
