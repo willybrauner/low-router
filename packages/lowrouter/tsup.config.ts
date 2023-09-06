@@ -2,14 +2,14 @@ import { defineConfig } from "tsup"
 import { spawn } from "child_process"
 
 export default defineConfig({
-  entry: { index: "src/index.ts" },
+  entry: { lowrouter: "src/index.ts" },
   splitting: false,
   clean: true,
   minify: "terser",
   dts: true,
   format: ["cjs", "esm"],
   external: ["@wbe/debug"],
-  name: "index",
+  name: "lowrouter",
   sourcemap: true,
   terserOptions: {
     compress: true,

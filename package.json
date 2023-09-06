@@ -1,11 +1,11 @@
 {
-  "name": "mono-repo-template",
+  "name": "lowrouter",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git://github.com/willybrauner/mono-repo-template.git"
+    "url": "git://github.com/willybrauner/lowrouter.git"
   },
   "keywords": [],
   "scripts": {
