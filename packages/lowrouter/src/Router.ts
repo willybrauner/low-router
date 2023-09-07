@@ -16,9 +16,9 @@ export interface RouteContext {
 
 export interface Route {
   path: string
-  name: string
+  name?: string
   props?: RouteProps
-  action: (context: RouteContext) => void
+  action?: (context: RouteContext) => void
 }
 
 export interface RouterOptions {
@@ -90,7 +90,7 @@ export class Router {
         params: this.currentRouteContext.params,
       }
       this.#options.onUpdate?.(context)
-      await this.currentRouteContext.route.action(context)
+      await this.currentRouteContext.route.action?.(context)
     }
   }
 
@@ -123,13 +123,11 @@ export class Router {
 
   #getMatchRoute(pathname: string, baseUrl = this.#options.baseUrl): RouteContext {
     let hasMatch = false
-
     for (let route of this.routes) {
       // remove double slash if exist
       const formatRoutePath = `${baseUrl}${route.path}`.replace(/(\/)+/g, "/")
       const [isMatch, params] = this.#matcher(formatRoutePath, pathname)
       this.#options.debug && log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
-
       if (isMatch) {
         hasMatch = true
         return {

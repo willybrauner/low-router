@@ -60,6 +60,9 @@ importers:
       '@wbe/compose':
         specifier: latest
         version: 0.15.2
+      '@wbe/interpol':
+        specifier: ^0.7.0
+        version: 0.7.0
       '@wbe/lowrouter':
         specifier: latest
         version: link:../../packages/lowrouter
@@ -912,6 +915,12 @@ packages:
 
   /@wbe/debug@1.2.0:
     resolution: {integrity: sha512-jTCR1JagaS4TpoPR5sjdVfu67Muz5mDB49seMVsbRvetodgPjATELXQWtKRlyrj3hCyZt+rjw1iacYfpCc9Yuw==}
+    dev: false
+
+  /@wbe/interpol@0.7.0:
+    resolution: {integrity: sha512-oePCdTKc9edlUYUyNtxSJrH0uCRA6wBnkS2pBYI1ntKlLFDYSP1+NSrT05q4Gg6nMGQrz1/JU4ewxUZp2i5Ahg==}
+    dependencies:
+      '@wbe/debug': 1.2.0
     dev: false
 
   /abab@2.0.6:

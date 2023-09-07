@@ -13,7 +13,8 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "@wbe/lowrouter": "latest",
-    "@wbe/compose": "latest"
+    "@wbe/compose": "latest",
+    "@wbe/interpol": "^0.7.0",
+    "@wbe/lowrouter": "latest"
   }
 }
