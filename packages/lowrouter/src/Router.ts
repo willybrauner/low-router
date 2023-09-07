@@ -1,4 +1,4 @@
-import { createMatcher } from "./createMatcher"
+import { createMatcher, Matcher, RegexFn } from "./createMatcher"
 import debug from "@wbe/debug"
 const log = debug("lowrouter:Router")
 
@@ -22,18 +22,19 @@ export interface Route {
 export interface RouterOptions {
   baseUrl: string
   errorHandler: (error) => void
+  pathToRegexFn: RegexFn
 }
-
 /**
  *
  * Router
  *
  */
 export class Router {
-  #events = ["pushState", "replaceState", "popstate"]
+  #events = ["pushState", "replaceState", "popstate", "hashchange"]
   #routes: Route[]
   #options: Partial<RouterOptions>
-  #matcher = createMatcher()
+  #matcher: Matcher
+  #prevRouteContext: RouteContext
   #currentRouteContext: RouteContext
 
   constructor(
@@ -42,6 +43,7 @@ export class Router {
   ) {
     this.#routes = routes
     this.#options = options
+    this.#matcher = createMatcher(this.#options.pathToRegexFn)
     this.#patchHistory()
     this.#listenEvents()
     // First resolve
@@ -65,8 +67,9 @@ export class Router {
     if (!routeContext) {
       throw new Error(`No matching route found with pathname ${pathname}, return`)
     } else {
-      log("current route context", routeContext)
+      this.#prevRouteContext = this.#currentRouteContext
       this.#currentRouteContext = routeContext
+      log("current route context", routeContext)
 
       window.history.pushState({}, null, pathname)
 
@@ -101,7 +104,10 @@ export class Router {
   }
 
   async #handleHistory(event) {
-    const pathname = event?.["arguments"]?.[2] || window.location.pathname
+    console.log("ici", event)
+    const pathname = event?.["arguments"]?.[2] || this.#currentRouteContext?.pathname
+
+    console.log("pathname", pathname)
     if (!pathname || pathname === this.#currentRouteContext?.pathname) return
     this.resolve(pathname)
   }
@@ -136,14 +142,17 @@ export class Router {
    * https://stackoverflow.com/questions/5129386/how-to-detect-when-history-pushstate-and-history-replacestate-are-used
    */
   #patchHistory(): void {
-    if (typeof window.history === "undefined") return
     for (const type of ["pushState", "replaceState"]) {
-      const original = window.history[type]
-      window.history[type] = function () {
+      const original = history[type]
+      // TODO: we should be using unstable_batchedUpdates to avoid multiple re-renders,
+      // however that will require an additional peer dependency on react-dom.
+      // See: https://github.com/reactwg/react-18/discussions/86#discussioncomment-1567149
+      history[type] = function () {
         const result = original.apply(this, arguments)
         const event = new Event(type)
         event["arguments"] = arguments
-        window.dispatchEvent(event)
+
+        dispatchEvent(event)
         return result
       }
     }

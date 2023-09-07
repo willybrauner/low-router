@@ -11,6 +11,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.26.1
         version: 2.26.1
+      '@size-limit/esbuild-why':
+        specifier: ^9.0.0
+        version: 9.0.0(size-limit@8.2.4)
       '@size-limit/preset-small-lib':
         specifier: ^8.2.4
         version: 8.2.4(size-limit@8.2.4)
@@ -71,8 +74,8 @@ importers:
   packages/lowrouter:
     dependencies:
       '@wbe/debug':
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.2.0
+        version: 1.2.0
     devDependencies:
       terser:
         specifier: ^5.19.2
@@ -778,6 +781,17 @@ packages:
       fastq: 1.15.0
     dev: true
 
+  /@size-limit/esbuild-why@9.0.0(size-limit@8.2.4):
+    resolution: {integrity: sha512-p683YMq8Nk9pGDAt6zR09g5avm8tDIBZSd/xwiK9c23abiJK/kvD2Gowdj3PFdGLt73TFY5CW/kc2oaJwU+WSQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      size-limit: 9.0.0
+    dependencies:
+      esbuild-visualizer: 0.4.1
+      open: 8.4.2
+      size-limit: 8.2.4
+    dev: true
+
   /@size-limit/esbuild@8.2.4(size-limit@8.2.4):
     resolution: {integrity: sha512-kPgNfpwUvBD98s5axlf1UciFg4Ki4AYSl/cOmSyyYBuzksHiwW7Myeu0w4mTxtV9nwBFbkrrNXqszE7b+OhFLA==}
     engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
@@ -892,12 +906,12 @@ packages:
   /@wbe/compose@0.15.2:
     resolution: {integrity: sha512-hccp9/tgOZ9F4UkFJM1DAyoKC7qIGME7BxWO8XZ72Op0DtX4dPHNeNq0QZeQOrrqyrBb/viY+NSkWfXwMLMvoQ==}
     dependencies:
-      '@wbe/debug': 1.1.0
+      '@wbe/debug': 1.2.0
       history: 5.3.0
     dev: false
 
-  /@wbe/debug@1.1.0:
-    resolution: {integrity: sha512-jX50ED5hW5JtHnkLgbZaT0qYKh/GiXkpYcsuQEkulsA7cx2r0DANKkqdXIkzpD6+QtssCpHmznKVK+fS+etp3Q==}
+  /@wbe/debug@1.2.0:
+    resolution: {integrity: sha512-jTCR1JagaS4TpoPR5sjdVfu67Muz5mDB49seMVsbRvetodgPjATELXQWtKRlyrj3hCyZt+rjw1iacYfpCc9Yuw==}
     dev: false
 
   /abab@2.0.6:
@@ -1335,6 +1349,11 @@ packages:
       clone: 1.0.4
     dev: true
 
+  /define-lazy-prop@2.0.0:
+    resolution: {integrity: sha512-Ds09qNh8yw3khSjiJjiUInaGX9xlqZDY7JVryGxdxV7NPeuqQfplOpQ66yJFZut3jLa5zOwkXw1g9EI2uKh4Og==}
+    engines: {node: '>=8'}
+    dev: true
+
   /define-properties@1.2.0:
     resolution: {integrity: sha512-xvqAVKGfT1+UAvPwKTVw/njhdQ8ZhXK4lI0bCIuCMrp2up9nPnaDftrLtmpTazqd1o+UY4zgzU+avtMbDP+ldA==}
     engines: {node: '>= 0.4'}
@@ -1451,6 +1470,15 @@ packages:
       is-callable: 1.2.7
       is-date-object: 1.0.5
       is-symbol: 1.0.4
+    dev: true
+
+  /esbuild-visualizer@0.4.1:
+    resolution: {integrity: sha512-5XI3unzqPr3xqfzR/mzK3LhoAJs3FQhiIXBsKJ3Oh6CjyjuXz6HVmhJMoisrcpeTZip65fR54Dk53MZncA0AUQ==}
+    engines: {node: '>=14.20'}
+    hasBin: true
+    dependencies:
+      open: 8.4.2
+      yargs: 17.7.2
     dev: true
 
   /esbuild@0.17.19:
@@ -1956,6 +1984,12 @@ packages:
       has-tostringtag: 1.0.0
     dev: true
 
+  /is-docker@2.2.1:
+    resolution: {integrity: sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ==}
+    engines: {node: '>=8'}
+    hasBin: true
+    dev: true
+
   /is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
@@ -2059,6 +2093,13 @@ packages:
   /is-windows@1.0.2:
     resolution: {integrity: sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==}
     engines: {node: '>=0.10.0'}
+    dev: true
+
+  /is-wsl@2.2.0:
+    resolution: {integrity: sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww==}
+    engines: {node: '>=8'}
+    dependencies:
+      is-docker: 2.2.1
     dev: true
 
   /isexe@2.0.0:
@@ -2417,6 +2458,15 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       mimic-fn: 2.1.0
+    dev: true
+
+  /open@8.4.2:
+    resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      define-lazy-prop: 2.0.0
+      is-docker: 2.2.1
+      is-wsl: 2.2.0
     dev: true
 
   /os-tmpdir@1.0.2:

@@ -5,20 +5,19 @@ export default defineConfig({
   entry: { lowrouter: "src/index.ts" },
   splitting: false,
   clean: true,
-  minify: "terser",
   dts: true,
-  format: ["cjs", "esm"],
+  format: ["esm"],
   external: ["@wbe/debug"],
   name: "lowrouter",
-  sourcemap: true,
-  terserOptions: {
-    compress: true,
-    mangle: {
-      properties: {
-        regex: /^(#.+)$/,
-      },
-    },
-  },
+  minify: true,
+  // terserOptions: {
+  //   compress: true,
+  //   mangle: {
+  //     properties: {
+  //       regex: /^(#.+)$/,
+  //     },
+  //   },
+  // },
   async onSuccess() {
     const process = spawn("npx", ["size-limit"], { shell: true })
     process.stdout.on("data", (data) => console.log(data.toString()))
