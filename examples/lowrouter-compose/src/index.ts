@@ -36,7 +36,7 @@ const router = new Router(routes, {
   baseUrl: "/",
   debug: false,
   onUpdate: (context) => {
-    // console.log("update !", context)
+    console.log("update !", context)
   },
 })
 

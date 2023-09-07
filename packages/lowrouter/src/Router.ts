@@ -73,12 +73,10 @@ export class Router {
   public async resolve(pathname: string, eventType: HistoryEvents = "pushState"): Promise<void> {
     // get route from pathname
     const routeContext = this.#getMatchRoute(pathname)
-    if (!routeContext) {
-      throw new Error(`No matching route found with pathname ${pathname}, return`)
-    } else {
+    if (!routeContext) throw new Error(`No matching route found with pathname ${pathname}, return`)
+    else {
       this.currentRouteContext = routeContext
       this.#options.debug && log("current route context", routeContext)
-
       // HISTORY: could be a side effect...
       // we don't want to push in history if event is popstate
       if (eventType != "popstate") {
@@ -116,12 +114,8 @@ export class Router {
   }
 
   async #handleHistory(event) {
-    log("event", event)
     const pathname = event?.["arguments"]?.[2] || window.location.pathname
-    log("pathname", pathname)
-
     if (!pathname || pathname === this.currentRouteContext?.pathname) {
-      log("RETURN")
       return
     }
     await this.resolve(pathname, event?.type)
