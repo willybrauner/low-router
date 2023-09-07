@@ -1,18 +1,18 @@
 import { RouteParams } from "./Router"
 
 export type RegexFn = (pattern: string) => { keys: Record<"name", string>[]; regexp: RegExp }
-
 export type CreateMatcher = (regexFn: RegexFn) => Matcher
 export type Matcher = (pattern: string, path: string) => [boolean, RouteParams]
+
 /**
  * Base stolen from https://github.com/molefrog/wouter/blob/main/matcher.js
- * Create a matcher function
- *
+ * @name CreateMatcher
+ * @description Create a matcher function.
  * regexFn param allows to customise the regex match as needed:
+ * @param regexFn
  *
  * This function passed as argument, takes a string pattern as param
  * and return { keys: Record<"name", string>[]; regexp: RegExp }
- * @param regexFn
  */
 
 export const createMatcher: CreateMatcher = (regexFn: RegexFn = pathToRegexp): Matcher => {
@@ -25,7 +25,6 @@ export const createMatcher: CreateMatcher = (regexFn: RegexFn = pathToRegexp): M
     const { regexp, keys } = getRegexp(pattern || "")
     const out = regexp.exec(path)
     if (!out) return [false, null]
-    // formats an object with matched params
     const params = keys.reduce((params, key, i) => {
       params[key.name] = out[i + 1]
       return params
