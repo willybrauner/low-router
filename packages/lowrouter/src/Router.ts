@@ -15,7 +15,7 @@ export interface RouteContext {
 export interface Route {
   path: string
   name: string
-  props: RouteProps
+  props?: RouteProps
   action: (context: RouteContext) => void
 }
 
