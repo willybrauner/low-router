@@ -51,13 +51,13 @@ export class Component<Props = TProps> {
 
   public unmounted() {}
 
-  public _dangerousUnmounted(): void {
+  public _unmounted(): void {
+    log("🔴 unmounted", this.name)
     this.unmounted()
     this.#isMounted = false
     this.#onChildrenComponents((component: Component) => {
-      if (component) component._dangerousUnmounted()
+      if (component) component._unmounted()
     })
-    log("🔴 unmounted", this.name)
   }
 
   // --------------------------------------------------------------------------- TRANSITIONS

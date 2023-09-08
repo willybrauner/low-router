@@ -2,8 +2,7 @@ import { RouteContext, Router } from "@wbe/lowrouter"
 import { Home } from "../pages /Home.ts"
 import { About } from "../pages /About.ts"
 import { Contact } from "../pages /Contact.ts"
-import {Component} from "../compose/Component.ts"
-
+import { Component } from "../compose/Component.ts"
 
 /**
  * Main App
@@ -11,11 +10,11 @@ import {Component} from "../compose/Component.ts"
 export class App {
   stackClass = "stack"
   linkClass = "link"
-  stack: Element = document.querySelector(`.${this.stackClass}`)
-  links: NodeListOf<Element>
+  stack: HTMLElement = document.querySelector(`.${this.stackClass}`)
+  links: NodeListOf<HTMLElement>
   router: Router
-  prevContext: RouteContext
   currContext: RouteContext
+  contexts: RouteContext[] = []
   isFirstRoute = true
   isAnimating = false
 
@@ -25,6 +24,7 @@ export class App {
   constructor() {
     this.#createRouter()
     this.#updateLinks()
+    this.keyBoardNavigation()
   }
 
   #createRouter(): void {
@@ -57,49 +57,60 @@ export class App {
     )
   }
 
+  // TEMP
+  linkIndex = 0
+  #modulo(base: number, modulo: number): number {
+    return ((base % modulo) + modulo) % modulo
+  }
+  keyBoardNavigation() {
+    window.onkeydown = (e) => {
+      if (e.key === "ArrowLeft")
+        this.linkIndex = this.#modulo(this.linkIndex - 1, this.links.length - 1)
+      if (e.key === "ArrowRight")
+        this.linkIndex = this.#modulo(this.linkIndex + 1, this.links.length - 1)
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        const k = Array.from(this.links)
+        this.router.resolve(k[this.linkIndex].getAttribute("href"))
+      }
+    }
+  }
+
   /**
-   * Update
-   *
+   * on Route Update
+   * Will be fired on each route change, first route included
    *
    */
   protected async onRouteUpdate(context: RouteContext): Promise<void> {
-    this.prevContext = this.currContext
+    if (context.pathname === this.currContext?.pathname) return
     this.currContext = context
+    this.contexts.push(this.currContext)
 
-    // TODO à faire ailleurs
-    // prepare first instance
-    if (this.isFirstRoute) {
-      const stack = document.body.querySelector(`.${this.stackClass}`)
-      const root = stack.querySelector(":scope > *")
-      this.currContext.route.props.instance = new context.route.props.component(root)
-    }
-
+    // then...
     if (this.isAnimating) {
-      return
       // reject anim promise en cours?
       // keep only one div in stack?
-      // await new Promise((resolve) => setTimeout(resolve, 1))
+      await new Promise((resolve) => setTimeout(resolve, 1))
     }
 
     try {
       // fetch dom
-      // TODO merge avec la method au dessus 'prepare first instance
-      if (!this.isFirstRoute) {
-        const fetchDom = await this.fetchDOM(context.pathname, new AbortController())
-        const fetchStack = fetchDom.body.querySelector(`.${this.stackClass}`)
-        const fetchRoot = fetchStack.querySelector(":scope > *")
-        this.stack.appendChild(fetchRoot)
-        context.route.props.instance = new context.route.props.component(
-          fetchRoot
-        )
-      }
+      const doc = this.isFirstRoute ? document : await this.fetchDOM(context.pathname)
+      const stack = doc.body.querySelector(`.${this.stackClass}`)
+      const root = stack.querySelector(":scope > *")
+      this.stack.appendChild(root)
+      context.route.props.instance = new context.route.props.component(root)
 
       // Transition...
       this.isAnimating = true
+      const prevContext = this.contexts[this.contexts.length - 2]
       await this.manageTransitions({
-        prev: this.prevContext?.route.props.instance,
+        prev: prevContext?.route.props.instance,
         curr: this.currContext.route.props.instance,
       })
+
+      // remove prev context from array
+      const index = this.contexts.indexOf(prevContext)
+      if (index > -1) this.contexts.splice(index, 1)
     } catch (e) {
       console.error("preTransition error", e)
     }
@@ -108,8 +119,6 @@ export class App {
     this.#updateLinks()
     this.isFirstRoute = false
     this.isAnimating = false
-    this.currContext = context
-    console.log("updated !", { prevContext: this.prevContext, currContext: this.currContext })
   }
 
   public async manageTransitions({
@@ -120,11 +129,11 @@ export class App {
     curr: Component
   }): Promise<void> {
     curr.root.style.opacity = "0"
-    if (prev) {
-      await prev.playOut()
-      prev.root?.remove()
-      prev._dangerousUnmounted()
-    }
+    prev?.playOut().then(() => {
+      prev.root.remove()
+      prev._unmounted()
+    })
+
     console.log("curr", curr)
     await curr.playIn?.()
   }
@@ -159,19 +168,22 @@ export class App {
   // -----------
   /**
    * Fetch new document from specific URL
-   * @param url
+   * @param pathname
    * @param controller
    * @protected
    */
   private isFetching = false
-  protected async fetchDOM(url: string, controller: AbortController): Promise<Document> {
+  protected async fetchDOM(
+    pathname: string,
+    controller: AbortController = new AbortController()
+  ): Promise<Document> {
     if (this.isFetching) {
       controller.abort()
       this.isFetching = false
     }
 
     this.isFetching = true
-    const response = await fetch(url, {
+    const response = await fetch(pathname, {
       signal: controller.signal,
       method: "GET",
     })

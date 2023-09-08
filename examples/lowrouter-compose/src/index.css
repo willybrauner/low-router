@@ -13,7 +13,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  font-size: 4rem;
+  font-size: 2rem;
   text-align: center;
 }
 
@@ -52,7 +52,18 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+
+nav {
+  position: relative;
+  z-index: 1;
+}
+
 .stack > * {
+  width: 100vw;
+  top:0;
+  left: 0;
+  height: 100vh;
+
   position: absolute;
 }
 

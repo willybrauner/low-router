@@ -67,6 +67,9 @@ importers:
       '@wbe/debug':
         specifier: ^1.2.0
         version: 1.2.0
+      gsap:
+        specifier: ^3.12.2
+        version: 3.12.2
       typescript:
         specifier: ^5.0.2
         version: 5.0.4
@@ -1786,6 +1789,10 @@ packages:
 
   /grapheme-splitter@1.0.4:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
+    dev: true
+
+  /gsap@3.12.2:
+    resolution: {integrity: sha512-EkYnpG8qHgYBFAwsgsGEqvT1WUidX0tt/ijepx7z8EUJHElykg91RvW1XbkT59T0gZzzszOpjQv7SE41XuIXyQ==}
     dev: true
 
   /hard-rejection@2.1.0:
