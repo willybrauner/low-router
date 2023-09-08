@@ -1,4 +1,4 @@
-import "./style.css"
-import { App } from "./App.ts"
+import "./index.css"
+import { App } from "./components/App.ts"
 
 new App()

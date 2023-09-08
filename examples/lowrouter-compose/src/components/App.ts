@@ -1,14 +1,9 @@
-import { Route, RouteContext, Router } from "@wbe/lowrouter"
-import { Home } from "./Home.ts"
-import { About } from "./About.ts"
-import { Contact } from "./Contact.ts"
+import { RouteContext, Router } from "@wbe/lowrouter"
+import { Home } from "../pages /Home.ts"
+import { About } from "../pages /About.ts"
+import { Contact } from "../pages /Contact.ts"
+import {Component} from "../compose/Component.ts"
 
-// TODO MOVE
-interface Component {
-  root: HTMLElement
-  playIn: () => Promise<void>
-  playOut: () => Promise<void>
-}
 
 /**
  * Main App
@@ -68,6 +63,7 @@ export class App {
    *
    */
   protected async onRouteUpdate(context: RouteContext): Promise<void> {
+    this.prevContext = this.currContext
     this.currContext = context
 
     // TODO à faire ailleurs
@@ -93,7 +89,7 @@ export class App {
         const fetchStack = fetchDom.body.querySelector(`.${this.stackClass}`)
         const fetchRoot = fetchStack.querySelector(":scope > *")
         this.stack.appendChild(fetchRoot)
-        this.currContext.route.props.instance = new this.currContext.route.props.component(
+        context.route.props.instance = new context.route.props.component(
           fetchRoot
         )
       }
@@ -112,9 +108,8 @@ export class App {
     this.#updateLinks()
     this.isFirstRoute = false
     this.isAnimating = false
-    this.prevContext = this.currContext
     this.currContext = context
-    console.log("update !", { prevContext: this.prevContext, currContext: this.currContext })
+    console.log("updated !", { prevContext: this.prevContext, currContext: this.currContext })
   }
 
   public async manageTransitions({
@@ -126,8 +121,9 @@ export class App {
   }): Promise<void> {
     curr.root.style.opacity = "0"
     if (prev) {
-      await prev.playOut?.()
+      await prev.playOut()
       prev.root?.remove()
+      prev._dangerousUnmounted()
     }
     console.log("curr", curr)
     await curr.playIn?.()
@@ -159,11 +155,8 @@ export class App {
   }
 
   // -----------
-  // -----------
   // FETCH
   // -----------
-  // -----------
-
   /**
    * Fetch new document from specific URL
    * @param url
