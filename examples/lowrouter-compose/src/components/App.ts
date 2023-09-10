@@ -57,24 +57,6 @@ export class App {
     )
   }
 
-  // TEMP
-  linkIndex = 0
-  #modulo(base: number, modulo: number): number {
-    return ((base % modulo) + modulo) % modulo
-  }
-  keyBoardNavigation() {
-    window.onkeydown = (e) => {
-      if (e.key === "ArrowLeft")
-        this.linkIndex = this.#modulo(this.linkIndex - 1, this.links.length - 1)
-      if (e.key === "ArrowRight")
-        this.linkIndex = this.#modulo(this.linkIndex + 1, this.links.length - 1)
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-        const k = Array.from(this.links)
-        this.router.resolve(k[this.linkIndex].getAttribute("href"))
-      }
-    }
-  }
-
   /**
    * on Route Update
    * Will be fired on each route change, first route included
@@ -181,19 +163,39 @@ export class App {
       controller.abort()
       this.isFetching = false
     }
-
     this.isFetching = true
     const response = await fetch(pathname, {
       signal: controller.signal,
       method: "GET",
     })
-
     if (response.status >= 200 && response.status < 300) {
       const html = await response.text()
       this.isFetching = false
       return typeof html === "string" ? new DOMParser().parseFromString(html, "text/html") : html
     }
-
     this.isFetching = false
+  }
+
+  // TEMP!!!
+  // TEMP!!!
+  // TEMP!!!
+  // TEMP!!!
+  // TEMP!!!
+  // TEMP!!!
+  linkIndex = 0
+  #modulo(base: number, modulo: number): number {
+    return ((base % modulo) + modulo) % modulo
+  }
+  keyBoardNavigation() {
+    window.onkeydown = (e) => {
+      if (e.key === "ArrowLeft")
+        this.linkIndex = this.#modulo(this.linkIndex - 1, this.links.length)
+      if (e.key === "ArrowRight")
+        this.linkIndex = this.#modulo(this.linkIndex + 1, this.links.length)
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        const k = Array.from(this.links)
+        this.router.resolve(k[this.linkIndex].getAttribute("href"))
+      }
+    }
   }
 }

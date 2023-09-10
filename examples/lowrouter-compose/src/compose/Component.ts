@@ -62,11 +62,11 @@ export class Component<Props = TProps> {
 
   // --------------------------------------------------------------------------- TRANSITIONS
 
-  public playIn(): Promise<void> {
+  public playIn(): Promise<any | void> {
     return Promise.resolve()
   }
 
-  public playOut(): Promise<void> {
+  public playOut(): Promise<any | void> {
     return Promise.resolve()
   }
 

@@ -1,12 +1,12 @@
 import { Component } from "../compose/Component.ts"
-import {defaultTransition} from "../helpers/defaultTransition.ts"
+import { defaultTransition } from "../helpers/defaultTransition.ts"
+import {setRandomBackgroundColor} from "../helpers/setRandomBackgroundColor.ts"
 
 export class About extends Component {
   transition = defaultTransition(this.root)
 
   mounted() {
-    // add random rbg on root background
-    this.root.style.background = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`
+    setRandomBackgroundColor(this.root)
   }
 
   async playIn() {

@@ -12,13 +12,14 @@ export const defaultTransition = (el: HTMLElement) => {
   return {
     playIn: () => {
       return gsap.fromTo(
-        el, {
+        el,
+        {
           y: -innerHeight,
-          opacity:0,
+          opacity: 0,
         },
         {
           y: 0,
-          opacity:1,
+          opacity: 1,
           duration: 1.6,
           ease: "power3.out",
         }
@@ -37,17 +38,12 @@ export const defaultTransition = (el: HTMLElement) => {
       // return itp.play()
     },
     playOut: () => {
-
-      return gsap.to(
-        el,
-        {
-          opacity:0,
-          y: innerHeight,
-          duration: 1.6,
-          ease: "power3.out",
-        }
-      )
-
+      return gsap.to(el, {
+        opacity: 0,
+        y: innerHeight,
+        duration: 1.6,
+        ease: "power3.out",
+      })
 
       // const itp = new Interpol({
       //   el,
