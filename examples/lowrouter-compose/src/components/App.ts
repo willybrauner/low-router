@@ -1,4 +1,4 @@
-import { RouteContext, Router } from "@wbe/lowrouter"
+import { historyPlugin, RouteContext, Router } from "@wbe/lowrouter"
 import { Home } from "../pages /Home.ts"
 import { About } from "../pages /About.ts"
 import { Contact } from "../pages /Contact.ts"
@@ -52,6 +52,7 @@ export class App {
       {
         baseUrl: "/",
         debug: true,
+        plugins: [historyPlugin],
         onUpdate: (ctx) => this.onRouteUpdate(ctx),
       }
     )

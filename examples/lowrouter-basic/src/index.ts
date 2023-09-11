@@ -35,6 +35,7 @@ const routes = [
 /**
  * Create router
  */
+
 const router = new Router(routes, { baseUrl: "/" })
 
 /**
