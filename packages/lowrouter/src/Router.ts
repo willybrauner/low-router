@@ -91,7 +91,7 @@ export class Router {
 
       this.#options.onUpdate?.(this.currentRouteContext)
       await this.currentRouteContext.route?.action?.(this.currentRouteContext)
-      this.#onPlugins((p) => p.onAfterUpdate(this.currentRouteContext, eventType))
+      this.#onPlugins((p) => p.onAfterUpdate?.(this.currentRouteContext, eventType))
 
       return this.currentRouteContext
     }
