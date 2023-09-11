@@ -33,27 +33,24 @@ export class App {
         {
           path: "/",
           props: {
-            component: Home,
+            foo: "bar",
           },
+          action: (context) => Home,
         },
         {
           path: "/about",
-          props: {
-            component: About,
-          },
+          action: (context) => About,
         },
         {
           path: "/contact",
-          props: {
-            component: Contact,
-          },
+          action: (context) => Contact,
         },
       ],
       {
         baseUrl: "/",
         debug: true,
         plugins: [historyPlugin],
-        onUpdate: (ctx) => this.onRouteUpdate(ctx),
+        onResolve: (ctx) => this.onRouteResolve(ctx),
       }
     )
   }
@@ -63,7 +60,7 @@ export class App {
    * Will be fired on each route change, first route included
    *
    */
-  protected async onRouteUpdate(context: RouteContext): Promise<void> {
+  protected async onRouteResolve(context: RouteContext): Promise<void> {
     if (context.pathname === this.currContext?.pathname) return
     this.currContext = context
     this.contexts.push(this.currContext)
@@ -81,7 +78,8 @@ export class App {
       const stack = doc.body.querySelector(`.${this.stackClass}`)
       const root = stack.querySelector(":scope > *")
       this.stack.appendChild(root)
-      context.route.props.instance = new context.route.props.component(root)
+      const instance = context.route.action(context)
+      context.route.props.instance = new instance(root)
 
       // Transition...
       this.isAnimating = true
@@ -116,8 +114,6 @@ export class App {
       prev.root.remove()
       prev._unmounted()
     })
-
-    console.log("curr", curr)
     await curr.playIn?.()
   }
 
@@ -138,7 +134,10 @@ export class App {
     e.preventDefault()
     const href: string = e.currentTarget.getAttribute("href")
     if (!href) console.error("No href attribute found on link", e.currentTarget)
-    else this.router.resolve(href)
+    else
+      this.router.resolve(href).then((res) => {
+        console.log("click router resolve", res)
+      })
   }
   #updateLinks(): void {
     if (this.links) this.#unlistenLinks()

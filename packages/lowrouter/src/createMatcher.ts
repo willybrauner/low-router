@@ -1,7 +1,7 @@
 import { RouteParams } from "./Router"
 
 export type RegexFn = (pattern: string) => { keys: Record<"name", string>[]; regexp: RegExp }
-export type CreateMatcher = (regexFn: RegexFn) => Matcher
+export type CreateMatcher = (regexFn?: RegexFn) => Matcher
 export type Matcher = (pattern: string, path: string) => [boolean, RouteParams]
 
 /**

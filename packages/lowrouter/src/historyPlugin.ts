@@ -16,7 +16,7 @@ export function historyPlugin(router: Router): RouterPluginHooks {
   // When window.history change
   const handleHistory = async (event): Promise<void> => {
     const pathname = event?.["arguments"]?.[2] || w.location.pathname
-    if (!pathname || pathname === router.currentRouteContext?.pathname) return
+    if (!pathname || pathname === router.currentContext?.pathname) return
     await router.resolve(pathname, event?.type)
   }
 
@@ -48,7 +48,7 @@ export function historyPlugin(router: Router): RouterPluginHooks {
       // remove listeners
       for (const event of events) w.removeEventListener(event, handleHistory)
     },
-    onBeforeUpdate: (context, eventType) => {
+    onResolve: (context, eventType) => {
       // we don't want to push in history if event is popstate
       if (eventType != "popstate") {
         w.history[eventType]({}, null, context.pathname)

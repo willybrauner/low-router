@@ -1,32 +1,29 @@
 import { createMatcher, Matcher, RegexFn } from "./createMatcher"
 import { HistoryEvents } from "./historyPlugin"
-// import debug from "@wbe/debug"
-//const log = debug("lowrouter:Router")
-const { log } = console
 
 export type RouteParams = { [paramName: string]: string }
-export type RouteProps = { [name: string]: any }
+export type RouteProps = Record<string, any>
+export type ActionResult<A> = Promise<A> | A
 
-export interface RouteContext {
+export interface RouteContext<A = any, P = RouteProps> {
   pathname: string
   params: RouteParams
   baseUrl: string
-  route: Route
+  route: Route<A, P>
 }
 
-export interface Route {
+export interface Route<A, P> {
   path: string
   name?: string
-  props?: RouteProps
-  action?: (context: RouteContext) => void
+  props?: P
+  action?: (context: RouteContext<A, P>) => ActionResult<A>
 }
 
-export interface RouterOptions {
+export interface RouterOptions<A, P> {
   baseUrl: string
   onInit: () => void
-  onBeforeUpdate: (context: RouteContext) => void
-  onUpdate: (context: RouteContext) => void
-  onPause: (context: RouteContext) => void
+  onResolve: (context: RouteContext<A, P>, actionResult: ActionResult<A>) => void
+  onPause: (context: RouteContext<A, P>) => void
   onError: (error) => void
   pathToRegexFn: RegexFn
   debug: boolean
@@ -35,8 +32,7 @@ export interface RouterOptions {
 
 export interface RouterPluginHooks {
   onInit?: () => void
-  onBeforeUpdate?: (context: RouteContext, eventType: HistoryEvents) => void
-  onAfterUpdate?: (context: RouteContext, eventType: HistoryEvents) => void
+  onResolve?: (context: RouteContext, eventType: HistoryEvents) => void
   onPause?: (context: RouteContext) => void
   onError?: (error) => void
 }
@@ -46,22 +42,21 @@ export type RouterPlugin = (router: Router) => RouterPluginHooks
 /**
  * Router
  */
-export class Router {
-  routes: Route[]
-  currentRouteContext: RouteContext
-  #options: Partial<RouterOptions>
+export class Router<A = any, P = RouteProps> {
+  routes: Route<A, P>[]
+  currentContext: RouteContext<A, P>
+  #options: Partial<RouterOptions<A, P>>
   #matcher: Matcher
   #plugins: RouterPluginHooks[] = []
 
-  constructor(
-    routes: Route[],
-    options: Partial<RouterOptions> = {
-      baseUrl: "/",
-      debug: false,
-    }
-  ) {
-    this.routes = routes
+  constructor(routes: Route<A, P>[], options: Partial<RouterOptions<A, P>> = {}) {
+    this.routes = routes.map((r) => ({ ...r, props: (r.props || {}) as P }))
     this.#options = options
+    this.#options.baseUrl = this.#options.baseUrl || "/"
+
+    this.#log("routes", this.routes)
+    this.#log("options", this.#options)
+
     this.#matcher = createMatcher(this.#options.pathToRegexFn)
     this.#options.onInit?.()
     this.#plugins = this.#options.plugins?.map((p) => p(this))
@@ -73,10 +68,7 @@ export class Router {
    * equivalent to push method
    * // TODO add object name & params
    */
-  public async resolve(
-    pathname: string,
-    eventType: HistoryEvents = "pushState"
-  ): Promise<RouteContext> {
+  public async resolve(pathname: string, eventType: HistoryEvents = "pushState"): Promise<A> {
     // get route from pathname
     const routeContext: RouteContext = this.#getMatchRoute(pathname)
     if (!routeContext) {
@@ -85,21 +77,27 @@ export class Router {
       this.#options.onError?.(m)
       this.#onPlugins((p) => p.onError?.(m))
     } else {
-      this.#options.debug && log("current route context", routeContext)
-      this.currentRouteContext = routeContext
-      this.#onPlugins((p) => p.onBeforeUpdate?.(this.currentRouteContext, eventType))
+      // save current context
+      this.currentContext = routeContext
+      this.#log("routeContext", routeContext)
 
-      this.#options.onUpdate?.(this.currentRouteContext)
-      await this.currentRouteContext.route?.action?.(this.currentRouteContext)
-      this.#onPlugins((p) => p.onAfterUpdate?.(this.currentRouteContext, eventType))
+      // update
+      this.#onPlugins((p) => p.onResolve?.(this.currentContext, eventType))
 
-      return this.currentRouteContext
+      // resolve
+      if (typeof routeContext.route?.action === "function") {
+        const action = await routeContext.route.action?.(routeContext)
+        this.#options.onResolve?.(routeContext, action)
+        return Promise.resolve(action)
+      }
+
+      return Promise.reject()
     }
   }
 
   pause(): void {
-    this.#onPlugins((p) => p.onPause?.(this.currentRouteContext))
-    this.#options.onPause?.(this.currentRouteContext)
+    this.#onPlugins((p) => p.onPause?.(this.currentContext))
+    this.#options.onPause?.(this.currentContext)
   }
 
   /**
@@ -114,7 +112,7 @@ export class Router {
       // remove double slash if exist
       const formatRoutePath = `${baseUrl}${route.path}`.replace(/(\/)+/g, "/")
       const [isMatch, params] = this.#matcher(formatRoutePath, pathname)
-      this.#options.debug && log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
+      this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
       if (isMatch) {
         hasMatch = true
         return {
@@ -130,5 +128,14 @@ export class Router {
 
   #onPlugins(fn: (plugin: RouterPluginHooks) => void): void {
     this.#plugins?.forEach((plugin) => fn?.(plugin))
+  }
+
+  #debug
+  async #log(...args: any[]) {
+    if (this.#options.debug) {
+      if (!this.#debug) this.#debug = await import("@wbe/debug")
+      const log = this.#debug.default("router:Router")
+      log(...args)
+    }
   }
 }
