@@ -8,7 +8,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "FORCE_COLOR=1 turbo run build",
+    "build": "FORCE_COLOR=1 turbo run build --filter=@wbe/*",
     "build:watch": "FORCE_COLOR=1 turbo run build --filter=@wbe/* -- --watch",
     "dev": "FORCE_COLOR=1 turbo run dev",
     "test:watch": "vitest --reporter verbose",
