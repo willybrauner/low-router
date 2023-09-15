@@ -26,7 +26,6 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          echo "STORE_PATH=$STORE_PATH" >> $GITHUB_ENV  # Export the variable
 
       - uses: actions/cache@v3
         name: Setup pnpm cache
@@ -47,14 +46,15 @@ jobs:
       - name: Restore pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.STORE_PATH }}  # Utilize the STORE_PATH variable
+          path: ${{ steps.common.outputs.STORE_PATH }}  # Utilize the STORE_PATH output from common job
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Debug pnpm cache
-        run: ls -la ${{ env.STORE_PATH }}
+        run: ls -la ${{ steps.common.outputs.STORE_PATH }}
 
       - name: build
         run: pnpm run build
+
 
 #  test:
 #    runs-on: ubuntu-latest
