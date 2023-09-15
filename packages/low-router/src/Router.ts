@@ -164,9 +164,9 @@ export class Router<A = any, P = RouteProps> {
   #debug
   async #log(...args: any[]) {
     if (this.#options.debug) {
-      if (!this.#debug) this.#debug = await import("@wbe/debug")
-      const log = this.#debug.default("router:Router")
-      log(...args)
+      // if (!this.#debug) this.#debug = await import("@wbe/debug")
+      // const log = this.#debug.default("router:Router")
+      console.log(...args)
     }
   }
 }
