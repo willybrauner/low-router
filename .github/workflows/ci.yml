@@ -48,6 +48,8 @@ jobs:
         with:
           path: ~/.pnpm-store
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - name: Install pnpm
+        run: npm install -g pnpm
       - name: build
         run: pnpm run build
 
