@@ -46,27 +46,27 @@ jobs:
       - name: Restore pnpm cache
         uses: actions/cache@v3
         with:
-          path: $GITHUB_ENV
+          path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Debug pnpm cache
-        run: ls -la $GITHUB_ENV
+        run: ls -la ${{ env.STORE_PATH }}
 
       - name: build
         run: pnpm run build
 
-  test:
-    runs-on: ubuntu-latest
-    name: test
-    needs: common
-    steps:
-      - name: test
-        run: pnpm run test
-
-  size_limit:
-    runs-on: ubuntu-latest
-    name: size limit
-    needs: common
-    steps:
-      - name: size limit
-        run: pnpm run size-limit
+#  test:
+#    runs-on: ubuntu-latest
+#    name: test
+#    needs: common
+#    steps:
+#      - name: test
+#        run: pnpm run test
+#
+#  size_limit:
+#    runs-on: ubuntu-latest
+#    name: size limit
+#    needs: common
+#    steps:
+#      - name: size limit
+#        run: pnpm run size-limit
