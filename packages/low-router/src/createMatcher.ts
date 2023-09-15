@@ -1,8 +1,8 @@
-import { RouteParams } from "./Router"
+import { QueryParams, RouteParams } from "./Router"
 
 export type RegexFn = (pattern: string) => { keys: Record<"name", string>[]; regexp: RegExp }
 export type CreateMatcher = (regexFn?: RegexFn) => Matcher
-export type Matcher = (pattern: string, path: string) => [boolean, RouteParams]
+export type Matcher = (pattern: string, path: string) => [boolean, RouteParams, QueryParams]
 
 /**
  * Base stolen from https://github.com/molefrog/wouter/blob/main/matcher.js
@@ -21,15 +21,28 @@ export const createMatcher: CreateMatcher = (regexFn: RegexFn = pathToRegexp): M
   // obtains a cached regexp version of the pattern
   const getRegexp = (pattern) => cache[pattern] || (cache[pattern] = regexFn(pattern))
 
-  return (pattern: string, path: string): [boolean, RouteParams] => {
+  // pattern is path with dynamic params
+  // pathname is static URL pathname we want to compare with pattern
+  return (pattern: string, pathname: string): [boolean, RouteParams, QueryParams] => {
+    // Check query params if exist
+    let queryParams: Record<string, string> = {}
+    if (pathname.includes("?")) {
+      const [path, queries] = pathname.split("?")
+      pathname = path
+      const search = new URLSearchParams(queries)
+      search.forEach((value, key) => (queryParams[key] = value))
+    }
+
+    // exec custom regexFn
     const { regexp, keys } = getRegexp(pattern || "")
-    const out = regexp.exec(path)
-    if (!out) return [false, null]
+    const test = regexp.exec(pathname)
+    if (!test) return [false, null, null]
+
     const params = keys.reduce((params, key, i) => {
-      params[key.name] = out[i + 1]
+      params[key.name] = test[i + 1]
       return params
     }, {})
-    return [true, params]
+    return [true, params, queryParams]
   }
 }
 
@@ -37,6 +50,7 @@ const pathToRegexp = (pattern: string): { keys: Record<"name", string>[]; regexp
   // escapes a regexp string (borrowed from path-to-regexp sources)
   // https://github.com/pillarjs/path-to-regexp/blob/v3.0.0/index.js#L202
   const _escapeRx = (str) => str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1")
+
   // returns a segment representation in RegExp based on flags
   // adapted and simplified version from path-to-regexp sources
   const _rxForSegment = (repeat, optional, prefix) => {

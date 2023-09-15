@@ -25,6 +25,7 @@
     "@wbe/debug": "^1.2.0"
   },
   "devDependencies": {
+    "path-to-regexp": "^6.2.1",
     "terser": "^5.19.2",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4",

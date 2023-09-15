@@ -3,43 +3,53 @@ import { createMatcher } from "../src"
 
 describe("path to regex", () => {
   it("should parse the path", () => {
-    const url = "/foo"
+    const path = "/foo"
 
     const matcher = createMatcher()
-
-    expect(matcher(url, "/foo")).toEqual([true, {}])
-    expect(matcher(url, "foo")).toEqual([false, null])
-    expect(matcher(url, "/other")).toEqual([false, null])
+    expect(matcher(path, "/foo")).toEqual([true, {}, {}])
+    expect(matcher(path, "foo")).toEqual([false, null, null])
+    expect(matcher(path, "/other")).toEqual([false, null, null])
   })
 
   it("should parse the path with param", () => {
-    const url = "/test/:id"
+    const path = "/test/:id"
     const matcher = createMatcher()
-    expect(matcher(url, "/test/foo")).toEqual([true, { id: "foo" }])
-    expect(matcher(url, "/test/foo/")).toEqual([true, { id: "foo" }])
-    expect(matcher(url, "/test/bar")).toEqual([true, { id: "bar" }])
-    expect(matcher(url, "/test")).toEqual([false, null])
-    expect(matcher(url, "/test/bar/foo")).toEqual([false, null])
+    expect(matcher(path, "/test/foo")).toEqual([true, { id: "foo" }, {}])
+    expect(matcher(path, "/test/foo/")).toEqual([true, { id: "foo" }, {}])
+    expect(matcher(path, "/test/bar")).toEqual([true, { id: "bar" }, {}])
+    expect(matcher(path, "/test")).toEqual([false, null, null])
+    expect(matcher(path, "/test/bar/foo")).toEqual([false, null, null])
   })
 
-  it("should parse the url with optional param", () => {
-    const url = "/test/:id?"
+  it("should parse the path with optional param", () => {
+    const path = "/test/:id?"
     const matcher = createMatcher()
-    expect(matcher(url, "/test/foo")).toEqual([true, { id: "foo" }])
-    expect(matcher(url, "/test")).toEqual([true, { id: undefined }])
+    expect(matcher(path, "/test/foo")).toEqual([true, { id: "foo" }, {}])
+    expect(matcher(path, "/test")).toEqual([true, { id: undefined }, {}])
   })
 
-  it("should parse the url with wildcard", () => {
-    const url = "/test/:id*"
+  it("should parse the path with wildcard", () => {
+    const path = "/test/:id*"
     const matcher = createMatcher()
-    expect(matcher(url, "/test/foo")).toEqual([true, { id: "foo" }])
-    expect(matcher(url, "/test/foo/bar/zo")).toEqual([true, { id: "foo/bar/zo" }])
+    expect(matcher(path, "/test/foo")).toEqual([true, { id: "foo" }, {}])
+    expect(matcher(path, "/test/foo/bar/zo")).toEqual([true, { id: "foo/bar/zo" }, {}])
   })
 
-  it("should parse the url with query params", () => {
-    // TODO
-    // const url = "/test\\?lang=en"
-    // const matcher = createMatcher()
-    // expect(matcher(url, "/test")).toEqual([true, {}])
+  it("should parse the path with query params", () => {
+    const path = "/test"
+    const matcher = createMatcher()
+    expect(matcher(path, "/test?lang=en&cat=super")).toEqual([
+      true,
+      {},
+      { lang: "en", cat: "super" },
+    ])
+  })
+
+  it("should parse the path with params & query params", () => {
+    const path = "/test/:id?"
+    const matcher = createMatcher()
+    expect(matcher(path, "/test/foo?lang=en")).toEqual([true, { id: "foo" }, { lang: "en" }])
+    expect(matcher(path, "/test/?lang=en")).toEqual([true, { id: undefined }, { lang: "en" }])
+    expect(matcher(path, "/test?lang=en")).toEqual([true, { id: undefined }, { lang: "en" }])
   })
 })

@@ -2,6 +2,7 @@ import { createMatcher, Matcher, RegexFn } from "./createMatcher"
 import { HistoryEvents } from "./historyPlugin"
 
 export type RouteParams = { [paramName: string]: string }
+export type QueryParams = { [paramName: string]: string }
 export type RouteProps = Record<string, any>
 export type ActionResult<A> = Promise<A> | A
 
