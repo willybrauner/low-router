@@ -85,9 +85,9 @@ export class Router<A = any, P = RouteProps> {
       this.#onPlugins((p) => p.onResolve?.(this.currentContext, eventType))
       // resolve
       if (typeof routeContext.route?.action === "function") {
-        const action = await routeContext.route.action?.(routeContext)
-        this.#options.onResolve?.(routeContext, action)
-        return Promise.resolve(action)
+        const actionResponse = await routeContext.route.action?.(routeContext)
+        this.#options.onResolve?.(routeContext, actionResponse)
+        return Promise.resolve(actionResponse)
       }
     }
   }
