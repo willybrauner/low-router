@@ -47,7 +47,7 @@ export class App {
         },
       ],
       {
-        baseUrl: "/",
+        base: "/",
         debug: true,
         plugins: [historyPlugin],
         onResolve: (ctx) => this.onRouteResolve(ctx),

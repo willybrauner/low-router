@@ -8,7 +8,7 @@ export type ActionResult<A> = Promise<A> | A
 export interface RouteContext<A = any, P = RouteProps> {
   pathname: string
   params: RouteParams
-  baseUrl: string
+  base: string
   route: Route<A, P>
 }
 
@@ -16,11 +16,13 @@ export interface Route<A, P> {
   path: string
   name?: string
   props?: P
-  action?: (context: RouteContext<A, P>) => ActionResult<A>
+  children?: Route<A, P>[] | null
+  parent?: Route<A, P> | null
+  action?: (context?: RouteContext<A, P>) => ActionResult<A>
 }
 
 export interface RouterOptions<A, P> {
-  baseUrl: string
+  base: string
   onInit: () => void
   onResolve: (context: RouteContext<A, P>, actionResult: ActionResult<A>) => void
   onPause: (context: RouteContext<A, P>) => void
@@ -53,7 +55,7 @@ export class Router<A = any, P = RouteProps> {
     // add {} as default for each route props
     this.routes = routes.map((r) => ({ ...r, props: (r.props || {}) as P }))
     this.#options = options
-    this.#options.baseUrl = this.#options.baseUrl || "/"
+    this.#options.base = this.#options.base || "/"
 
     this.#log("routes", this.routes)
     this.#log("options", this.#options)
@@ -70,7 +72,7 @@ export class Router<A = any, P = RouteProps> {
    * // TODO add object name & params
    */
   public async resolve(pathname: string, eventType: HistoryEvents = "pushState"): Promise<A> {
-    const routeContext: RouteContext = this.#getMatchRoute(pathname)
+    const routeContext: RouteContext = this.matchRoute(pathname)
     if (!routeContext) {
       console.error(`No matching route found with pathname ${pathname}`)
       this.#options.onError?.()
@@ -97,28 +99,56 @@ export class Router<A = any, P = RouteProps> {
 
   /**
    * Takes pathname a return matching route
-   * @param pathname
-   * @param baseUrl
-   * @private
+   *
    */
-  #getMatchRoute(pathname: string, baseUrl = this.#options.baseUrl): RouteContext {
-    let hasMatch = false
-    for (let route of this.routes) {
-      // remove double slash if exist
-      const formatRoutePath = `${baseUrl}${route.path}`.replace(/(\/)+/g, "/")
-      const [isMatch, params] = this.#matcher(formatRoutePath, pathname)
-      this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
-      if (isMatch) {
-        hasMatch = true
-        return {
-          pathname,
-          params,
-          route,
-          baseUrl: this.#options.baseUrl,
+  matchRoute(
+    pathname: string,
+    base = this.#options.base,
+    routes = this.routes
+  ): RouteContext | undefined {
+    /**
+     * recursive next call
+     */
+    const next = ({
+      pathname,
+      base,
+      routes,
+      parent,
+    }: {
+      pathname: string
+      base: string
+      routes: Route<A, P>[]
+      parent?: Route<A, P>
+    }): RouteContext | undefined => {
+      for (let route of routes) {
+        const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
+        const [isMatch, params] = this.#matcher(formatRoutePath, pathname)
+        this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
+        if (isMatch) {
+          return {
+            pathname,
+            params,
+            route: route.children?.[0] ?? route,
+            base,
+          }
+        } else if (route.children) {
+          const childResult = next({
+            pathname,
+            base: formatRoutePath,
+            routes: route.children,
+            parent: route.parent || route,
+          })
+          if (childResult) return childResult
         }
       }
     }
-    if (!hasMatch) return
+    const result = next({
+      pathname,
+      base,
+      routes,
+      parent: null,
+    })
+    if (result) return result
   }
 
   #onPlugins(fn: (plugin: RouterPluginHooks) => void): void {
