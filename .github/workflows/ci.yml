@@ -1,3 +1,5 @@
+name: ci
+on: [ push ]
 jobs:
   common:
     runs-on: ubuntu-latest
@@ -45,7 +47,7 @@ jobs:
       - name: Restore pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.STORE_PATH }}
+          path: ${{ env.STORE_PATH }}  # Utilize the STORE_PATH variable
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Debug pnpm cache
@@ -53,7 +55,6 @@ jobs:
 
       - name: build
         run: pnpm run build
-
 
 #  test:
 #    runs-on: ubuntu-latest
