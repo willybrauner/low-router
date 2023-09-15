@@ -1,8 +1,8 @@
-import { QueryParams, RouteParams } from "./Router"
+import { Hash, QueryParams, RouteParams } from "./Router"
 
 export type RegexFn = (pattern: string) => { keys: Record<"name", string>[]; regexp: RegExp }
 export type CreateMatcher = (regexFn?: RegexFn) => Matcher
-export type Matcher = (pattern: string, path: string) => [boolean, RouteParams, QueryParams]
+export type Matcher = (pattern: string, path: string) => [boolean, RouteParams, QueryParams, Hash]
 
 /**
  * Base stolen from https://github.com/molefrog/wouter/blob/main/matcher.js
@@ -23,26 +23,39 @@ export const createMatcher: CreateMatcher = (regexFn: RegexFn = pathToRegexp): M
 
   // pattern is path with dynamic params
   // pathname is static URL pathname we want to compare with pattern
-  return (pattern: string, pathname: string): [boolean, RouteParams, QueryParams] => {
-    // Check query params if exist
-    let queryParams: Record<string, string> = {}
-    if (pathname.includes("?")) {
-      const [path, queries] = pathname.split("?")
-      pathname = path
-      const search = new URLSearchParams(queries)
-      search.forEach((value, key) => (queryParams[key] = value))
+  return (pattern, pathname) => {
+    let queryParams = {}
+    let hash = null
+    const queryIndex = pathname.indexOf("?")
+    const hashIndex = pathname.indexOf("#")
+
+    // Extract hash
+    if (hashIndex !== -1) {
+      hash = pathname.slice(hashIndex + 1)
+    }
+
+    // Extract query parameters
+    if (queryIndex !== -1) {
+      const queryString = pathname.slice(queryIndex + 1, hashIndex !== -1 ? hashIndex : undefined)
+      const searchParams = new URLSearchParams(queryString)
+      searchParams.forEach((value, key) => (queryParams[key] = value))
+    }
+
+    // finally remove query and hash from pathname
+    for (let e of ["?", "#"]) {
+      pathname = pathname.includes(e) ? pathname.split(e)[0] : pathname
     }
 
     // exec custom regexFn
     const { regexp, keys } = getRegexp(pattern || "")
     const test = regexp.exec(pathname)
-    if (!test) return [false, null, null]
+    if (!test) return [false, null, null, null]
 
     const params = keys.reduce((params, key, i) => {
       params[key.name] = test[i + 1]
       return params
     }, {})
-    return [true, params, queryParams]
+    return [true, params, queryParams, hash]
   }
 }
 

@@ -129,7 +129,7 @@ export class App {
   }
   #handleLinks = (e): void => {
     e.preventDefault()
-    const href: string = e.currentTarget.getAttribute("href")
+    const href: string = e.currentTarget.getAttribute("href") + "#test"
     if (!href) console.error("No href attribute found on link", e.currentTarget)
     else
       this.router.resolve(href).then((res) => {

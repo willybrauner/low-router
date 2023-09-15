@@ -3,12 +3,15 @@ import { HistoryEvents } from "./historyPlugin"
 
 export type RouteParams = { [paramName: string]: string }
 export type QueryParams = { [paramName: string]: string }
+export type Hash = string
 export type RouteProps = Record<string, any>
 export type ActionResult<A> = Promise<A> | A
 
 export interface RouteContext<A = any, P = RouteProps> {
   pathname: string
   params: RouteParams
+  query: QueryParams
+  hash: Hash
   base: string
   route: Route<A, P>
 }
@@ -123,12 +126,14 @@ export class Router<A = any, P = RouteProps> {
     }): RouteContext | undefined => {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
-        const [isMatch, params] = this.#matcher(formatRoutePath, pathname)
+        const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
         this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
         if (isMatch) {
           return {
             pathname,
             params,
+            query,
+            hash,
             route: route.children?.[0] ?? route,
             base,
           }

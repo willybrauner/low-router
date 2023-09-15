@@ -39,7 +39,7 @@ export function historyPlugin(router: Router): RouterPluginHooks {
       // listen to events
       for (const event of events) w.addEventListener(event, handleHistory)
       // push initial route
-      router.resolve(w.location.pathname || "/")
+      router.resolve(w.location.pathname + w.location.search + w.location.hash || "/")
     },
     onPause: () => {
       // restore original methods
