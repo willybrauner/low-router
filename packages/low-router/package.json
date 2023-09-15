@@ -1,17 +1,17 @@
 {
-  "name": "@wbe/lowrouter",
+  "name": "@wbe/low-router",
   "version": "0.1.0",
   "type": "module",
   "files": [
     "dist"
   ],
   "sideEffects": false,
-  "main": "./dist/lowrouter.cjs",
-  "module": "./dist/lowrouter.js",
-  "types": "./dist/lowrouter.d.ts",
+  "main": "./dist/low-router.cjs",
+  "module": "./dist/low-router.js",
+  "types": "./dist/low-router.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/willybrauner/lowrouter.git"
+    "url": "git://github.com/willybrauner/low-router.git"
   },
   "keywords": [
     "repo"

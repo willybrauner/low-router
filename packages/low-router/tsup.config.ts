@@ -2,13 +2,13 @@ import { defineConfig } from "tsup"
 import { spawn } from "child_process"
 
 export default defineConfig({
-  entry: { lowrouter: "src/index.ts" },
+  entry: { "low-router": "src/index.ts" },
   splitting: true,
   clean: true,
   dts: true,
   format: ["esm"],
   external: ["@wbe/debug"],
-  name: "lowrouter",
+  name: "low-router",
   minify: true,
   // terserOptions: {
   //   compress: true,

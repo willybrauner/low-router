@@ -1,5 +1,5 @@
 import "./style.css"
-import { Router } from "@wbe/lowrouter"
+import { Router } from "@wbe/low-router"
 
 const stack = document.querySelector(".stack")
 

@@ -42,11 +42,11 @@ importers:
         specifier: ^0.31.0
         version: 0.31.0(jsdom@22.1.0)(terser@5.19.2)
 
-  examples/lowrouter-basic:
+  examples/basic:
     dependencies:
-      '@wbe/lowrouter':
+      '@wbe/low-router':
         specifier: latest
-        version: link:../../packages/lowrouter
+        version: link:../../packages/low-router
     devDependencies:
       typescript:
         specifier: ^5.0.2
@@ -55,14 +55,14 @@ importers:
         specifier: ^4.4.5
         version: 4.4.9(@types/node@20.1.0)(terser@5.19.2)
 
-  examples/lowrouter-compose:
+  examples/compose:
     dependencies:
       '@wbe/interpol':
         specifier: ^0.7.0
         version: 0.7.0
-      '@wbe/lowrouter':
+      '@wbe/low-router':
         specifier: latest
-        version: link:../../packages/lowrouter
+        version: link:../../packages/low-router
     devDependencies:
       '@wbe/debug':
         specifier: ^1.2.0
@@ -77,7 +77,7 @@ importers:
         specifier: ^4.4.5
         version: 4.4.9(@types/node@20.1.0)(terser@5.19.2)
 
-  packages/lowrouter:
+  packages/low-router:
     dependencies:
       '@wbe/debug':
         specifier: ^1.2.0
@@ -3232,7 +3232,7 @@ packages:
       joycon: 3.1.1
       postcss-load-config: 3.1.4
       resolve-from: 5.0.0
-      rollup: 3.26.2
+      rollup: 3.29.0
       source-map: 0.8.0-beta.0
       sucrase: 3.32.0
       tree-kill: 1.2.2

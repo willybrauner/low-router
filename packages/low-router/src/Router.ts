@@ -24,7 +24,7 @@ export interface RouterOptions<A, P> {
   onInit: () => void
   onResolve: (context: RouteContext<A, P>, actionResult: ActionResult<A>) => void
   onPause: (context: RouteContext<A, P>) => void
-  onError: (error) => void
+  onError: () => void
   pathToRegexFn: RegexFn
   debug: boolean
   plugins: RouterPlugin[]
@@ -34,7 +34,7 @@ export interface RouterPluginHooks {
   onInit?: () => void
   onResolve?: (context: RouteContext, eventType: HistoryEvents) => void
   onPause?: (context: RouteContext) => void
-  onError?: (error) => void
+  onError?: () => void
 }
 
 export type RouterPlugin = (router: Router) => RouterPluginHooks
@@ -50,6 +50,7 @@ export class Router<A = any, P = RouteProps> {
   #plugins: RouterPluginHooks[] = []
 
   constructor(routes: Route<A, P>[], options: Partial<RouterOptions<A, P>> = {}) {
+    // add {} as default for each route props
     this.routes = routes.map((r) => ({ ...r, props: (r.props || {}) as P }))
     this.#options = options
     this.#options.baseUrl = this.#options.baseUrl || "/"
@@ -65,43 +66,37 @@ export class Router<A = any, P = RouteProps> {
 
   /**
    * Resolve
-   * equivalent to push method
+   * return a Promise witch return the action return fn
    * // TODO add object name & params
    */
   public async resolve(pathname: string, eventType: HistoryEvents = "pushState"): Promise<A> {
-    // get route from pathname
     const routeContext: RouteContext = this.#getMatchRoute(pathname)
     if (!routeContext) {
-      const m = `No matching route found with pathname ${pathname}`
-      console.error(m)
-      this.#options.onError?.(m)
-      this.#onPlugins((p) => p.onError?.(m))
+      console.error(`No matching route found with pathname ${pathname}`)
+      this.#options.onError?.()
+      this.#onPlugins((p) => p.onError?.())
     } else {
       // save current context
       this.currentContext = routeContext
       this.#log("routeContext", routeContext)
-
-      // update
+      // update plugins
       this.#onPlugins((p) => p.onResolve?.(this.currentContext, eventType))
-
       // resolve
       if (typeof routeContext.route?.action === "function") {
         const action = await routeContext.route.action?.(routeContext)
         this.#options.onResolve?.(routeContext, action)
         return Promise.resolve(action)
       }
-
-      return Promise.reject()
     }
   }
 
-  pause(): void {
+  public pause(): void {
     this.#onPlugins((p) => p.onPause?.(this.currentContext))
     this.#options.onPause?.(this.currentContext)
   }
 
   /**
-   *
+   * Takes pathname a return matching route
    * @param pathname
    * @param baseUrl
    * @private

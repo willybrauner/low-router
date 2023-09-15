@@ -1,4 +1,4 @@
-import { historyPlugin, RouteContext, Router } from "@wbe/lowrouter"
+import { historyPlugin, RouteContext, Router } from "@wbe/low-router"
 import { Home } from "../pages /Home.ts"
 import { About } from "../pages /About.ts"
 import { Contact } from "../pages /Contact.ts"
@@ -84,10 +84,7 @@ export class App {
       // Transition...
       this.isAnimating = true
       const prevContext = this.contexts[this.contexts.length - 2]
-      await this.manageTransitions({
-        prev: prevContext?.route.props.instance,
-        curr: this.currContext.route.props.instance,
-      })
+      await this.manageTransitions(prevContext, this.currContext)
 
       // remove prev context from array
       const index = this.contexts.indexOf(prevContext)
@@ -102,19 +99,19 @@ export class App {
     this.isAnimating = false
   }
 
-  public async manageTransitions({
-    prev,
-    curr,
-  }: {
-    prev: Component
-    curr: Component
-  }): Promise<void> {
-    curr.root.style.opacity = "0"
-    prev?.playOut().then(() => {
-      prev.root.remove()
-      prev._unmounted()
+  public async manageTransitions(
+    prevContext: RouteContext,
+    currContext: RouteContext
+  ): Promise<void> {
+    const prevInstance = prevContext?.route.props.instance
+    const currInstance = currContext.route.props.instance
+
+    currInstance.root.style.opacity = "0"
+    prevInstance?.playOut().then(() => {
+      prevInstance.root.remove()
+      prevInstance._unmounted()
     })
-    await curr.playIn?.()
+    await currInstance.playIn?.()
   }
 
   /**
@@ -136,7 +133,7 @@ export class App {
     if (!href) console.error("No href attribute found on link", e.currentTarget)
     else
       this.router.resolve(href).then((res) => {
-        console.log("click router resolve", res)
+        console.log("click: current action:", res)
       })
   }
   #updateLinks(): void {

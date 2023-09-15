@@ -1,10 +1,10 @@
 {
-  "name": "lowrouter",
+  "name": "low-router",
   "private": true,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git://github.com/willybrauner/lowrouter.git"
+    "url": "git://github.com/willybrauner/low-router.git"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -37,8 +37,8 @@
   },
   "size-limit": [
     {
-      "name": "@wbe/lowrouter",
-      "path": "packages/lowrouter/dist/lowrouter.js",
+      "name": "@wbe/low-router",
+      "path": "packages/low-router/dist/low-router.js",
       "limit": "2 KB"
     }
   ]

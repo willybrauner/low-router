@@ -1,5 +1,5 @@
 {
-  "name": "lowrouter-compose",
+  "name": "low-router-compose",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@wbe/interpol": "^0.7.0",
-    "@wbe/lowrouter": "latest"
+    "@wbe/low-router": "latest"
   },
   "devDependencies": {
     "@wbe/debug": "^1.2.0",

@@ -1,5 +1,5 @@
 {
-  "name": "lowrouter-basic",
+  "name": "low-router-basic",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,6 +13,6 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "@wbe/lowrouter": "latest"
+    "@wbe/low-router": "latest"
   }
 }

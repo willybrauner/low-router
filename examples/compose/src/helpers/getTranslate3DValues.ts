@@ -5,9 +5,6 @@ export function getTranslate3DValues(
 
   const style = element.style
 
-  console.log("style",style.transform)
-
-
   const transformValue = null
   if (transformValue) {
     const matches = transformValue.match(/translate3d\(([^,]+),([^,]+),([^)]+)\)/)
