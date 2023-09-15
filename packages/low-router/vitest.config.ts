@@ -8,7 +8,4 @@ export default defineConfig({
       "~": resolve(__dirname, "src"),
     },
   },
-  test: {
-    testTimeout: 15000,
-  },
 })

@@ -76,6 +76,16 @@ describe.concurrent("matchRoute", () => {
       const routes = [
         {
           path: "/",
+          children: [
+            {
+              path: "",
+              action: () => "/ resolve",
+            },
+            {
+              path: "/f",
+              action: () => "/f resolve",
+            },
+          ],
         },
         {
           path: "/a",
@@ -86,11 +96,21 @@ describe.concurrent("matchRoute", () => {
             },
             {
               path: "/b",
+              name: "b",
               action: () => "/b resolve",
             },
             {
               path: "/:id",
-              action: () => "/:id resolve",
+              children: [
+                {
+                  path: "",
+                  action: () => "/:id resolve",
+                },
+                {
+                  path: "/d",
+                  action: () => "/d resolve",
+                },
+              ],
             },
           ],
         },
@@ -100,6 +120,15 @@ describe.concurrent("matchRoute", () => {
       ]
       const router = new Router(routes)
       let match: RouteContext | undefined
+
+      match = router.matchRoute("/")
+      expect(match.pathname).toBe("/")
+      expect(match.route.path).toBe("")
+      expect(await match.route.action()).toBe("/ resolve")
+
+      match = router.matchRoute("/f")
+      expect(match.pathname).toBe("/f")
+      expect(await match.route.action()).toBe("/f resolve")
 
       match = router.matchRoute("/c")
       expect(match.pathname).toBe("/c")
@@ -112,12 +141,14 @@ describe.concurrent("matchRoute", () => {
       match = router.matchRoute("/a/b")
       expect(match.pathname).toBe("/a/b")
       expect(await match.route.action()).toBe("/b resolve")
-      // console.log("route", match)
 
-      match = router.matchRoute("/a/foo")
-      expect(match.pathname).toBe("/a/foo")
+      match = router.matchRoute("/a/foo-id")
+      expect(match.pathname).toBe("/a/foo-id")
       expect(await match.route.action()).toBe("/:id resolve")
-      // console.log("route", match)
+
+      match = router.matchRoute("/a/foo-id/d")
+      expect(match.pathname).toBe("/a/foo-id/d")
+      expect(await match.route.action()).toBe("/d resolve")
 
       resolve()
     })
