@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 18.x ]
+        node-version: [18.x]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,30 +21,31 @@ jobs:
           fetch-depth: 0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+        run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
-          
+
   build:
-    name: Build
+    runs-on: ubuntu-latest
+    name: build
     needs: common
     steps:
-      - name: Build
+      - name: build
         run: pnpm run build
 
   test:
-    name: Test
+    runs-on: ubuntu-latest
+    name: test
     needs: common
     steps:
-      - name: Test
+      - name: test
         run: pnpm run test
 
   size_limit:
-    name: Size limit
+    runs-on: ubuntu-latest
+    name: size limit
     needs: common
     steps:
-      - name: Size limit
+      - name: size limit
         run: pnpm run size-limit
