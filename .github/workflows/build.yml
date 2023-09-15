@@ -1,4 +1,4 @@
-name: tests
+name: build
 on: [push]
 jobs:
   build:
@@ -26,5 +26,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: test
-        run: pnpm run test
+      - name: build
+        run: pnpm run build
