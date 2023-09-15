@@ -5,7 +5,6 @@ import { Router, RouterPluginHooks } from "./Router"
  * History plugin
  * @param router
  */
-
 export function historyPlugin(router: Router): RouterPluginHooks {
   const h = history
   const w = window
