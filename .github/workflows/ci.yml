@@ -1,13 +1,15 @@
 name: tests
 on: [push]
 jobs:
-  build:
+  common:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [18.x]
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -26,11 +28,23 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: build
+  build:
+    name: Build
+    needs: common
+    steps:
+      - name: Build
         run: pnpm run build
 
-      - name: test
+  test:
+    name: Test
+    needs: common
+    steps:
+      - name: Test
         run: pnpm run test
 
-      - name: size
-        run: pnpm run size
+  size_limit:
+    name: Size limit
+    needs: common
+    steps:
+      - name: Size limit
+        run: pnpm run size-limit
