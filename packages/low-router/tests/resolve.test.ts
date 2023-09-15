@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 import { Router } from "../src"
+
 describe.concurrent("resolve", () => {
   it("should return the action function return", () => {
     return new Promise(async (resolve: any) => {
@@ -97,7 +98,49 @@ describe.concurrent("resolve", () => {
     })
   })
 
-  it("should accept an object as a route", () => {
-    // TODO
+  it("should resolve child route", () => {
+    return new Promise(async (resolve: any) => {
+      const routes = [
+        {
+          path: "/",
+          children: [
+            {
+              path: "",
+              name: "a",
+              action: () => "/ resolve",
+            },
+            {
+              path: "/b",
+              name: "bbb",
+              action: (ctx) => `${ctx.route.name} resolve`,
+            },
+          ],
+        },
+        {
+          path: "/c",
+          children: [
+            {
+              path: "",
+              name: "c",
+              action: () => "/c resolve",
+            },
+            {
+              path: "/d",
+              name: "d",
+              action: (ctx) => "/d resolve",
+            },
+          ],
+        },
+      ]
+
+      const router = new Router(routes)
+      const ctx = await router.resolve("/b")
+      expect(ctx).toBe("bbb resolve")
+      resolve()
+    })
   })
+})
+
+it("should accept an object as a route", () => {
+  // TODO
 })
