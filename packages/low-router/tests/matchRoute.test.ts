@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 import { RouteContext, Router } from "../src"
+
 describe.concurrent("matchRoute", () => {
   it("should match with route without param", () => {
     return new Promise(async (resolve: any) => {
@@ -73,6 +74,9 @@ describe.concurrent("matchRoute", () => {
   it("should match if is child route", () => {
     return new Promise(async (resolve: any) => {
       const routes = [
+        {
+          path: "/",
+        },
         {
           path: "/a",
           children: [

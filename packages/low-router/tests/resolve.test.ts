@@ -100,34 +100,4 @@ describe.concurrent("resolve", () => {
   it("should accept an object as a route", () => {
     // TODO
   })
-
-  it.only("should resolve child route", () => {
-    return new Promise(async (resolve: any) => {
-      const routes = [
-        {
-          path: "/a",
-          children: [
-            {
-              path: "",
-              action: () => "/a is resolve",
-            },
-            {
-              path: "/b",
-              action: () => "/a/b is resolve",
-            },
-          ],
-        },
-        {
-          path: "/c",
-          action: () => "/c is resolve",
-        },
-      ]
-
-      const router = new Router(routes)
-      const res = await router.resolve("/a/b")
-      console.log("res", res)
-      //      expect(res).toBe("action response!")
-      resolve()
-    })
-  })
 })
