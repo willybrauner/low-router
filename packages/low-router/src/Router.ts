@@ -38,6 +38,7 @@ export interface RouterOptions<A, P> {
 
 export interface RouterPluginHooks {
   onInit?: () => void
+  onBeforeResolve?: (context: RouteContext, eventType: HistoryEvents) => void
   onResolve?: (context: RouteContext, eventType: HistoryEvents) => void
   onPause?: (context: RouteContext) => void
   onError?: () => void
@@ -78,29 +79,33 @@ export class Router<A = any, P = RouteProps> {
     pathnameOrObject: string | { name: string; params: RouteParams },
     eventType: HistoryEvents = "pushState"
   ): Promise<A> {
-    let routeContext: RouteContext
-    routeContext = this.matchRoute(
+    // match route
+    const routeContext = this.matchRoute(
       typeof pathnameOrObject === "string"
         ? pathnameOrObject
         : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
     )
 
+    // error
     if (!routeContext) {
       console.error(`No matching route found with pathname ${pathnameOrObject}`)
       this.#options.onError?.()
       this.#onPlugins((p) => p.onError?.())
-    } else {
-      // save current context
-      this.currentContext = routeContext
-      this.#log("routeContext", routeContext)
-      // update plugins
-      this.#onPlugins((p) => p.onResolve?.(this.currentContext, eventType))
-      // resolve
-      if (typeof routeContext.route?.action === "function") {
-        const actionResponse = await routeContext.route.action?.(routeContext)
-        this.#options.onResolve?.(routeContext, actionResponse)
-        return Promise.resolve(actionResponse)
-      }
+      return
+    }
+
+    // save current context
+    this.currentContext = routeContext
+    this.#log("routeContext", routeContext)
+
+    // update plugins
+    this.#onPlugins((p) => p.onBeforeResolve?.(this.currentContext, eventType))
+
+    // resolve
+    if (typeof routeContext.route?.action === "function") {
+      const actionResponse = await routeContext.route.action?.(routeContext)
+      this.#options.onResolve?.(routeContext, actionResponse)
+      return Promise.resolve(actionResponse)
     }
   }
 
@@ -118,16 +123,7 @@ export class Router<A = any, P = RouteProps> {
     base = this.#options.base,
     routes = this.routes
   ): RouteContext | undefined {
-    const next = ({
-      pathname,
-      base,
-      routes,
-    }: {
-      pathname: string
-      base: string
-      routes: Route<A, P>[]
-      parent?: Route<A, P>
-    }): RouteContext | undefined => {
+    const next = (pathname, base, routes, parent): RouteContext | undefined => {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
@@ -142,39 +138,22 @@ export class Router<A = any, P = RouteProps> {
             base,
           }
         } else if (route.children) {
-          const childResult = next({
-            pathname,
-            base: formatRoutePath,
-            routes: route.children,
-            parent: route.parent || route,
-          })
+          const childResult = next(pathname, formatRoutePath, route.children, route.parent || route)
           if (childResult) return childResult
         }
       }
     }
-    const result = next({
-      pathname,
-      base,
-      routes,
-      parent: null,
-    })
+    const result = next(pathname, base, routes, null)
     if (result) return result
   }
 
   /**
    * Create URL
+   * ex:
+   *  createUrl({ name: "home" }) => "/"
+   *  createUrl({ name: "user", params: { id: "1" } }) => "/user/1"
    */
-  public createUrl({
-    name,
-    params = {},
-    routes = this.routes,
-    base = this.#options.base,
-  }: {
-    name: string
-    params?: RouteParams
-    routes?: Route<A, P>[]
-    base?: string
-  }): string {
+  public createUrl({ name, params = {} }: { name: string; params?: RouteParams }): string {
     const compile = (path, params): string => {
       const s = path.replace(/:([^/?]+)(\?)?/g, (match, key) => params?.[key] ?? "")
       return s.endsWith("/") ? s.slice(0, -1) : s
@@ -189,7 +168,7 @@ export class Router<A = any, P = RouteProps> {
         }
       }
     }
-    return next(name, params, routes, base)
+    return next(name, params, this.routes, this.#options.base)
   }
 
   #onPlugins(fn: (plugin: RouterPluginHooks) => void): void {

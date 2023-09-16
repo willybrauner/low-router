@@ -48,7 +48,7 @@ export function historyPlugin(router: Router): RouterPluginHooks {
       // remove listeners
       for (const event of events) w.removeEventListener(event, handleHistory)
     },
-    onResolve: (context, eventType) => {
+    onBeforeResolve: (context, eventType) => {
       // we don't want to push in history if event is popstate
       if (eventType != "popstate") {
         w.history[eventType]({}, null, context.pathname)
