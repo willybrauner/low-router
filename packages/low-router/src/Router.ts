@@ -115,8 +115,7 @@ export class Router<A = any, P = RouteProps> {
   }
 
   /**
-   * Takes pathname a return matching route
-   *
+   * Takes pathname a return matching route object
    */
   matchRoute(
     pathname: string,
