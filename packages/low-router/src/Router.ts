@@ -72,8 +72,7 @@ export class Router<A = any, P = RouteProps> {
 
   /**
    * Resolve
-   * return a Promise witch return the action return fn
-   * // TODO add object name & params
+   * return a Promise witch return the action result
    */
   public async resolve(
     pathnameOrObject: string | { name: string; params: RouteParams },
