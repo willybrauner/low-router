@@ -41,18 +41,18 @@ describe.concurrent("createUrl", () => {
       ]
 
       const router = new Router(routes, { debug: false })
-      expect(router.createUrl("a")).toBe("/")
-      expect(router.createUrl("b")).toBe("/b")
-      expect(router.createUrl("c", { id: "123" })).toBe("/c/123")
-      expect(router.createUrl("b", { id: "123" })).toBe("/b")
-      expect(router.createUrl("z", { xid: "foo" })).toBe("/b/x/foo/z")
+      expect(router.createUrl({ name: "a" })).toBe("/")
+      expect(router.createUrl({ name: "b" })).toBe("/b")
+      expect(router.createUrl({ name: "c", params: { id: "123" } })).toBe("/c/123")
+      expect(router.createUrl({ name: "b", params: { id: "123" } })).toBe("/b")
+      expect(router.createUrl({ name: "z", params: { xid: "foo" } })).toBe("/b/x/foo/z")
 
       // not found
-      expect(router.createUrl("no-exist-name")).toBe(undefined)
+      expect(router.createUrl({ name: "no-exist-name" })).toBe(undefined)
 
       // optional param
-      expect(router.createUrl("f", { id: "123" })).toBe("/f/123")
-      expect(router.createUrl("f")).toBe("/f")
+      expect(router.createUrl({ name: "f", params: { id: "123" } })).toBe("/f/123")
+      expect(router.createUrl({ name: "f" })).toBe("/f")
 
       resolve()
     })

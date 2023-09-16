@@ -83,7 +83,7 @@ export class Router<A = any, P = RouteProps> {
     routeContext = this.matchRoute(
       typeof pathnameOrObject === "string"
         ? pathnameOrObject
-        : this.createUrl(pathnameOrObject?.name, pathnameOrObject?.params)
+        : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
     )
 
     if (!routeContext) {
@@ -119,9 +119,6 @@ export class Router<A = any, P = RouteProps> {
     base = this.#options.base,
     routes = this.routes
   ): RouteContext | undefined {
-    /**
-     * recursive next call
-     */
     const next = ({
       pathname,
       base,
@@ -135,7 +132,7 @@ export class Router<A = any, P = RouteProps> {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
-        this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
+        this.#log(`${formatRoutePath} match with ${pathname}?`, isMatch)
         if (isMatch) {
           return {
             pathname,
@@ -168,12 +165,17 @@ export class Router<A = any, P = RouteProps> {
   /**
    * Create URL
    */
-  public createUrl(
-    name: string,
-    params: RouteParams = {},
+  public createUrl({
+    name,
+    params = {},
     routes = this.routes,
-    base = this.#options.base
-  ): string {
+    base = this.#options.base,
+  }: {
+    name: string
+    params?: RouteParams
+    routes?: Route<A, P>[]
+    base?: string
+  }): string {
     const compile = (path, params): string => {
       const s = path.replace(/:([^/?]+)(\?)?/g, (match, key) => params?.[key] ?? "")
       return s.endsWith("/") ? s.slice(0, -1) : s
