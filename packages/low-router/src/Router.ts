@@ -75,10 +75,19 @@ export class Router<A = any, P = RouteProps> {
    * return a Promise witch return the action return fn
    * // TODO add object name & params
    */
-  public async resolve(pathname: string, eventType: HistoryEvents = "pushState"): Promise<A> {
-    const routeContext: RouteContext = this.matchRoute(pathname)
+  public async resolve(
+    pathnameOrObject: string | { name: string; params: RouteParams },
+    eventType: HistoryEvents = "pushState"
+  ): Promise<A> {
+    let routeContext: RouteContext
+    routeContext = this.matchRoute(
+      typeof pathnameOrObject === "string"
+        ? pathnameOrObject
+        : this.createUrl(pathnameOrObject?.name, pathnameOrObject?.params)
+    )
+
     if (!routeContext) {
-      console.error(`No matching route found with pathname ${pathname}`)
+      console.error(`No matching route found with pathname ${pathnameOrObject}`)
       this.#options.onError?.()
       this.#onPlugins((p) => p.onError?.())
     } else {
@@ -117,7 +126,6 @@ export class Router<A = any, P = RouteProps> {
       pathname,
       base,
       routes,
-      parent,
     }: {
       pathname: string
       base: string
@@ -157,16 +165,37 @@ export class Router<A = any, P = RouteProps> {
     if (result) return result
   }
 
+  /**
+   * Create URL
+   */
+  public createUrl(
+    name: string,
+    params: RouteParams = {},
+    routes = this.routes,
+    base = this.#options.base
+  ): string {
+    const compile = (path, params): string => {
+      const s = path.replace(/:([^/?]+)(\?)?/g, (match, key) => params?.[key] ?? "")
+      return s.endsWith("/") ? s.slice(0, -1) : s
+    }
+    const next = (name, params, routes, curBase): string => {
+      for (let route of routes) {
+        if (route.name === name) {
+          return (curBase + compile(route.path, params)).replace(/(\/)+/g, "/")
+        } else if (route.children?.length > 0) {
+          const match = next(name, params, route.children, curBase + compile(route.path, params))
+          if (match) return match
+        }
+      }
+    }
+    return next(name, params, routes, base)
+  }
+
   #onPlugins(fn: (plugin: RouterPluginHooks) => void): void {
     this.#plugins?.forEach((plugin) => fn?.(plugin))
   }
 
-  #debug
-  async #log(...args: any[]) {
-    if (this.#options.debug) {
-      if (!this.#debug) this.#debug = await import("@wbe/debug")
-      const log = this.#debug.default("router:Router")
-      log(...args)
-    }
+  #log(...rest: any[]): void {
+    this.#options.debug && console.log(`%clow-router`, `color: rgb(16,96,173)`, ...rest)
   }
 }

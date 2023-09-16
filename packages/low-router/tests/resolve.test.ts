@@ -83,7 +83,6 @@ describe.concurrent("resolve", () => {
       ]
 
       const router = new Router(routes, {
-        debug: true,
         onResolve: (context, res) => {
           expect(context.pathname).toEqual("/foo")
           expect(context.base).toEqual("/")
