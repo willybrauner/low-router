@@ -35,8 +35,7 @@ const routes = [
 /**
  * Create router
  */
-
-const router = new Router(routes, { baseUrl: "/" })
+const router = new Router(routes, { base: "/", debug: true })
 
 /**
  * Listen links

@@ -38,6 +38,7 @@ export interface RouterOptions<A, P> {
 
 export interface RouterPluginHooks {
   onInit?: () => void
+  onBeforeResolve?: (context: RouteContext, eventType: HistoryEvents) => void
   onResolve?: (context: RouteContext, eventType: HistoryEvents) => void
   onPause?: (context: RouteContext) => void
   onError?: () => void
@@ -72,27 +73,39 @@ export class Router<A = any, P = RouteProps> {
 
   /**
    * Resolve
-   * return a Promise witch return the action return fn
-   * // TODO add object name & params
+   * return a Promise witch return the action result
    */
-  public async resolve(pathname: string, eventType: HistoryEvents = "pushState"): Promise<A> {
-    const routeContext: RouteContext = this.matchRoute(pathname)
+  public async resolve(
+    pathnameOrObject: string | { name: string; params: RouteParams },
+    eventType: HistoryEvents = "pushState"
+  ): Promise<A> {
+    // match route
+    const routeContext = this.matchRoute(
+      typeof pathnameOrObject === "string"
+        ? pathnameOrObject
+        : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
+    )
+
+    // error
     if (!routeContext) {
-      console.error(`No matching route found with pathname ${pathname}`)
+      console.error(`No matching route found with pathname ${pathnameOrObject}`)
       this.#options.onError?.()
       this.#onPlugins((p) => p.onError?.())
-    } else {
-      // save current context
-      this.currentContext = routeContext
-      this.#log("routeContext", routeContext)
-      // update plugins
-      this.#onPlugins((p) => p.onResolve?.(this.currentContext, eventType))
-      // resolve
-      if (typeof routeContext.route?.action === "function") {
-        const actionResponse = await routeContext.route.action?.(routeContext)
-        this.#options.onResolve?.(routeContext, actionResponse)
-        return Promise.resolve(actionResponse)
-      }
+      return
+    }
+
+    // save current context
+    this.currentContext = routeContext
+    this.#log("routeContext", routeContext)
+
+    // update plugins
+    this.#onPlugins((p) => p.onBeforeResolve?.(this.currentContext, eventType))
+
+    // resolve
+    if (typeof routeContext.route?.action === "function") {
+      const actionResponse = await routeContext.route.action?.(routeContext)
+      this.#options.onResolve?.(routeContext, actionResponse)
+      return Promise.resolve(actionResponse)
     }
   }
 
@@ -102,32 +115,18 @@ export class Router<A = any, P = RouteProps> {
   }
 
   /**
-   * Takes pathname a return matching route
-   *
+   * Takes pathname a return matching route object
    */
   matchRoute(
     pathname: string,
     base = this.#options.base,
     routes = this.routes
   ): RouteContext | undefined {
-    /**
-     * recursive next call
-     */
-    const next = ({
-      pathname,
-      base,
-      routes,
-      parent,
-    }: {
-      pathname: string
-      base: string
-      routes: Route<A, P>[]
-      parent?: Route<A, P>
-    }): RouteContext | undefined => {
+    const next = (pathname, base, routes, parent): RouteContext | undefined => {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
-        this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
+        this.#log(`${formatRoutePath} match with ${pathname}?`, isMatch)
         if (isMatch) {
           return {
             pathname,
@@ -138,35 +137,44 @@ export class Router<A = any, P = RouteProps> {
             base,
           }
         } else if (route.children) {
-          const childResult = next({
-            pathname,
-            base: formatRoutePath,
-            routes: route.children,
-            parent: route.parent || route,
-          })
+          const childResult = next(pathname, formatRoutePath, route.children, route.parent || route)
           if (childResult) return childResult
         }
       }
     }
-    const result = next({
-      pathname,
-      base,
-      routes,
-      parent: null,
-    })
+    const result = next(pathname, base, routes, null)
     if (result) return result
+  }
+
+  /**
+   * Create URL
+   * ex:
+   *  createUrl({ name: "home" }) => "/"
+   *  createUrl({ name: "user", params: { id: "1" } }) => "/user/1"
+   */
+  public createUrl({ name, params = {} }: { name: string; params?: RouteParams }): string {
+    const compile = (path, params): string => {
+      const s = path.replace(/:([^/?]+)(\?)?/g, (match, key) => params?.[key] ?? "")
+      return s.endsWith("/") ? s.slice(0, -1) : s
+    }
+    const next = (name, params, routes, curBase): string => {
+      for (let route of routes) {
+        if (route.name === name) {
+          return (curBase + compile(route.path, params)).replace(/(\/)+/g, "/")
+        } else if (route.children?.length > 0) {
+          const match = next(name, params, route.children, curBase + compile(route.path, params))
+          if (match) return match
+        }
+      }
+    }
+    return next(name, params, this.routes, this.#options.base)
   }
 
   #onPlugins(fn: (plugin: RouterPluginHooks) => void): void {
     this.#plugins?.forEach((plugin) => fn?.(plugin))
   }
 
-  #debug
-  async #log(...args: any[]) {
-    if (this.#options.debug) {
-      if (!this.#debug) this.#debug = await import("@wbe/debug")
-      const log = this.#debug.default("router:Router")
-      log(...args)
-    }
+  #log(...rest: any[]): void {
+    this.#options.debug && console.log(`%clow-router`, `color: rgb(16,96,173)`, ...rest)
   }
 }
