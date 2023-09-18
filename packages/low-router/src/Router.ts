@@ -20,7 +20,6 @@ export class Router<A = any, P = RouteProps> {
   #plugins: RouterPluginHooks[] = []
 
   constructor(routes: Route<A, P>[], options: Partial<RouterOptions<A, P>> = {}) {
-    // add {} as default for each route props
     this.routes = routes
     this.#options = options
     this.#options.base = this.#options.base || "/"
