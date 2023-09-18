@@ -77,6 +77,8 @@ importers:
         specifier: ^4.4.5
         version: 4.4.9(@types/node@20.1.0)(terser@5.19.2)
 
+  examples/react-nested-routes: {}
+
   packages/low-router:
     dependencies:
       '@wbe/debug':
