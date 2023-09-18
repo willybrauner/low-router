@@ -1,4 +1,4 @@
-import { Hash, QueryParams, RouteParams } from "./Router"
+import { Hash, QueryParams, RouteParams } from "./types"
 
 export type RegexFn = (pattern: string) => { keys: Record<"name", string>[]; regexp: RegExp }
 export type CreateMatcher = (regexFn?: RegexFn) => Matcher

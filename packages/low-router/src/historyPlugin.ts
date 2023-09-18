@@ -1,5 +1,6 @@
+import { Router } from "./Router"
+import { RouterPluginHooks } from "./types"
 export type HistoryEvents = "pushState" | "replaceState" | "popstate" | "hashchange"
-import { Router, RouterPluginHooks } from "./Router"
 
 /**
  * History plugin
