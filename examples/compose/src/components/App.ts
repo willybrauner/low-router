@@ -2,7 +2,6 @@ import { historyPlugin, RouteContext, Router } from "@wbe/low-router"
 import { Home } from "../pages /Home.ts"
 import { About } from "../pages /About.ts"
 import { Contact } from "../pages /Contact.ts"
-import { Component } from "../compose/Component.ts"
 
 /**
  * Main App
@@ -79,6 +78,7 @@ export class App {
       const root = stack.querySelector(":scope > *")
       this.stack.appendChild(root)
       const instance = context.route.action(context)
+      if (!context.route.props) context.route.props = {}
       context.route.props.instance = new instance(root)
 
       // Transition...
@@ -129,7 +129,7 @@ export class App {
   }
   #handleLinks = (e): void => {
     e.preventDefault()
-    const href: string = e.currentTarget.getAttribute("href") + "#test"
+    const href: string = e.currentTarget.getAttribute("href")
     if (!href) console.error("No href attribute found on link", e.currentTarget)
     else
       this.router.resolve(href).then((res) => {

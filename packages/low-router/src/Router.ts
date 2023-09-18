@@ -58,7 +58,7 @@ export class Router<A = any, P = RouteProps> {
 
   constructor(routes: Route<A, P>[], options: Partial<RouterOptions<A, P>> = {}) {
     // add {} as default for each route props
-    this.routes = routes.map((r) => ({ ...r, props: (r.props || {}) as P }))
+    this.routes = routes
     this.#options = options
     this.#options.base = this.#options.base || "/"
 
@@ -133,7 +133,7 @@ export class Router<A = any, P = RouteProps> {
             params,
             query,
             hash,
-            route: route.children?.[0] ?? route,
+            route,
             base,
           }
         } else if (route.children) {

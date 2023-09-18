@@ -76,11 +76,8 @@ describe.concurrent("matchRoute", () => {
       const routes = [
         {
           path: "/",
+          action: () => "/ resolve",
           children: [
-            {
-              path: "",
-              action: () => "/ resolve",
-            },
             {
               path: "/f",
               action: () => "/f resolve",
@@ -89,11 +86,8 @@ describe.concurrent("matchRoute", () => {
         },
         {
           path: "/a",
+          action: () => "/a resolve",
           children: [
-            {
-              path: "",
-              action: () => "/a resolve",
-            },
             {
               path: "/b",
               name: "b",
@@ -101,11 +95,8 @@ describe.concurrent("matchRoute", () => {
             },
             {
               path: "/:id",
+              action: () => "/:id resolve",
               children: [
-                {
-                  path: "",
-                  action: () => "/:id resolve",
-                },
                 {
                   path: "/d",
                   action: () => "/d resolve",
@@ -123,7 +114,7 @@ describe.concurrent("matchRoute", () => {
 
       match = router.matchRoute("/")
       expect(match.pathname).toBe("/")
-      expect(match.route.path).toBe("")
+      expect(match.route.path).toBe("/")
       expect(await match.route.action()).toBe("/ resolve")
 
       match = router.matchRoute("/f")
@@ -135,7 +126,7 @@ describe.concurrent("matchRoute", () => {
 
       match = router.matchRoute("/a")
       expect(match.pathname).toBe("/a")
-      expect(match.route.path).toBe("")
+      expect(match.route.path).toBe("/a")
       expect(await match.route.action()).toBe("/a resolve")
 
       match = router.matchRoute("/a/b")

@@ -11,20 +11,16 @@ describe.concurrent("createUrl", () => {
         },
         {
           path: "/b",
+          name: "b",
+
           children: [
             {
-              path: "",
-              name: "b",
+              path: "/x/:xid",
+              name: "x",
               children: [
                 {
-                  path: "/x/:xid",
-                  name: "x",
-                  children: [
-                    {
-                      path: "/z",
-                      name: "z",
-                    },
-                  ],
+                  path: "/z",
+                  name: "z",
                 },
               ],
             },
