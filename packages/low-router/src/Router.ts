@@ -97,6 +97,7 @@ export class Router<A = any, P = RouteProps> {
             hash,
             route,
             base,
+            parent,
           }
         } else if (route.children) {
           const childResult = next(pathname, formatRoutePath, route.children, route.parent || route)

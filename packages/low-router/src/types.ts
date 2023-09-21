@@ -6,7 +6,7 @@ export type RouteParams = { [paramName: string]: string }
 export type QueryParams = { [paramName: string]: string }
 export type Hash = string
 export type RouteProps = Record<string, any>
-export type ActionResult<A> = Promise<A> | A
+export type ActionResponse<A> = Promise<A> | A
 
 export interface RouteContext<A = any, P = RouteProps> {
   pathname: string
@@ -15,6 +15,7 @@ export interface RouteContext<A = any, P = RouteProps> {
   hash: Hash
   base: string
   route: Route<A, P>
+  parent?: Route<A, P>
 }
 
 export interface Route<A, P> {
@@ -23,13 +24,13 @@ export interface Route<A, P> {
   props?: P
   children?: Route<A, P>[] | null
   parent?: Route<A, P> | null
-  action?: (context?: RouteContext<A, P>) => ActionResult<A>
+  action?: (context?: RouteContext<A, P>) => ActionResponse<A>
 }
 
 export interface RouterOptions<A, P> {
   base: string
   onInit: () => void
-  onResolve: (context: RouteContext<A, P>, actionResult: ActionResult<A>) => void
+  onResolve: (context: RouteContext<A, P>, actionResponse: ActionResponse<A>) => void
   onPause: (context: RouteContext<A, P>) => void
   onError: () => void
   pathToRegexFn: RegexFn
