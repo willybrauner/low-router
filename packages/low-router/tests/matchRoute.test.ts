@@ -116,6 +116,7 @@ describe.concurrent("matchRoute", () => {
       expect(match.pathname).toBe("/")
       expect(match.route.path).toBe("/")
       expect(await match.route.action()).toBe("/ resolve")
+      expect(match.route.parent).toBeUndefined()
 
       match = router.matchRoute("/f")
       expect(match.pathname).toBe("/f")
@@ -140,6 +141,7 @@ describe.concurrent("matchRoute", () => {
       match = router.matchRoute("/a/foo-id/d")
       expect(match.pathname).toBe("/a/foo-id/d")
       expect(await match.route.action()).toBe("/d resolve")
+      expect(match.parent.path).toBe("/:id")
 
       resolve()
     })
