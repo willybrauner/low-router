@@ -138,6 +138,7 @@ export class Router<A = any, P = RouteProps> {
   }
 
   #log(...rest: any[]): void {
-    this.#options.debug && console.log(`%clow-router`, `color: rgb(16,96,173)`, ...rest)
+    this.#options.debug &&
+      console.log(`%clow-router`, `color: rgb(16,96,173)`, this.#options?.id || "", ...rest)
   }
 }

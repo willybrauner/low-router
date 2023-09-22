@@ -1,52 +1,11 @@
 import "./App.css"
-import { useEffect, useRef, useState } from "react"
-import { historyPlugin, Router } from "@wbe/low-router"
-import { Home } from "../../pages/Home.tsx"
-import { About } from "../../pages/About.tsx"
+
+import { routes } from "../../routes.tsx"
+import { Stack } from "../../lowRouterReact/Stack.tsx"
+import { useRouter } from "../../lowRouterReact/useRouter.tsx"
 
 function App() {
-  const router = useRef<Router>(null)
-  const routes = [
-    {
-      path: "/",
-      name: "home",
-      action: () => <div>home</div>,
-    },
-    {
-      path: "/about",
-      name: "about",
-      action: About,
-      children: [
-        {
-          path: "",
-        },
-        {
-          path: "/foo",
-          name: "foo",
-          action: () => <div>foo</div>,
-        },
-        {
-          path: "/bar",
-          name: "bar",
-          action: () => <div>bar</div>,
-        },
-      ],
-    },
-  ]
-
-  // store the component to render
-  const [component, setComponent] = useState(null)
-
-  useEffect(() => {
-    router.current = new Router(routes, {
-      debug: true,
-      plugins: [historyPlugin],
-      onResolve: (context, actionResult) => {
-        setComponent(actionResult)
-      },
-    })
-  }, [])
-
+  const { router } = useRouter()
   return (
     <div>
       {/* NAV */}
@@ -56,14 +15,15 @@ function App() {
             key={index}
             children={route.name}
             onClick={() => {
-              router.current?.resolve(route.path)
+              router.resolve(route.path)
             }}
           />
         ))}
       </nav>
 
       {/* RENDER */}
-      <div className={"page"}>{component}</div>
+
+      <Stack />
     </div>
   )
 }

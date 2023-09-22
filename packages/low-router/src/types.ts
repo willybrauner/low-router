@@ -18,7 +18,7 @@ export interface RouteContext<A = any, P = RouteProps> {
   parent?: Route<A, P>
 }
 
-export interface Route<A, P> {
+export interface Route<A = any, P = any> {
   path: string
   name?: string
   props?: P
@@ -27,7 +27,7 @@ export interface Route<A, P> {
   action?: (context?: RouteContext<A, P>) => ActionResponse<A>
 }
 
-export interface RouterOptions<A, P> {
+export interface RouterOptions<A = any, P = any> {
   base: string
   onInit: () => void
   onResolve: (context: RouteContext<A, P>, actionResponse: ActionResponse<A>) => void
@@ -36,6 +36,7 @@ export interface RouterOptions<A, P> {
   pathToRegexFn: RegexFn
   debug: boolean
   plugins: RouterPlugin[]
+  id?: number | string
 }
 
 export interface RouterPluginHooks {
