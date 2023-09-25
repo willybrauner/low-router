@@ -1,5 +1,7 @@
-import { createContext, ReactElement, useMemo, useState } from "react"
+import { createContext, ReactElement, useEffect, useMemo, useRef, useState } from "react"
 import { Route, RouterOptions, Router as LowRouter, RouteContext } from "@wbe/low-router"
+import { useRouter } from "./useRouter.tsx"
+import { beeper } from "../beeper.ts"
 
 export interface ILowRouterContext {
   routeContext: RouteContext
@@ -16,6 +18,8 @@ export const LowRouterContext = createContext<ILowRouterContext>({
   options: null,
 })
 
+const onRouteResolveBeeper = beeper()
+
 /**
  *
  *
@@ -26,44 +30,45 @@ export function Router(props: {
   options: Partial<RouterOptions>
   children?: ReactElement
 }) {
-  const [prevRouteContext, setPrevRouteContext] = useState<RouteContext>(null)
-  const [routeContext, setRouteContext] = useState<RouteContext>(null)
+  //  const [prevRouteContext, setPrevRouteContext] = useState<RouteContext>(null)
+  const routeContextRef = useRef<RouteContext>()
   const [actionResponse, setActionResponse] = useState<any>(null)
-
-  const [url, setUrl] = useState(null)
 
   const router = useMemo(() => {
     return new LowRouter(props.routes, {
       ...props.options,
       onResolve: (context, actionResponse) => {
-        // if (url === context?.pathname) {
-        //   console.log(props.options.id, "url === context?.pathname", url, context?.pathname)
-        //   return
-        // }
-        // setUrl(context?.pathname)
-
-        if (routeContext) setPrevRouteContext(routeContext)
-
-        //        if (context.parent.path === window.location?.pathname) return
-        console.log(props.options.id, "----context", context)
-        setRouteContext(context)
-
-        console.log("context.parent", context.parent, context)
-        if (context.parent?.action) {
-          const res = context.parent.action()
-          setActionResponse(res)
-        } else {
-          setActionResponse(actionResponse)
+        console.log(props.options.id, "routeContextRef pathname", routeContextRef.current?.pathname)
+        console.log(props.options.id, "context.pathname", context.pathname)
+        if (routeContextRef.current?.pathname === context.pathname) {
+          console.log(props.options.id, "same pathname, return")
+          return
         }
+        routeContextRef.current = context
+        if (context.parent?.action) setActionResponse(context.parent.action())
+        else setActionResponse(actionResponse)
       },
     })
-  }, [props])
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      console.log("unmount", props.options.id)
+      router.dispose()
+    }
+  }, [])
+
+  // useEffect(() => {
+  //   return onRouteResolveBeeper.on(({ context, actionResponse }) => {
+  //
+  //   })
+  // }, [actionResponse])
 
   return (
     <LowRouterContext.Provider
       value={{
         router,
-        routeContext,
+        routeContext: routeContextRef.current,
         actionResponse,
         routes: props.routes,
         options: props.options,

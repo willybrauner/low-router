@@ -22,7 +22,6 @@ function App() {
       </nav>
 
       {/* RENDER */}
-
       <Stack />
     </div>
   )

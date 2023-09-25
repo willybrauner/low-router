@@ -61,7 +61,7 @@ export class Router<A = any, P = RouteProps> {
     this.#log("routeContext", routeContext)
 
     // update plugins
-    this.#onPlugins((p) => p.onBeforeResolve?.(this.currentContext, eventType))
+    this.#onPlugins((p) => p.beforeResolve?.(this.currentContext, eventType))
 
     // resolve
     if (typeof routeContext.route?.action === "function") {
@@ -71,9 +71,9 @@ export class Router<A = any, P = RouteProps> {
     }
   }
 
-  public pause(): void {
-    this.#onPlugins((p) => p.onPause?.(this.currentContext))
-    this.#options.onPause?.(this.currentContext)
+  public dispose(): void {
+    this.#onPlugins((p) => p.onDispose?.())
+    this.#options.onDispose?.()
   }
 
   /**

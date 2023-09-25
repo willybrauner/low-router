@@ -31,7 +31,7 @@ export interface RouterOptions<A = any, P = any> {
   base: string
   onInit: () => void
   onResolve: (context: RouteContext<A, P>, actionResponse: ActionResponse<A>) => void
-  onPause: (context: RouteContext<A, P>) => void
+  onDispose: () => void
   onError: () => void
   pathToRegexFn: RegexFn
   debug: boolean
@@ -40,10 +40,11 @@ export interface RouterOptions<A = any, P = any> {
 }
 
 export interface RouterPluginHooks {
+  name: string
   onInit?: () => void
-  onBeforeResolve?: (context: RouteContext, eventType: HistoryEvents) => void
+  beforeResolve?: (context: RouteContext, eventType: HistoryEvents) => void
   onResolve?: (context: RouteContext, eventType: HistoryEvents) => void
-  onPause?: (context: RouteContext) => void
+  onDispose?: () => void
   onError?: () => void
 }
 
