@@ -2,6 +2,12 @@ import { Router } from "./Router"
 import { RouterPluginHooks } from "./types"
 export type HistoryEvents = "pushState" | "replaceState" | "popstate" | "hashchange"
 
+/**
+ * Create browser history
+ *
+ * TODO check if we need to make it outside of the plugin
+ * this is a little bit more code...
+ */
 const createBrowserHistory = () => {
   const events: HistoryEvents[] = ["pushState", "replaceState", "popstate", "hashchange"]
   const keepPushState = history.pushState
@@ -37,9 +43,9 @@ const createBrowserHistory = () => {
  * @param router
  */
 
-const browserHistory = createBrowserHistory()
-
 export function historyPlugin(router: Router): RouterPluginHooks {
+  const browserHistory = createBrowserHistory()
+
   const handleHistory = async (event?): Promise<void> => {
     console.log("handleHistory", event)
     const pathname =
@@ -59,6 +65,7 @@ export function historyPlugin(router: Router): RouterPluginHooks {
       handleHistory()
     },
     beforeResolve: (context, eventType) => {
+      // TODO check if we need to prevent
       if (eventType != "popstate") {
         browserHistory.push(context.pathname, eventType)
       }
