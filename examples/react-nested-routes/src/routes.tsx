@@ -47,4 +47,9 @@ export const routes = [
       },
     ],
   },
+  {
+    path: "/contact",
+    name: "contact",
+    action: () => <div>contact</div>,
+  },
 ]

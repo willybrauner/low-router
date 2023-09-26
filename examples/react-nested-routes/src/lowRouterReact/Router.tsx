@@ -66,7 +66,7 @@ function Router(props: {
     if (!STORE.history || !router) return
 
     const handleHistory = (location): void => {
-      console.log("handleHistory", location)
+      console.log(props.options.id, "handleHistory", location)
       router.resolve(location.pathname + location.search + location.hash)
     }
     // first call to resolve the current location

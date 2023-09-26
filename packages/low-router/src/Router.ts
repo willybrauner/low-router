@@ -15,8 +15,8 @@ export class Router<A = any, P = RouteProps> {
     this.#options = options
     this.#options.base = this.#options.base || "/"
 
-    this.#log("routes", this.routes)
-    this.#log("options", this.#options)
+    // this.#log("routes", this.routes)
+    // this.#log("options", this.#options)
 
     this.#matcher = createMatcher(this.#options.pathToRegexFn)
     this.#options.onInit?.()
@@ -51,7 +51,6 @@ export class Router<A = any, P = RouteProps> {
     // save current context
     this.currentContext = routeContext
     this.#log("routeContext", routeContext)
-    this.#log("routeContext.route.parent", routeContext.parent)
 
     // resolve
     if (typeof routeContext.route?.action === "function") {
