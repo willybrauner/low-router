@@ -3,7 +3,6 @@ import { Stack } from "../lowRouterReact/Stack.tsx"
 import { useRouter } from "../lowRouterReact/useRouter.tsx"
 import { routes } from "../routes.tsx"
 import { useEffect } from "react"
-import { historyPlugin } from "@wbe/low-router"
 
 export const About = () => {
   // const routerContext = useRouter()

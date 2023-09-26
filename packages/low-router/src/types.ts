@@ -34,17 +34,5 @@ export interface RouterOptions<A = any, P = any> {
   onError: () => void
   pathToRegexFn: RegexFn
   debug: boolean
-  plugins: RouterPlugin[]
   id?: number | string
 }
-
-export interface RouterPluginHooks {
-  name: string
-  onInit?: () => void
-  beforeResolve?: (context: RouteContext) => void
-  onResolve?: (context: RouteContext) => void
-  onDispose?: () => void
-  onError?: () => void
-}
-
-export type RouterPlugin = (router: Router) => RouterPluginHooks
