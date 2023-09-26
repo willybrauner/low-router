@@ -30,6 +30,7 @@ export class App {
     const handleHistory = (location, action?): void => {
       this.router.resolve(location.pathname + location.search + location.hash)
     }
+    // first call to resolve the current location
     handleHistory({
       pathname: window.location.pathname,
       search: window.location.search,
@@ -186,15 +187,14 @@ export class App {
    * Add keydown event listener to navigate with arrows
    *
    */
-  linkIndex = 0
+  index = 0
   keyBoardNavigation() {
     const modulo = (base: number, modulo: number): number => ((base % modulo) + modulo) % modulo
     window.onkeydown = (e) => {
-      if (e.key === "ArrowLeft") this.linkIndex = modulo(this.linkIndex - 1, this.links.length)
-      if (e.key === "ArrowRight") this.linkIndex = modulo(this.linkIndex + 1, this.links.length)
+      if (e.key === "ArrowLeft") this.index = modulo(this.index - 1, this.links.length)
+      if (e.key === "ArrowRight") this.index = modulo(this.index + 1, this.links.length)
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-        const k = Array.from(this.links)
-        this.browserHistory.push(k[this.linkIndex].getAttribute("href"))
+        this.browserHistory.push(Array.from(this.links)[this.index].getAttribute("href"))
       }
     }
   }

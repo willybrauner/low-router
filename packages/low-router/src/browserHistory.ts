@@ -38,7 +38,6 @@ export const createBrowserHistory = () => {
       const handlePop = (): void => {
         callback({ pathname: loc.pathname, search: loc.search, hash: loc.hash }, "POP")
       }
-
       // Handle the "popstate" event separately
       w.addEventListener("popstate", handlePop)
 
