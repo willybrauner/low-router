@@ -35,9 +35,10 @@ export class Router<A = any, P = RouteProps> {
         ? pathnameOrObject
         : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
     )
+
     // error
     if (!routeContext) {
-      console.error(`No matching route found with pathname ${pathnameOrObject}`)
+      this.#log(`No matching route found with pathname ${pathnameOrObject}`)
       this.#options.onError?.()
       return
     }

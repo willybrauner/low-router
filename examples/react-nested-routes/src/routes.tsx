@@ -11,8 +11,10 @@ export const routes = [
     name: "about",
     action: () => <About />,
     children: [
+      // need to match on /about on sub router
       {
         path: "",
+        action: () => null,
       },
       {
         path: "/foo",

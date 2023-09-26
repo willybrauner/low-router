@@ -45,22 +45,26 @@ export function Router(props: {
   children?: ReactElement
   history?: HistoryAPI
 }) {
-  if (!STORE.history) STORE.history = props.history
-
   const [routeContext, setRouteContext] = useState<RouteContext>(null)
 
-  const router = useMemo(() => {
-    return new LowRouter(props.routes, {
-      ...props.options,
-      onResolve: (context, response) => {
-        if (routeContext?.pathname === context.pathname) {
-          console.log(props.options.id, "same pathname, return")
-          return
-        }
-        setRouteContext(context)
-      },
-    })
-  }, [])
+  // if (!props.history) {
+  //   props.history = props.history
+  // }
+
+  const router = useMemo(
+    () =>
+      new LowRouter(props.routes, {
+        ...props.options,
+        onResolve: (context, response) => {
+          if (routeContext?.pathname === context.pathname) {
+            console.log(props.options.id, "same pathname, return")
+            return
+          }
+          setRouteContext(context)
+        },
+      }),
+    []
+  )
 
   useEffect(() => {
     return () => {
@@ -70,7 +74,7 @@ export function Router(props: {
   }, [])
 
   useEffect(() => {
-    if (!STORE.history) return
+    if (!props.history || !router) return
 
     const handleHistory = (location): void => {
       router.resolve(location.pathname + location.search + location.hash)
@@ -81,9 +85,10 @@ export function Router(props: {
       search: window.location.search,
       hash: window.location.hash,
     })
+
     // listen to history and return the unlisten function
-    return STORE.history?.listen(handleHistory)
-  }, [STORE.history, router])
+    return props.history?.listen(handleHistory)
+  }, [])
 
   return (
     <LowRouterContext.Provider
@@ -92,7 +97,7 @@ export function Router(props: {
         router,
         routes: props.routes,
         options: props.options,
-        history: STORE.history,
+        history: props.history,
         routeContext,
       }}
     />
