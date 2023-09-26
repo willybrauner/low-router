@@ -102,12 +102,9 @@ describe.concurrent("resolve", () => {
       const routes = [
         {
           path: "/",
+          name: "a",
+          action: () => "/ resolve",
           children: [
-            {
-              path: "",
-              name: "a",
-              action: () => "/ resolve",
-            },
             {
               path: "/b",
               name: "bbb",
@@ -117,12 +114,9 @@ describe.concurrent("resolve", () => {
         },
         {
           path: "/c",
+          name: "c",
+          action: () => "/c resolve",
           children: [
-            {
-              path: "",
-              name: "c",
-              action: () => "/c resolve",
-            },
             {
               path: "/d",
               name: "d",

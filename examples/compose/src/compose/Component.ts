@@ -27,7 +27,7 @@ export class Component<Props = TProps> {
   constructor(root: HTMLElement, options: Partial<ComponentOptions> = {}) {
     this.beforeMount()
     this.root = root
-    this.name = options.name ?? this.root.classList?.[0]
+    this.name = options.name ?? this.root?.classList?.[0]
     this.props = options.props
     this.id = ID++
     this.root.setAttribute(ID_ATTR, `${this.id}`)

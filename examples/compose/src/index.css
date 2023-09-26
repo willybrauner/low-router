@@ -58,9 +58,6 @@ a {
   color: black;
   text-decoration: inherit;
 }
-a:hover {
-//  color: black;
-}
 
 nav {
   position: relative;
@@ -78,8 +75,8 @@ nav {
 .content {
   /*overflow: hidden;*/
   width: 100%;
-  /*position: absolute;*/
-  /*top: 50%;*/
+  position: absolute;
+  top: 50%;
   /*left: 50%;*/
   /*transform: translate(-50%, -50%);*/
   font-size: 4rem;
@@ -98,4 +95,8 @@ nav {
 
 .Contact {
   background-color: #4f5dea;
+}
+
+.Home_button {
+  display: none;
 }
