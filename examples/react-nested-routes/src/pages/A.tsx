@@ -13,7 +13,7 @@ export const A = () => {
 
   return (
     <div>
-      <span>A</span>
+      <span>a</span>
       <Router routes={subRoutes} options={{ base, debug: true, id: 4 }}>
         <>
           <nav>
