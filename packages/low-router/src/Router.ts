@@ -36,10 +36,10 @@ export class Router<A = any, P = RouteProps> {
         : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
     )
 
-    if (routeContext?.pathname === this.currentContext?.pathname) {
-      this.#log("same path, return")
-      return
-    }
+    // if (routeContext?.pathname === this.currentContext?.pathname) {
+    //   this.#log("same path, return")
+    //   return
+    // }
 
     // error
     if (!routeContext) {
@@ -73,7 +73,7 @@ export class Router<A = any, P = RouteProps> {
     base = this.#options.base,
     routes = this.routes
   ): RouteContext | undefined {
-    const next = (pathname, base, routes, parentContext): RouteContext | undefined => {
+    const next = (pathname, base, routes, parent): RouteContext | undefined => {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
@@ -86,7 +86,7 @@ export class Router<A = any, P = RouteProps> {
           hash,
           route,
           base,
-          parent: parentContext,
+          parent,
         }
 
         if (isMatch) {

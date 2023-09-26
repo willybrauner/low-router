@@ -22,7 +22,6 @@ export interface Route<A = any, P = any> {
   name?: string
   props?: P
   children?: Route<A, P>[] | null
-  //parent?: Route<A, P> | null
   action?: (context?: RouteContext<A, P>) => ActionResponse<A>
 }
 

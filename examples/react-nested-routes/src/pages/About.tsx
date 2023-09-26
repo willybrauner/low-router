@@ -1,8 +1,6 @@
 import { Router } from "../lowRouterReact/Router.tsx"
 import { Stack } from "../lowRouterReact/Stack.tsx"
 import { useRouter } from "../lowRouterReact/useRouter.tsx"
-import { routes } from "../routes.tsx"
-import { createBrowserHistory } from "@wbe/low-router"
 
 export const About = () => {
   const { history, routes } = useRouter()

@@ -20,25 +20,25 @@ export const routes = [
       {
         path: "/foo",
         name: "foo",
-        action: () => "foo",
-        //action: () => <Foo />,
-        //   children: [
-        //     // need to match on /about on sub router
-        //     {
-        //       path: "",
-        //       action: () => null,
-        //     },
-        //     {
-        //       path: "/a",
-        //       name: "a",
-        //       action: () => <div>a</div>,
-        //     },
-        //     {
-        //       path: "/b",
-        //       name: "b",
-        //       action: () => <div>b</div>,
-        //     },
-        //   ],
+        //action: () => "foo",
+        action: () => <Foo />,
+        children: [
+          // need to match on /about on sub router
+          {
+            path: "",
+            action: () => null,
+          },
+          {
+            path: "/a",
+            name: "a",
+            action: () => "a",
+          },
+          {
+            path: "/b",
+            name: "b",
+            action: () => "b",
+          },
+        ],
       },
       {
         path: "/bar",
