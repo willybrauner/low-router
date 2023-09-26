@@ -1,5 +1,4 @@
 import { RegexFn } from "./createMatcher"
-import { HistoryEvents } from "./historyPlugin"
 import { Router } from "./Router"
 
 export type RouteParams = { [paramName: string]: string }
@@ -8,7 +7,7 @@ export type Hash = string
 export type RouteProps = Record<string, any>
 export type ActionResponse<A> = Promise<A> | A
 
-export interface RouteContext<A = any, P = RouteProps> {
+export interface RouteContext<A = any, P = RouteProps | any> {
   pathname: string
   params: RouteParams
   query: QueryParams
@@ -42,8 +41,8 @@ export interface RouterOptions<A = any, P = any> {
 export interface RouterPluginHooks {
   name: string
   onInit?: () => void
-  beforeResolve?: (context: RouteContext, eventType: HistoryEvents) => void
-  onResolve?: (context: RouteContext, eventType: HistoryEvents) => void
+  beforeResolve?: (context: RouteContext) => void
+  onResolve?: (context: RouteContext) => void
   onDispose?: () => void
   onError?: () => void
 }

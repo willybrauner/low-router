@@ -1,4 +1,4 @@
-import { historyPlugin, RouteContext, Router } from "@wbe/low-router"
+import { createBrowserHistory, RouteContext, Router } from "@wbe/low-router"
 import { Home } from "../pages /Home.ts"
 import { About } from "../pages /About.ts"
 import { Contact } from "../pages /Contact.ts"
@@ -16,7 +16,7 @@ export class App {
   contexts: RouteContext[] = []
   isFirstRoute = true
   isAnimating = false
-
+  browserHistory = createBrowserHistory()
   /**
    * Start
    */
@@ -24,6 +24,19 @@ export class App {
     this.#createRouter()
     this.#updateLinks()
     this.keyBoardNavigation()
+
+    // implement a history listener
+    // each time the history change, the router will resolve the new location
+    const handleHistory = (location, action?): void => {
+      this.router.resolve(location.pathname + location.search + location.hash)
+    }
+    handleHistory({
+      pathname: window.location.pathname,
+      search: window.location.search,
+      hash: window.location.hash,
+    })
+    // listen to history and return the unlisten function
+    const unlisten = this.browserHistory.listen(handleHistory)
   }
 
   #createRouter(): void {
@@ -31,24 +44,20 @@ export class App {
       [
         {
           path: "/",
-          props: {
-            foo: "bar",
-          },
-          action: (context) => Home,
+          action: () => Home,
         },
         {
           path: "/about",
-          action: (context) => About,
+          action: () => About,
         },
         {
           path: "/contact",
-          action: (context) => Contact,
+          action: () => Contact,
         },
       ],
       {
         base: "/",
         debug: true,
-        plugins: [historyPlugin],
         onResolve: (ctx) => this.onRouteResolve(ctx),
       }
     )
@@ -131,10 +140,9 @@ export class App {
     e.preventDefault()
     const href: string = e.currentTarget.getAttribute("href")
     if (!href) console.error("No href attribute found on link", e.currentTarget)
-    else
-      this.router.resolve(href).then((res) => {
-        console.log("click: current action:", res)
-      })
+    else {
+      this.browserHistory.push(href)
+    }
   }
   #updateLinks(): void {
     if (this.links) this.#unlistenLinks()
@@ -173,25 +181,20 @@ export class App {
     this.isFetching = false
   }
 
-  // TEMP!!!
-  // TEMP!!!
-  // TEMP!!!
-  // TEMP!!!
-  // TEMP!!!
-  // TEMP!!!
+  /**
+   * For testing a quick route changed
+   * Add keydown event listener to navigate with arrows
+   *
+   */
   linkIndex = 0
-  #modulo(base: number, modulo: number): number {
-    return ((base % modulo) + modulo) % modulo
-  }
   keyBoardNavigation() {
+    const modulo = (base: number, modulo: number): number => ((base % modulo) + modulo) % modulo
     window.onkeydown = (e) => {
-      if (e.key === "ArrowLeft")
-        this.linkIndex = this.#modulo(this.linkIndex - 1, this.links.length)
-      if (e.key === "ArrowRight")
-        this.linkIndex = this.#modulo(this.linkIndex + 1, this.links.length)
+      if (e.key === "ArrowLeft") this.linkIndex = modulo(this.linkIndex - 1, this.links.length)
+      if (e.key === "ArrowRight") this.linkIndex = modulo(this.linkIndex + 1, this.links.length)
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
         const k = Array.from(this.links)
-        this.router.resolve(k[this.linkIndex].getAttribute("href"))
+        this.browserHistory.push(k[this.linkIndex].getAttribute("href"))
       }
     }
   }

@@ -1,23 +1,14 @@
 import { createMatcher, Matcher } from "./createMatcher"
-import { HistoryEvents } from "./historyPlugin"
-import {
-  Route,
-  RouteContext,
-  RouteParams,
-  RouteProps,
-  RouterOptions,
-  RouterPluginHooks,
-} from "./types"
+import { Route, RouteContext, RouteParams, RouteProps, RouterOptions } from "./types"
 
 /**
  * Router
  */
 export class Router<A = any, P = RouteProps> {
   routes: Route<A, P>[]
-  currentContext: RouteContext<A, P>
+  currentContext: RouteContext
   #options: Partial<RouterOptions<A, P>>
   #matcher: Matcher
-  #plugins: RouterPluginHooks[] = []
 
   constructor(routes: Route<A, P>[], options: Partial<RouterOptions<A, P>> = {}) {
     this.routes = routes
@@ -29,8 +20,6 @@ export class Router<A = any, P = RouteProps> {
 
     this.#matcher = createMatcher(this.#options.pathToRegexFn)
     this.#options.onInit?.()
-    this.#plugins = this.#options.plugins?.map((p) => p(this))
-    this.#onPlugins((p) => p.onInit?.())
   }
 
   /**
@@ -38,8 +27,7 @@ export class Router<A = any, P = RouteProps> {
    * return a Promise witch return the action result
    */
   public async resolve(
-    pathnameOrObject: string | { name: string; params: RouteParams },
-    eventType: HistoryEvents = "pushState"
+    pathnameOrObject: string | { name: string; params: RouteParams }
   ): Promise<A> {
     // match route
     const routeContext = this.matchRoute(
@@ -47,21 +35,16 @@ export class Router<A = any, P = RouteProps> {
         ? pathnameOrObject
         : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
     )
-
     // error
     if (!routeContext) {
       console.error(`No matching route found with pathname ${pathnameOrObject}`)
       this.#options.onError?.()
-      this.#onPlugins((p) => p.onError?.())
       return
     }
 
     // save current context
     this.currentContext = routeContext
     this.#log("routeContext", routeContext)
-
-    // update plugins
-    this.#onPlugins((p) => p.beforeResolve?.(this.currentContext, eventType))
 
     // resolve
     if (typeof routeContext.route?.action === "function") {
@@ -72,7 +55,6 @@ export class Router<A = any, P = RouteProps> {
   }
 
   public dispose(): void {
-    this.#onPlugins((p) => p.onDispose?.())
     this.#options.onDispose?.()
   }
 
@@ -131,10 +113,6 @@ export class Router<A = any, P = RouteProps> {
       }
     }
     return next(name, params, this.routes, this.#options.base)
-  }
-
-  #onPlugins(fn: (plugin: RouterPluginHooks) => void): void {
-    this.#plugins?.forEach((plugin) => fn?.(plugin))
   }
 
   #log(...rest: any[]): void {
