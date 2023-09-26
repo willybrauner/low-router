@@ -1,12 +1,16 @@
 import { Router } from "../lowRouterReact/Router.tsx"
 import { Stack } from "../lowRouterReact/Stack.tsx"
 import { useRouter } from "../lowRouterReact/useRouter.tsx"
+import { useEffect } from "react"
 
 export const About = () => {
   const { history, routes } = useRouter()
   const subRoutes = routes.find((route) => route.name === "about").children
   const base = "/about"
+
+  useEffect(()=> {
   console.log('ABOUT')
+  },[])
 
   return (
     <div>
@@ -22,8 +26,7 @@ export const About = () => {
 }
 
 const AboutNav = () => {
-  const { history, routes, router } = useRouter()
-
+  const { history, routes } = useRouter()
 
   return (
     <nav>

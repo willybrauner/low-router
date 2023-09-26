@@ -15,8 +15,8 @@ export class Router<A = any, P = RouteProps> {
     this.#options = options
     this.#options.base = this.#options.base || "/"
 
-    // this.#log("routes", this.routes)
-    // this.#log("options", this.#options)
+    this.#log("routes", this.routes)
+    this.#log("options", this.#options)
 
     this.#matcher = createMatcher(this.#options.pathToRegexFn)
     this.#options.onInit?.()
@@ -43,7 +43,7 @@ export class Router<A = any, P = RouteProps> {
 
     // error
     if (!routeContext) {
-      this.#log(`No matching route found with pathname ${pathnameOrObject}`)
+      this.#log(`No matching route found with pathname ${pathnameOrObject}`, this.routes)
       this.#options.onError?.()
       return
     }
@@ -77,7 +77,7 @@ export class Router<A = any, P = RouteProps> {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
-        // this.#log(`${formatRoutePath} match with ${pathname}?`, isMatch)
+        this.#log(`${formatRoutePath} match with ${pathname}?`, isMatch)
 
         const currContext = {
           pathname,
@@ -87,7 +87,6 @@ export class Router<A = any, P = RouteProps> {
           route,
           base,
           parent,
-          //_path: formatRoutePath,
         }
 
         if (isMatch) {

@@ -1,5 +1,6 @@
 import { About } from "./pages/About.tsx"
 import { Foo } from "./pages/Foo.tsx"
+import { A} from "./pages/A.tsx"
 
 export const routes = [
   {
@@ -20,7 +21,6 @@ export const routes = [
       {
         path: "/foo",
         name: "foo",
-        //action: () => "foo",
         action: () => <Foo />,
         children: [
           // need to match on /about on sub router
@@ -31,7 +31,24 @@ export const routes = [
           {
             path: "/a",
             name: "a",
-            action: () => "a",
+            action: () => <A/>,
+            children: [
+              // need to match on /about on sub router
+              {
+                path: "",
+                action: () => null,
+              },
+              {
+                path: "/c",
+                name: "c",
+                action: () => "c",
+              },
+              {
+                path: "/d",
+                name: "d",
+                action: () => "d",
+              },
+            ],
           },
           {
             path: "/b",

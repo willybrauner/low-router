@@ -48,7 +48,12 @@ function LowReactRouter(props: {
       new LowRouter(props.routes, {
         ...props.options,
         onResolve: (ctx, response) => {
-          pathname.current = ctx.pathname
+
+          while (ctx) {
+            if (!ctx.parent) break
+            ctx = ctx.parent
+          }
+          pathname.current = ctx?.pathname
           setRouteContext(ctx)
         },
       }),
