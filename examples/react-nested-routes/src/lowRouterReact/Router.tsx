@@ -26,41 +26,30 @@ export const LowRouterContext = createContext<ILowRouterContextValue>({
   history: null,
 })
 
-/**
- * Global routers store
- */
-interface Store {
-  history: HistoryAPI | any
-}
-const STORE: Store = {
+const STORE = {
   history: null,
 }
 
 /**
  * Single router instance
  */
-export function Router(props: {
+function Router(props: {
   routes: Route[]
   options: Partial<RouterOptions>
   children?: ReactElement
-  history?: HistoryAPI
+  history?: HistoryAPI | any
 }) {
+  if (!STORE.history) STORE.history = props.history
   const [routeContext, setRouteContext] = useState<RouteContext>(null)
-
-  // if (!props.history) {
-  //   props.history = props.history
-  // }
+  const pathname = useRef(null)
 
   const router = useMemo(
     () =>
       new LowRouter(props.routes, {
         ...props.options,
-        onResolve: (context, response) => {
-          if (routeContext?.pathname === context.pathname) {
-            console.log(props.options.id, "same pathname, return")
-            return
-          }
-          setRouteContext(context)
+        onResolve: (ctx, response) => {
+          pathname.current = ctx.pathname
+          setRouteContext(ctx)
         },
       }),
     []
@@ -74,9 +63,10 @@ export function Router(props: {
   }, [])
 
   useEffect(() => {
-    if (!props.history || !router) return
+    if (!STORE.history || !router) return
 
     const handleHistory = (location): void => {
+      console.log("handleHistory", location)
       router.resolve(location.pathname + location.search + location.hash)
     }
     // first call to resolve the current location
@@ -87,7 +77,7 @@ export function Router(props: {
     })
 
     // listen to history and return the unlisten function
-    return props.history?.listen(handleHistory)
+    STORE.history?.listen(handleHistory)
   }, [])
 
   return (
@@ -97,9 +87,11 @@ export function Router(props: {
         router,
         routes: props.routes,
         options: props.options,
-        history: props.history,
+        history: STORE.history,
         routeContext,
       }}
     />
   )
 }
+
+export { Router }

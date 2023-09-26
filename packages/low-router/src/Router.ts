@@ -36,6 +36,11 @@ export class Router<A = any, P = RouteProps> {
         : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
     )
 
+    if (routeContext?.pathname === this.currentContext?.pathname) {
+      this.#log("same path, return")
+      return
+    }
+
     // error
     if (!routeContext) {
       this.#log(`No matching route found with pathname ${pathnameOrObject}`)
@@ -46,6 +51,7 @@ export class Router<A = any, P = RouteProps> {
     // save current context
     this.currentContext = routeContext
     this.#log("routeContext", routeContext)
+    this.#log("routeContext.route.parent", routeContext.parent)
 
     // resolve
     if (typeof routeContext.route?.action === "function") {
@@ -67,23 +73,26 @@ export class Router<A = any, P = RouteProps> {
     base = this.#options.base,
     routes = this.routes
   ): RouteContext | undefined {
-    const next = (pathname, base, routes, parent): RouteContext | undefined => {
+    const next = (pathname, base, routes, parentContext): RouteContext | undefined => {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
         this.#log(`${formatRoutePath} match with ${pathname}?`, isMatch)
+
+        const currContext = {
+          pathname,
+          params,
+          query,
+          hash,
+          route,
+          base,
+          parent: parentContext,
+        }
+
         if (isMatch) {
-          return {
-            pathname,
-            params,
-            query,
-            hash,
-            route,
-            base,
-            parent,
-          }
+          return currContext
         } else if (route.children) {
-          const childResult = next(pathname, formatRoutePath, route.children, route.parent || route)
+          const childResult = next(pathname, formatRoutePath, route.children, currContext)
           if (childResult) return childResult
         }
       }

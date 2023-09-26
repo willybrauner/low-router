@@ -12,48 +12,46 @@ export interface HistoryAPI {
 }
 
 /**
- * Small browser history implementation
- * Creates a browser history object
+ * Create browser history
  */
 export const createBrowserHistory: CreateBrowserHistory = () => {
   const w = window
   const h = history
   const loc = location
-  const keepPushState = h.pushState
-  const keepReplaceState = h.replaceState
+  // const keepPushState = h.pushState
+  // const keepReplaceState = h.replaceState
+  const listeners: ((location: Location, action: Action) => void)[] = []
+
+  const notifyListeners = (location: Location, action: Action) => {
+    listeners.forEach((callback) => {
+      callback(location, action)
+    })
+  }
 
   return {
     listen: (callback: (location: Location, action: Action) => void) => {
-      for (const type of ["pushState", "replaceState"]) {
-        const original = history[type]
-        h[type] = function () {
-          const result = original.apply(this, arguments)
-          const event = new Event(type)
-          event["arguments"] = arguments
-          dispatchEvent(event)
+      listeners.push(callback)
 
-          callback(
-            { pathname: loc.pathname, search: loc.search, hash: loc.hash },
-            type === "pushState" ? "PUSH" : "REPLACE"
-          )
-          return result
-        }
-      }
-
-      const handlePop = (): void => {
+      const handlePop = () => {
         callback({ pathname: loc.pathname, search: loc.search, hash: loc.hash }, "POP")
       }
+
       // Handle the "popstate" event separately
       w.addEventListener("popstate", handlePop)
 
       return () => {
-        h.pushState = keepPushState
-        h.replaceState = keepReplaceState
+        // Remove the callback from the listeners array
+        const index = listeners.indexOf(callback)
+        if (index !== -1) listeners.splice(index, 1)
         w.removeEventListener("popstate", handlePop)
       }
     },
     push: (pathname: string, eventType: HistoryEvents = "pushState") => {
       h[eventType]({}, null, pathname)
+      notifyListeners(
+        { pathname, search: loc.search, hash: loc.hash },
+        eventType === "pushState" ? "PUSH" : "REPLACE"
+      )
     },
   }
 }

@@ -101,6 +101,10 @@ describe.concurrent("matchRoute", () => {
                   path: "/d",
                   action: () => "/d resolve",
                 },
+                {
+                  path: "/e",
+                  action: () => "/e resolve",
+                },
               ],
             },
           ],
@@ -116,7 +120,7 @@ describe.concurrent("matchRoute", () => {
       expect(match.pathname).toBe("/")
       expect(match.route.path).toBe("/")
       expect(await match.route.action()).toBe("/ resolve")
-      expect(match.route.parent).toBeUndefined()
+      expect(match.route.parent).toBeNull()
 
       match = router.matchRoute("/f")
       expect(match.pathname).toBe("/f")
@@ -141,8 +145,11 @@ describe.concurrent("matchRoute", () => {
       match = router.matchRoute("/a/foo-id/d")
       expect(match.pathname).toBe("/a/foo-id/d")
       expect(await match.route.action()).toBe("/d resolve")
-      expect(match.parent.path).toBe("/:id")
+      expect(match.route.parent.path).toBe("/:id")
 
+      match = router.matchRoute("/a/foo-id/e")
+      expect(match.pathname).toBe("/a/foo-id/e")
+      expect(await match.route.action()).toBe("/e resolve")
       resolve()
     })
   })

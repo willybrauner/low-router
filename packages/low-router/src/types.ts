@@ -14,7 +14,7 @@ export interface RouteContext<A = any, P = RouteProps | any> {
   hash: Hash
   base: string
   route: Route<A, P>
-  parent?: Route<A, P>
+  parent: RouteContext<A, P> | null
 }
 
 export interface Route<A = any, P = any> {
@@ -22,7 +22,7 @@ export interface Route<A = any, P = any> {
   name?: string
   props?: P
   children?: Route<A, P>[] | null
-  parent?: Route<A, P> | null
+  //parent?: Route<A, P> | null
   action?: (context?: RouteContext<A, P>) => ActionResponse<A>
 }
 
