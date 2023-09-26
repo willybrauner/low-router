@@ -1,5 +1,5 @@
 import { RegexFn } from "./createMatcher"
-import { Router } from "./Router"
+import { LowRouter } from "./LowRouter"
 
 export type RouteParams = { [paramName: string]: string }
 export type QueryParams = { [paramName: string]: string }

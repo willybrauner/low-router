@@ -2,9 +2,9 @@ import { createMatcher, Matcher } from "./createMatcher"
 import { Route, RouteContext, RouteParams, RouteProps, RouterOptions } from "./types"
 
 /**
- * Router
+ * LowRouter
  */
-export class Router<A = any, P = RouteProps> {
+export class LowRouter<A = any, P = RouteProps> {
   routes: Route<A, P>[]
   currentContext: RouteContext
   #options: Partial<RouterOptions<A, P>>

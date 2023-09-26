@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest"
-import { RouteContext, Router } from "../src"
+import { RouteContext, LowRouter } from "../src"
 
 describe.concurrent("matchRoute", () => {
   it("should match with route without param", () => {
     return new Promise(async (resolve: any) => {
       const routes = [{ path: "/a" }, { path: "/b" }]
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
       let match
 
       match = router.matchRoute("/a")
@@ -28,7 +28,7 @@ describe.concurrent("matchRoute", () => {
   it("should match with param", () => {
     return new Promise(async (resolve: any) => {
       const routes = [{ path: "/a" }, { path: "/b/:id" }]
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
 
       const match = router.matchRoute("/b/c")
       expect(match.pathname).toBe("/b/c")
@@ -46,7 +46,7 @@ describe.concurrent("matchRoute", () => {
   it("should match with optional param", () => {
     return new Promise(async (resolve: any) => {
       const routes = [{ path: "/b/:id?" }]
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
 
       const match = router.matchRoute("/b")
       expect(match.pathname).toBe("/b")
@@ -60,7 +60,7 @@ describe.concurrent("matchRoute", () => {
   it("should match with param if base route is param", () => {
     return new Promise(async (resolve: any) => {
       const routes = [{ path: "/:id" }, { path: "/a" }]
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
 
       const match = router.matchRoute("/c")
       expect(match.pathname).toBe("/c")
@@ -113,7 +113,7 @@ describe.concurrent("matchRoute", () => {
           path: "/c",
         },
       ]
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
       let match: RouteContext | undefined
 
       match = router.matchRoute("/")
@@ -172,7 +172,7 @@ describe.concurrent("matchRoute", () => {
           ],
         },
       ]
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
       let match: RouteContext | undefined
 
       match = router.matchRoute("/z/c/d")

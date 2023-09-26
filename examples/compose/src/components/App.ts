@@ -1,4 +1,4 @@
-import { createBrowserHistory, RouteContext, Router } from "@wbe/low-router"
+import { createBrowserHistory, RouteContext, LowRouter } from "@wbe/low-router"
 import { Home } from "../pages /Home.ts"
 import { About } from "../pages /About.ts"
 import { Contact } from "../pages /Contact.ts"
@@ -11,7 +11,7 @@ export class App {
   linkClass = "link"
   stack: HTMLElement = document.querySelector(`.${this.stackClass}`)
   links: NodeListOf<HTMLElement>
-  router: Router
+  router: LowRouter
   currContext: RouteContext
   contexts: RouteContext[] = []
   isFirstRoute = true
@@ -41,7 +41,7 @@ export class App {
   }
 
   #createRouter(): void {
-    this.router = new Router(
+    this.router = new LowRouter(
       [
         {
           path: "/",

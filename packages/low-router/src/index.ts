@@ -1,4 +1,4 @@
-export { Router } from "./Router"
+export { LowRouter } from "./LowRouter"
 export type { RouteContext, Route, RouteParams, RouteProps, RouterOptions } from "./types"
 export { createMatcher } from "./createMatcher"
 

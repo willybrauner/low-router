@@ -1,11 +1,5 @@
 import { createContext, memo, ReactElement, useEffect, useMemo, useState } from "react"
-import {
-  Router as LowRouter,
-  Route,
-  RouterOptions,
-  RouteContext,
-  HistoryAPI,
-} from "@wbe/low-router"
+import { LowRouter, Route, RouterOptions, RouteContext, HistoryAPI } from "@wbe/low-router"
 
 /**
  * Create context
