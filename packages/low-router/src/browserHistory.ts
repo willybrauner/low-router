@@ -1,11 +1,10 @@
 export type HistoryEvents = "pushState" | "replaceState" | "popstate" | "hashchange"
-
+type Action = "POP" | "PUSH" | "REPLACE"
 interface Location {
   pathname: string
   search: string
   hash: string
 }
-type Action = "POP" | "PUSH" | "REPLACE"
 
 /**
  * Small browser history implementation
@@ -14,38 +13,30 @@ type Action = "POP" | "PUSH" | "REPLACE"
 export const createBrowserHistory = () => {
   const w = window
   const h = history
-  const keepPushState = history.pushState
-  const keepReplaceState = history.replaceState
+  const loc = location
+  const keepPushState = h.pushState
+  const keepReplaceState = h.replaceState
 
   return {
-    listen: (cb: (location: Location, action: Action) => void) => {
+    listen: (callback: (location: Location, action: Action) => void) => {
       for (const type of ["pushState", "replaceState"]) {
         const original = history[type]
-        history[type] = function () {
+        h[type] = function () {
           const result = original.apply(this, arguments)
           const event = new Event(type)
           event["arguments"] = arguments
           dispatchEvent(event)
-          // Determine the action type based on the event type
-          const action: Action = type === "pushState" ? "PUSH" : "REPLACE"
-          const location: Location = {
-            pathname: w.location.pathname,
-            search: w.location.search,
-            hash: w.location.hash,
-          }
-          cb(location, action)
+
+          callback(
+            { pathname: loc.pathname, search: loc.search, hash: loc.hash },
+            type === "pushState" ? "PUSH" : "REPLACE"
+          )
           return result
         }
       }
 
-      const handlePop = () => {
-        const location: Location = {
-          pathname: w.location.pathname,
-          search: w.location.search,
-          hash: w.location.hash,
-        }
-        const action = "POP"
-        cb(location, action)
+      const handlePop = (): void => {
+        callback({ pathname: loc.pathname, search: loc.search, hash: loc.hash }, "POP")
       }
 
       // Handle the "popstate" event separately
