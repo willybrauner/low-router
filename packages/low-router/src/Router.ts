@@ -36,11 +36,6 @@ export class Router<A = any, P = RouteProps> {
         : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
     )
 
-    // if (routeContext?.pathname === this.currentContext?.pathname) {
-    //   this.#log("same path, return")
-    //   return
-    // }
-
     // error
     if (!routeContext) {
       this.#log(`No matching route found with pathname ${pathnameOrObject}`, this.routes)

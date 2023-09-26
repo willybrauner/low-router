@@ -1,4 +1,4 @@
-import { createContext, memo, ReactElement, useEffect, useMemo, useRef, useState } from "react"
+import { createContext, memo, ReactElement, useEffect, useMemo, useState } from "react"
 import {
   Router as LowRouter,
   Route,
@@ -38,22 +38,20 @@ function LowReactRouter(props: {
   options: Partial<RouterOptions>
   children?: ReactElement
   history?: HistoryAPI | any
+  staticLocation?: string
 }) {
   if (!STORE.history) STORE.history = props.history
   const [routeContext, setRouteContext] = useState<RouteContext>(null)
-  const pathname = useRef(null)
 
   const router = useMemo(
     () =>
       new LowRouter(props.routes, {
         ...props.options,
         onResolve: (ctx, response) => {
-
           while (ctx) {
             if (!ctx.parent) break
             ctx = ctx.parent
           }
-          pathname.current = ctx?.pathname
           setRouteContext(ctx)
         },
       }),
@@ -68,6 +66,11 @@ function LowReactRouter(props: {
   }, [])
 
   useEffect(() => {
+    if (props?.staticLocation) {
+      router.resolve(props.staticLocation)
+      return
+    }
+
     if (!STORE.history || !router) return
 
     const handleHistory = (location): void => {
@@ -83,7 +86,7 @@ function LowReactRouter(props: {
 
     // listen to history and return the unlisten function
     return STORE.history?.listen(handleHistory)
-  }, [])
+  }, [props?.staticLocation, STORE.history])
 
   return (
     <LowRouterContext.Provider
