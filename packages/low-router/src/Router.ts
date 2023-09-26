@@ -87,6 +87,7 @@ export class Router<A = any, P = RouteProps> {
           route,
           base,
           parent,
+          //_path: formatRoutePath,
         }
 
         if (isMatch) {

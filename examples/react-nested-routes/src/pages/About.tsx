@@ -6,6 +6,7 @@ export const About = () => {
   const { history, routes } = useRouter()
   const subRoutes = routes.find((route) => route.name === "about").children
   const base = "/about"
+  console.log('ABOUT')
 
   return (
     <div>
@@ -22,6 +23,7 @@ export const About = () => {
 
 const AboutNav = () => {
   const { history, routes, router } = useRouter()
+
 
   return (
     <nav>

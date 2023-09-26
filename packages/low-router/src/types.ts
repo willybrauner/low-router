@@ -15,6 +15,7 @@ export interface RouteContext<A = any, P = RouteProps | any> {
   base: string
   route: Route<A, P>
   parent: RouteContext<A, P> | null
+  // _path: string
 }
 
 export interface Route<A = any, P = any> {
