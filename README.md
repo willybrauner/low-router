@@ -1,6 +1,7 @@
 # LowRouter
 
-LowRouter is a lightweight (~=1.5Kb) low-level router implementation designed for use in nodejs, javascript or typescript applications.
+`LowRouter` is a lightweight (~=1.5Kb) and zero dependency, low-level router implementation designed for use in nodejs, javascript or typescript applications.
+
 
 ## Table of Contents
 
@@ -8,12 +9,11 @@ LowRouter is a lightweight (~=1.5Kb) low-level router implementation designed fo
 - [Usage](#usage)
     - [Constructor](#constructor)
     - [resolve](#resolve)
-    - [dispose](#dispose)
-    - [matchRoute](#matchroute)
     - [createUrl](#createurl)
+    - [dispose](#dispose)
 - [Options](#options)
-- [Debug](#debug)
 - [handle history](#handle-history)
+- [workflow](#workflow)
 - [Credits](#credits)
 
 
@@ -35,11 +35,25 @@ import { LowRouter } from "low-router";
 const routes = [
   {
     path: "/",
+    name: "home",
     action: () => "Hello home!"
   },
   {
     path: "/foo",
-    action: () => "Hello foo!"
+    name: "foo",
+    action: () => "Hello foo!",
+    children: [
+      {
+        path: "/a",
+        name: "a",
+        action: (context) => `Hello ${context.route.name}!` 
+      },
+      {
+        path: "/b/:id",
+        name: "b",
+        action: (context) => `Hello b! w/ id ${context.params.id}`
+      },      
+    ]
   }
 ];
 
@@ -51,9 +65,23 @@ const router = new LowRouter(routes);
 The `resolve` method allows you to match a given pathname or route object to a defined route and execute its associated action. It returns a Promise that resolves with the action result. Here's how to use it:
 
 ```javascript
-router.resolve("/").then((actionResult) => {
-  console.log(actionResult) // -> "Hello home!"
+router.resolve("/").then((res) => {
+  console.log(res) // -> "Hello home!"
 });
+
+// or with param object
+router.resolve({ name: "b", params: { id: 123 } }).then(res => {
+  console.log(res) // -> "Hello b! w/ id 123"
+})
+```
+
+### createUrl
+
+The `createUrl` method generates a URL based on a route name and optional parameters. 
+
+```javascript
+const url = router.createUrl({ name: "b", params: { id: 123 } });
+// -> "/foo/b/123"
 ```
 
 ### dispose
@@ -64,25 +92,6 @@ The `dispose` method is used to clean up the router. You can call this method wh
 router.dispose();
 ```
 
-### matchRoute
-
-The `matchRoute` method is used internally to match a given pathname to a defined route. You can use this method if you need to perform custom route matching outside of the `resolve` method. It returns a `RouteContext` object if a matching route is found, or `undefined` otherwise.
-
-```javascript
-const routeContext = router.matchRoute("/example-route");
-if (routeContext) {
-  // Handle the matching route context
-}
-```
-
-### createUrl
-
-The `createUrl` method generates a URL based on a route name and optional parameters. This is useful for creating links within your application.
-
-```javascript
-const url = router.createUrl({ name: "example-route", params: { id: 123 } });
-// The generated URL will be something like "/example-route/123"
-```
 
 ## Options
 
@@ -94,21 +103,19 @@ When creating a `LowRouter` instance, you can provide the following configuratio
 - `onResolve`: A callback function to be called after a route's action has been executed successfully.
 - `onDispose`: A callback function to be called when the router is disposed of using the `dispose` method.
 - `debug`: Set to `true` to enable logging for debugging purposes.
+- `pathToRegexFn`: Custom function to convert a route path to a regular expression. Defaults to the internal `path-to-regexp`. 
 
-## debug
+Callbacks are useFull for global action:
 
-The `LowRouter` class includes debug. You can enable debugging by setting the `debug` option to `true` when creating the router instance. The router will then log information to the console to help you trace its behavior.
+````js
+const router = new LowRouter(routes, { 
+ onResolve: (context, actionResponse) => {
+   // do something each time a new route is resolved
+ } 
+});
+````
 
-```javascript
-const router = new LowRouter(routes, { debug: true });
-```
-
-When debugging is enabled, you'll see log messages in the console prefixed with "low-router," helping you track the router's actions and behavior.
-
-That's the basic usage and configuration of the `LowRouter` class. You can now start using it to handle routing in your web application.
-
-
-# Handle history
+## Handle history
 
 Internal `createBrowserHistory` provide a way to interact with the browser's history and listen to changes in the URL. You can integrate this functionality with the `LowRouter` class to enable client-side routing with browser history support. 
 
@@ -124,17 +131,40 @@ Then, let's create a browser history instance and use it with the `LowRouter`:
 const router = new LowRouter(routes, options);
 
 const history = createBrowserHistory();
+
 const unlisten = history.listen((location, action) => {
   // When the URL changes, resolve the new URL using LowRouter
-  router.resolve(location.pathname).then((actionResult) => {
+  router.resolve(location.pathname).then((res) => {
     // Handle the action result if needed
   });
 });
+
 // To push a new URL to the browser history
 history.push("/foo");
 history.push({ name: "bar", params: { id: 123 } });
+
 // To stop listening to history changes, call the unlisten function
 unlisten();
+```
+
+
+## Workflow
+
+```shell
+# clone repo
+git clone {repo}
+
+# install all dependencies
+pnpm i
+
+# run build watch
+pnpm run build:watch
+
+# run test watch
+pnpm run test:watch
+
+# run examples dev server
+pnpm run dev
 ```
 
 ## Credits
@@ -142,3 +172,5 @@ unlisten();
 - [cher-ami/router](https://github.com/cher-ami/router)
 - [universal-router](https://github.com/kriasoft/universal-router/)
 - [history](https://github.com/remix-run/history)
+
+© [Willy Brauner](https://willybrauner.com)
