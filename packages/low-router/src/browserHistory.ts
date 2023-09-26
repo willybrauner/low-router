@@ -5,12 +5,17 @@ interface Location {
   search: string
   hash: string
 }
+export type CreateBrowserHistory = () => HistoryAPI
+export interface HistoryAPI {
+  listen: (callback: (location: Location, action: Action) => void) => () => void
+  push: (pathname: string, eventType?: HistoryEvents) => void
+}
 
 /**
  * Small browser history implementation
  * Creates a browser history object
  */
-export const createBrowserHistory = () => {
+export const createBrowserHistory: CreateBrowserHistory = () => {
   const w = window
   const h = history
   const loc = location

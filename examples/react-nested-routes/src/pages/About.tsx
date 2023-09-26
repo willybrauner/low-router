@@ -9,9 +9,9 @@ export const About = () => {
   const subRoutes = routes.find((route) => route.name === "about").children
   const base = "/about"
 
-  useEffect(() => {
-    console.log("subRoutes", subRoutes)
-  }, [])
+  // useEffect(() => {
+  //   console.log("subRoutes", subRoutes)
+  // }, [])
 
   return (
     <div>
@@ -27,7 +27,7 @@ export const About = () => {
 }
 
 const AboutNav = ({ routes, base }) => {
-  const { router } = useRouter()
+  const { router, history } = useRouter()
   return (
     <nav>
       {routes?.map((route, index) => (
@@ -35,7 +35,7 @@ const AboutNav = ({ routes, base }) => {
           key={index}
           children={route.name}
           onClick={() => {
-            router.resolve(base + route.path)
+            history.push(base + route.path)
           }}
         />
       ))}

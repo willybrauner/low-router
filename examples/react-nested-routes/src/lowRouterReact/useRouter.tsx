@@ -1,6 +1,6 @@
 import { useContext } from "react"
-import { ILowRouterContext, LowRouterContext } from "./Router.tsx"
+import { ILowRouterContextValue, LowRouterContext } from "./Router.tsx"
 
-export function useRouter(): ILowRouterContext {
+export function useRouter(): ILowRouterContextValue {
   return useContext(LowRouterContext)
 }

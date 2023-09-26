@@ -5,7 +5,7 @@ import { Stack } from "../../lowRouterReact/Stack.tsx"
 import { useRouter } from "../../lowRouterReact/useRouter.tsx"
 
 function App() {
-  const { router } = useRouter()
+  const { router, history } = useRouter()
   return (
     <div>
       {/* NAV */}
@@ -15,7 +15,7 @@ function App() {
             key={index}
             children={route.name}
             onClick={() => {
-              router.resolve(route.path)
+              history.push(route.path)
             }}
           />
         ))}

@@ -1,52 +1,63 @@
 import { createContext, ReactElement, useEffect, useMemo, useRef, useState } from "react"
-import { Route, RouterOptions, Router as LowRouter, RouteContext } from "@wbe/low-router"
-import { useRouter } from "./useRouter.tsx"
-import { beeper } from "../beeper.ts"
+import {
+  Router as LowRouter,
+  Route,
+  RouterOptions,
+  RouteContext,
+  HistoryAPI,
+} from "@wbe/low-router"
 
-export interface ILowRouterContext {
+/**
+ * Create context
+ */
+export interface ILowRouterContextValue {
   routeContext: RouteContext
-  actionResponse: any
   router: LowRouter
   routes: Route[]
   options: Partial<RouterOptions>
+  history: HistoryAPI | any
 }
-export const LowRouterContext = createContext<ILowRouterContext>({
+
+export const LowRouterContext = createContext<ILowRouterContextValue>({
   routeContext: null,
-  actionResponse: null,
   router: null,
   routes: null,
   options: null,
+  history: null,
 })
 
-const onRouteResolveBeeper = beeper()
+/**
+ * Global routers store
+ */
+interface Store {
+  history: HistoryAPI | any
+}
+const STORE: Store = {
+  history: null,
+}
 
 /**
- *
- *
- *
+ * Single router instance
  */
 export function Router(props: {
   routes: Route[]
   options: Partial<RouterOptions>
   children?: ReactElement
+  history?: HistoryAPI
 }) {
-  //  const [prevRouteContext, setPrevRouteContext] = useState<RouteContext>(null)
-  const routeContextRef = useRef<RouteContext>()
-  const [actionResponse, setActionResponse] = useState<any>(null)
+  if (!STORE.history) STORE.history = props.history
+
+  const [routeContext, setRouteContext] = useState<RouteContext>(null)
 
   const router = useMemo(() => {
     return new LowRouter(props.routes, {
       ...props.options,
-      onResolve: (context, actionResponse) => {
-        console.log(props.options.id, "routeContextRef pathname", routeContextRef.current?.pathname)
-        console.log(props.options.id, "context.pathname", context.pathname)
-        if (routeContextRef.current?.pathname === context.pathname) {
+      onResolve: (context, response) => {
+        if (routeContext?.pathname === context.pathname) {
           console.log(props.options.id, "same pathname, return")
           return
         }
-        routeContextRef.current = context
-        if (context.parent?.action) setActionResponse(context.parent.action())
-        else setActionResponse(actionResponse)
+        setRouteContext(context)
       },
     })
   }, [])
@@ -58,23 +69,32 @@ export function Router(props: {
     }
   }, [])
 
-  // useEffect(() => {
-  //   return onRouteResolveBeeper.on(({ context, actionResponse }) => {
-  //
-  //   })
-  // }, [actionResponse])
+  useEffect(() => {
+    if (!STORE.history) return
+
+    const handleHistory = (location): void => {
+      router.resolve(location.pathname + location.search + location.hash)
+    }
+    // first call to resolve the current location
+    handleHistory({
+      pathname: window.location.pathname,
+      search: window.location.search,
+      hash: window.location.hash,
+    })
+    // listen to history and return the unlisten function
+    return STORE.history?.listen(handleHistory)
+  }, [STORE.history, router])
 
   return (
     <LowRouterContext.Provider
+      children={props.children}
       value={{
         router,
-        routeContext: routeContextRef.current,
-        actionResponse,
         routes: props.routes,
         options: props.options,
+        history: STORE.history,
+        routeContext,
       }}
-    >
-      {props.children}
-    </LowRouterContext.Provider>
+    />
   )
 }
