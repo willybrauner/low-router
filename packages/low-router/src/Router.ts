@@ -61,6 +61,7 @@ export class Router<A = any, P = RouteProps> {
   }
 
   public dispose(): void {
+    this.currentContext = null
     this.#options.onDispose?.()
   }
 
@@ -76,7 +77,7 @@ export class Router<A = any, P = RouteProps> {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
-        this.#log(`${formatRoutePath} match with ${pathname}?`, isMatch)
+        // this.#log(`${formatRoutePath} match with ${pathname}?`, isMatch)
 
         const currContext = {
           pathname,

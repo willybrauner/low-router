@@ -5,7 +5,7 @@ export const routes = [
   {
     path: "/",
     name: "home",
-    action: () => <div>home</div>,
+    action: () => "home",
   },
   {
     path: "/about",
@@ -20,8 +20,8 @@ export const routes = [
       {
         path: "/foo",
         name: "foo",
-        action: () => <div>foo</div>,
-        //   action: () => <Foo />,
+        action: () => "foo",
+        //action: () => <Foo />,
         //   children: [
         //     // need to match on /about on sub router
         //     {
@@ -43,13 +43,13 @@ export const routes = [
       {
         path: "/bar",
         name: "bar",
-        action: () => <div>bar</div>,
+        action: () => "bar",
       },
     ],
   },
   {
     path: "/contact",
     name: "contact",
-    action: () => <div>contact</div>,
+    action: () => "contact",
   },
 ]

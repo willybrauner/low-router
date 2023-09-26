@@ -1,4 +1,4 @@
-import { createContext, ReactElement, useEffect, useMemo, useRef, useState } from "react"
+import { createContext, memo, ReactElement, useEffect, useMemo, useRef, useState } from "react"
 import {
   Router as LowRouter,
   Route,
@@ -33,7 +33,7 @@ const STORE = {
 /**
  * Single router instance
  */
-function Router(props: {
+function LowReactRouter(props: {
   routes: Route[]
   options: Partial<RouterOptions>
   children?: ReactElement
@@ -66,7 +66,7 @@ function Router(props: {
     if (!STORE.history || !router) return
 
     const handleHistory = (location): void => {
-      console.log(props.options.id, "handleHistory", location)
+      // console.log(props.options.id, "handleHistory", location)
       router.resolve(location.pathname + location.search + location.hash)
     }
     // first call to resolve the current location
@@ -77,7 +77,7 @@ function Router(props: {
     })
 
     // listen to history and return the unlisten function
-    STORE.history?.listen(handleHistory)
+    return STORE.history?.listen(handleHistory)
   }, [])
 
   return (
@@ -94,4 +94,5 @@ function Router(props: {
   )
 }
 
+const Router = memo(LowReactRouter)
 export { Router }

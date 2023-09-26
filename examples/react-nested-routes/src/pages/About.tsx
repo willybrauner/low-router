@@ -11,7 +11,7 @@ export const About = () => {
 
   return (
     <div>
-      <span>About</span>
+      <span>about</span>
       <Router routes={subRoutes} options={{ base, debug: true, id: 2 }}>
         <>
           <AboutNav />
@@ -27,15 +27,17 @@ const AboutNav = () => {
 
   return (
     <nav>
-      {routes?.map((route, index) => (
-        <button
-          key={index}
-          children={route.name}
-          onClick={() => {
-            history.push("/about" + route.path)
-          }}
-        />
-      ))}
+      {routes
+        .filter((e) => e.path !== "")
+        ?.map((route, index) => (
+          <button
+            key={index}
+            children={route.name}
+            onClick={() => {
+              history.push("/about" + route.path)
+            }}
+          />
+        ))}
     </nav>
   )
 }
