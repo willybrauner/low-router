@@ -59,7 +59,7 @@ export const createMatcher: CreateMatcher = (regexFn: RegexFn = pathToRegexp): M
   }
 }
 
-const pathToRegexp = (pattern: string): { keys: Record<"name", string>[]; regexp: RegExp } => {
+export const pathToRegexp = (pattern: string): { keys: Record<"name", string>[]; regexp: RegExp } => {
   // escapes a regexp string (borrowed from path-to-regexp sources)
   // https://github.com/pillarjs/path-to-regexp/blob/v3.0.0/index.js#L202
   const _escapeRx = (str) => str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1")

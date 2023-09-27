@@ -1,18 +1,22 @@
-# LowRouter
+# Low Router 🚐
 
-`LowRouter` is a lightweight (~=1.5Kb) and zero dependency, low-level router implementation designed for use in nodejs, javascript or typescript applications.
-
+`LowRouter` is a lightweight *(~=1.5Kb)* and zero dependency, low-level router implementation designed for use in nodejs, javascript or typescript applications. By default, `LowRouter` as no link with the browser history, but this repository provide a createBrowserHistory util ready to use.
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
-    - [Constructor](#constructor)
+    - [instance](#instance)
     - [resolve](#resolve)
     - [createUrl](#createurl)
     - [dispose](#dispose)
 - [Options](#options)
 - [handle history](#handle-history)
+- [API](#api)
+  - [LowRouter API](#lowrouter-api)
+  - [Route](#route)
+  - [routeContext](#routecontext)
+  - [createBrowserHistory](#createbrowserhistory)
 - [workflow](#workflow)
 - [Credits](#credits)
 
@@ -25,9 +29,9 @@ npm i @wbe/low-router
 
 ## Usage
 
-### Constructor
+### Instance
 
-To create a new instance of the `LowRouter` class, you need to pass an array of route definitions to the constructor. Optionally, you can provide configuration options. Here's an example of how to create a `LowRouter` instance:
+To create a new instance of the `LowRouter` class, you need to pass an array of route definitions to the constructor.
 
 ```javascript
 import { LowRouter } from "@wbe/low-router";
@@ -39,19 +43,19 @@ const routes = [
     action: () => "Hello home!"
   },
   {
-    path: "/foo",
-    name: "foo",
-    action: () => "Hello foo!",
+    path: "/admin",
+    name: "admin",
+    action: () => "Hello admin!",
     children: [
       {
-        path: "/a",
-        name: "a",
+        path: "/config",
+        name: "config",
         action: (context) => `Hello ${context.route.name}!` 
       },
       {
-        path: "/b/:id",
-        name: "b",
-        action: (context) => `Hello b! w/ id ${context.params.id}`
+        path: "/user/:id",
+        name: "user",
+        action: (context) => `Hello user! with id ${context.params.id}`
       },      
     ]
   }
@@ -62,16 +66,18 @@ const router = new LowRouter(routes);
 
 ### resolve
 
-The `resolve` method allows you to match a given pathname or route object to a defined route and execute its associated action. It returns a Promise that resolves with the action result. Here's how to use it:
+The `resolve` method allows you to match a given pathname or route object to a defined route and execute its associated action. It returns a Promise that resolves with the action result.
 
-```javascript
+```js
 router.resolve("/").then((res) => {
-  console.log(res) // -> "Hello home!"
+  // res: "Hello home!"
 });
+```
 
-// or with param object
-router.resolve({ name: "b", params: { id: 123 } }).then(res => {
-  console.log(res) // -> "Hello b! w/ id 123"
+Or, with an object param:
+```js
+router.resolve({ name: "user", params: { id: 123 } }).then(res => {
+  // res: "Hello user! with id 123"
 })
 ```
 
@@ -79,23 +85,23 @@ router.resolve({ name: "b", params: { id: 123 } }).then(res => {
 
 The `createUrl` method generates a URL based on a route name and optional parameters. 
 
-```javascript
-const url = router.createUrl({ name: "b", params: { id: 123 } });
-// -> "/foo/b/123"
+```js
+router.createUrl({ name: "config" }); 
+// "/admin/config"
 ```
 
 ### dispose
 
-The `dispose` method is used to clean up the router. You can call this method when you no longer need the router instance. It can be useful for cleaning up any resources or event listeners associated with the router.
+The `dispose` method is used to clean up the router instance.
 
-```javascript
+```js
 router.dispose();
 ```
 
 
 ## Options
 
-When creating a `LowRouter` instance, you can provide the following configuration options in the `options` object:
+When creating a `LowRouter` instance, you can provide the following configuration options in the `options` object as second constructor argument:
 
 - `base`: The base URL path for all routes. Defaults to `/`.
 - `onInit`: A callback function to be called when the router is initialized.
@@ -103,15 +109,15 @@ When creating a `LowRouter` instance, you can provide the following configuratio
 - `onResolve`: A callback function to be called after a route's action has been executed successfully.
 - `onDispose`: A callback function to be called when the router is disposed of using the `dispose` method.
 - `debug`: Set to `true` to enable logging for debugging purposes.
-- `pathToRegexFn`: Custom function to convert a route path to a regular expression. Defaults to the internal `path-to-regexp`. 
+- `pathToRegexFn`: Custom function to convert a route path to a regular expression. Defaults to the internal `pathToRegexp`. 
 
-Callbacks are useFull for global action:
+Callbacks are useful for global action:
 
 ````js
 const router = new LowRouter(routes, { 
- onResolve: (context, actionResponse) => {
+ onResolve: (context, response) => {
    // do something each time a new route is resolved
- } 
+ }
 });
 ````
 
@@ -119,24 +125,20 @@ const router = new LowRouter(routes, {
 
 Internal `createBrowserHistory` provide a way to interact with the browser's history and listen to changes in the URL. You can integrate this functionality with the `LowRouter` class to enable client-side routing with browser history support. 
 
-First, you need to import the necessary types and functions:
-
 ```javascript
-import { createBrowserHistory } from "@wbe/low-router"; 
-```
+import { LowRouter, createBrowserHistory } from "@wbe/low-router";
 
-Then, let's create a browser history instance and use it with the `LowRouter`:
-
-```javascript
+// Create the router instance
 const router = new LowRouter(routes, options);
 
+// Create the browser history
 const history = createBrowserHistory();
 
-const unlisten = history.listen((location, action) => {
-  // When the URL changes, resolve the new URL using LowRouter
-  router.resolve(location.pathname).then((res) => {
-    // Handle the action result if needed
-  });
+// Listen to history changes
+const unlisten = history.listen(async (location, action) => {
+  // Resolve the new location.pathname
+  const response = await router.resolve(location.pathname)
+  // Do something with the response...
 });
 
 // To push a new URL to the browser history
@@ -145,6 +147,101 @@ history.push({ name: "bar", params: { id: 123 } });
 
 // To stop listening to history changes, call the unlisten function
 unlisten();
+```
+
+## Custom matcher
+
+It's possible to use a custom `pathToRegexp` function:
+TODO
+
+
+## API
+
+### LowRouter API
+
+```ts
+const router = new LowRouter(routes: Route[], options?: Options)
+
+// Resolve a pathname or a route object
+router.resolve(pathnameOrObject: string | { name: string; params: RouteParams }): Promise<any>
+
+// Create a URL based on a route name and optional parameters
+router.createUrl({ name: string; params?: RouteParams }): string
+
+// Clean up the router instance
+router.dispose(): void
+```
+
+### RouteContext
+
+`RouteContext` is the 1st level route object, passed to the route action function.
+It contains all the information about the current context, plus the route object itself.
+
+```ts
+interface RouteContext {
+  // The current pathname
+  pathname: string
+ 
+  // The current path params 
+  // (ex: /:foo/:bar)
+  params: RouteParams
+ 
+  // The current query params 
+  // (ex: ?foo=bar&baz=qux)
+  query: QueryParams
+ 
+  // The current hash
+  // (ex: #foo)
+  hash: Hash
+ 
+  // the route base URL
+  base: string
+ 
+  // → the route object associated to this context
+  route: Route
+ 
+  // parent route context, useful when the current is a child route
+  parent: RouteContext | null
+}
+```
+
+### Route
+
+`Route` is the route object definition passed to the `LowRouter` constructor, define by the developer.
+
+```ts
+interface Route {
+  // The route path
+  // (ex: /foo/:bar)
+  path: string;
+  
+  // The route name, useful to get a route by name
+  name?: string;
+
+  // The route action function is the main function of the route
+  // this function is called when the route is resolved
+  action?: (context: RouteContext) => Promise<any> | any;
+
+  // The route children 
+  children?: Route[];
+
+  // The route props can be any data you want to pass/associate to the route
+  props?: Record<string, any>;
+}
+```
+
+### createBrowserHistory
+
+`createBrowserHistory()` will return an object:
+```ts
+export interface HistoryAPI {
+  // associate a callback to the history change event
+  // return a function to stop listening
+  listen: (callback: (location: Location, action: Action) => void) => () => void
+  
+  // Push a new patname to the history
+  push: (pathname: string) => void
+}
 ```
 
 
@@ -169,8 +266,9 @@ pnpm run dev
 
 ## Credits
 
-- [cher-ami/router](https://github.com/cher-ami/router)
 - [universal-router](https://github.com/kriasoft/universal-router/)
+- [wouter](https://github.com/molefrog/wouter)
+- [cher-ami/router](https://github.com/cher-ami/router)
 - [history](https://github.com/remix-run/history)
 
 © [Willy Brauner](https://willybrauner.com)
