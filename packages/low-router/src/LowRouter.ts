@@ -18,7 +18,7 @@ export class LowRouter<A = any, P = RouteProps> {
     this.#log("routes", this.routes)
     this.#log("options", this.#options)
 
-    this.#matcher = createMatcher(this.#options.pathToRegexFn)
+    this.#matcher = this.#options.matcher || createMatcher()
     this.#options.onInit?.()
   }
 

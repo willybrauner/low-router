@@ -1,4 +1,4 @@
-import { RegexFn } from "./createMatcher"
+import { Matcher, RegexFn } from "./createMatcher"
 import { LowRouter } from "./LowRouter"
 
 export type RouteParams = { [paramName: string]: string }
@@ -31,7 +31,7 @@ export interface RouterOptions<A = any, P = any> {
   onResolve: (context: RouteContext<A, P>, actionResponse: ActionResponse<A>) => void
   onDispose: () => void
   onError: () => void
-  pathToRegexFn: RegexFn
+  matcher: Matcher
   debug: boolean
   id?: number | string
 }

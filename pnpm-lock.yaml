@@ -77,6 +77,22 @@ importers:
         specifier: ^4.4.5
         version: 4.4.9(@types/node@20.1.0)(terser@5.19.2)
 
+  examples/custom-path-to-regexp:
+    dependencies:
+      '@wbe/low-router':
+        specifier: latest
+        version: link:../../packages/low-router
+      path-to-regexp:
+        specifier: ^6.2.1
+        version: 6.2.1
+    devDependencies:
+      typescript:
+        specifier: ^5.0.2
+        version: 5.0.4
+      vite:
+        specifier: ^4.4.5
+        version: 4.4.9(@types/node@20.1.0)(terser@5.19.2)
+
   examples/react-nested-routes:
     dependencies:
       '@wbe/low-router':
@@ -3155,7 +3171,6 @@ packages:
 
   /path-to-regexp@6.2.1:
     resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
-    dev: true
 
   /path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}

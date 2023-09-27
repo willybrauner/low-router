@@ -12,6 +12,7 @@
     - [dispose](#dispose)
 - [Options](#options)
 - [handle history](#handle-history)
+- [Custom matcher](#custom-matcher)
 - [API](#api)
   - [LowRouter API](#lowrouter-api)
   - [Route](#route)
@@ -151,9 +152,29 @@ unlisten();
 
 ## Custom matcher
 
-It's possible to use a custom `pathToRegexp` function:
-TODO
+It's possible to use a custom matcher function:
+We can use other path to regexp fn like the original [pathToRegexp package](https://github.com/pillarjs/path-to-regexp).
 
+```ts
+import { LowRouter, createMatcher } from "@wbe/low-router"
+import { pathToRegexp } from "path-to-regexp"
+
+const customPathToRegexpFn = (path: string): { keys:  Record<string, string>[]; regexp: RegExp } => {
+  let keys = []
+  const regexp = pathToRegexp(path, keys)
+  return { keys, regexp }
+}
+
+const customMatcher = createMatcher(customPathToRegexpFn)
+// ex: customMatcher("/about/:id", "/about/1") 
+// return: [true, { id: "1" }, {}, null]
+
+// then, pass this customMatcher to the router options
+// Now, the router will use this custom matcher with path-to-regexp to match routes
+const router = new LowRouter(routes, { matcher: customMatcher })
+```
+
+This flexible custom matcher pattern as been created by [molefrog](https://github.com/molefrog) on [wouter](https://github.com/molefrog/wouter) 🙏 
 
 ## API
 
