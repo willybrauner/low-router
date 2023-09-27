@@ -30,7 +30,7 @@ npm i @wbe/low-router
 To create a new instance of the `LowRouter` class, you need to pass an array of route definitions to the constructor. Optionally, you can provide configuration options. Here's an example of how to create a `LowRouter` instance:
 
 ```javascript
-import { LowRouter } from "low-router";
+import { LowRouter } from "@wbe/low-router";
 
 const routes = [
   {

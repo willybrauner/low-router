@@ -149,7 +149,7 @@ describe.concurrent("matchRoute", () => {
     })
   })
 
-  it("should return the parent route object", () => {
+  it("should return the parent routeContext object", () => {
     return new Promise(async (resolve: any) => {
       const routes = [
         {
