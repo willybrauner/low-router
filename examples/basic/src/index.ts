@@ -1,5 +1,5 @@
 import "./style.css"
-import { Router } from "@wbe/low-router"
+import { LowRouter } from "@wbe/low-router"
 
 const stack = document.querySelector(".stack")
 
@@ -35,7 +35,7 @@ const routes = [
 /**
  * Create router
  */
-const router = new Router(routes, { base: "/", debug: true })
+const router = new LowRouter(routes, { base: "/", debug: true })
 
 /**
  * Listen links

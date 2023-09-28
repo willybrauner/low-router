@@ -1,4 +1,7 @@
-export { Router } from "./Router"
-export type { RouteContext, Route, RouteParams, RouteProps } from "./Router"
-export { createMatcher } from "./createMatcher"
-export { historyPlugin } from "./historyPlugin"
+export { LowRouter } from "./LowRouter"
+export type { RouteContext, Route, RouteParams, RouteProps, RouterOptions } from "./types"
+export { createMatcher, pathToRegexp } from "./createMatcher"
+
+// additional exports
+export { createBrowserHistory } from "./utils/browserHistory"
+export type { CreateBrowserHistory, HistoryAPI } from "./utils/browserHistory"

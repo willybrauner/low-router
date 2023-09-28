@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import { Router } from "../src"
+import { LowRouter } from "../src"
 
 describe.concurrent("resolve", () => {
   it("should return the action function return", () => {
@@ -14,7 +14,7 @@ describe.concurrent("resolve", () => {
           },
         },
       ]
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
       const res = await router.resolve("/foo")
       expect(res).toEqual("hello")
       expect(mock).toHaveBeenCalledTimes(1)
@@ -43,7 +43,7 @@ describe.concurrent("resolve", () => {
           path: "/bar",
         },
       ]
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
       const res = await router.resolve("/foo")
       expect(res).toBe("hello /foo")
       expect(mock).toHaveBeenCalledTimes(1)
@@ -64,7 +64,7 @@ describe.concurrent("resolve", () => {
         },
         { path: "bar" },
       ]
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
       router.resolve("/bar").then((res) => {
         expect(mock).not.toHaveBeenCalled()
         expect(res).toBe(undefined)
@@ -82,7 +82,7 @@ describe.concurrent("resolve", () => {
         },
       ]
 
-      const router = new Router(routes, {
+      const router = new LowRouter(routes, {
         onResolve: (context, res) => {
           expect(context.pathname).toEqual("/foo")
           expect(context.base).toEqual("/")
@@ -102,12 +102,9 @@ describe.concurrent("resolve", () => {
       const routes = [
         {
           path: "/",
+          name: "a",
+          action: () => "/ resolve",
           children: [
-            {
-              path: "",
-              name: "a",
-              action: () => "/ resolve",
-            },
             {
               path: "/b",
               name: "bbb",
@@ -117,12 +114,9 @@ describe.concurrent("resolve", () => {
         },
         {
           path: "/c",
+          name: "c",
+          action: () => "/c resolve",
           children: [
-            {
-              path: "",
-              name: "c",
-              action: () => "/c resolve",
-            },
             {
               path: "/d",
               name: "d",
@@ -132,7 +126,7 @@ describe.concurrent("resolve", () => {
         },
       ]
 
-      const router = new Router(routes)
+      const router = new LowRouter(routes)
       const ctx = await router.resolve("/b")
       expect(ctx).toBe("bbb resolve")
       resolve()

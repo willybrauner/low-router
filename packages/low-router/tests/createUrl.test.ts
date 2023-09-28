@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import { Router } from "../src"
+import { LowRouter } from "../src"
 
 describe.concurrent("createUrl", () => {
   it("should create url", () => {
@@ -11,20 +11,16 @@ describe.concurrent("createUrl", () => {
         },
         {
           path: "/b",
+          name: "b",
+
           children: [
             {
-              path: "",
-              name: "b",
+              path: "/x/:xid",
+              name: "x",
               children: [
                 {
-                  path: "/x/:xid",
-                  name: "x",
-                  children: [
-                    {
-                      path: "/z",
-                      name: "z",
-                    },
-                  ],
+                  path: "/z",
+                  name: "z",
                 },
               ],
             },
@@ -40,7 +36,7 @@ describe.concurrent("createUrl", () => {
         },
       ]
 
-      const router = new Router(routes, { debug: false })
+      const router = new LowRouter(routes, { debug: false })
       expect(router.createUrl({ name: "a" })).toBe("/")
       expect(router.createUrl({ name: "b" })).toBe("/b")
       expect(router.createUrl({ name: "c", params: { id: "123" } })).toBe("/c/123")

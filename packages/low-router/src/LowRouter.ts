@@ -1,74 +1,25 @@
-import { createMatcher, Matcher, RegexFn } from "./createMatcher"
-import { HistoryEvents } from "./historyPlugin"
-
-export type RouteParams = { [paramName: string]: string }
-export type QueryParams = { [paramName: string]: string }
-export type Hash = string
-export type RouteProps = Record<string, any>
-export type ActionResult<A> = Promise<A> | A
-
-export interface RouteContext<A = any, P = RouteProps> {
-  pathname: string
-  params: RouteParams
-  query: QueryParams
-  hash: Hash
-  base: string
-  route: Route<A, P>
-}
-
-export interface Route<A, P> {
-  path: string
-  name?: string
-  props?: P
-  children?: Route<A, P>[] | null
-  parent?: Route<A, P> | null
-  action?: (context?: RouteContext<A, P>) => ActionResult<A>
-}
-
-export interface RouterOptions<A, P> {
-  base: string
-  onInit: () => void
-  onResolve: (context: RouteContext<A, P>, actionResult: ActionResult<A>) => void
-  onPause: (context: RouteContext<A, P>) => void
-  onError: () => void
-  pathToRegexFn: RegexFn
-  debug: boolean
-  plugins: RouterPlugin[]
-}
-
-export interface RouterPluginHooks {
-  onInit?: () => void
-  onBeforeResolve?: (context: RouteContext, eventType: HistoryEvents) => void
-  onResolve?: (context: RouteContext, eventType: HistoryEvents) => void
-  onPause?: (context: RouteContext) => void
-  onError?: () => void
-}
-
-export type RouterPlugin = (router: Router) => RouterPluginHooks
+import { createMatcher, Matcher } from "./createMatcher"
+import { Route, RouteContext, RouteParams, RouteProps, RouterOptions } from "./types"
 
 /**
- * Router
+ * LowRouter
  */
-export class Router<A = any, P = RouteProps> {
+export class LowRouter<A = any, P = RouteProps> {
   routes: Route<A, P>[]
-  currentContext: RouteContext<A, P>
+  currentContext: RouteContext
   #options: Partial<RouterOptions<A, P>>
   #matcher: Matcher
-  #plugins: RouterPluginHooks[] = []
 
   constructor(routes: Route<A, P>[], options: Partial<RouterOptions<A, P>> = {}) {
-    // add {} as default for each route props
-    this.routes = routes.map((r) => ({ ...r, props: (r.props || {}) as P }))
+    this.routes = routes
     this.#options = options
     this.#options.base = this.#options.base || "/"
 
     this.#log("routes", this.routes)
     this.#log("options", this.#options)
 
-    this.#matcher = createMatcher(this.#options.pathToRegexFn)
+    this.#matcher = this.#options.matcher || createMatcher()
     this.#options.onInit?.()
-    this.#plugins = this.#options.plugins?.map((p) => p(this))
-    this.#onPlugins((p) => p.onInit?.())
   }
 
   /**
@@ -76,8 +27,7 @@ export class Router<A = any, P = RouteProps> {
    * return a Promise witch return the action result
    */
   public async resolve(
-    pathnameOrObject: string | { name: string; params: RouteParams },
-    eventType: HistoryEvents = "pushState"
+    pathnameOrObject: string | { name: string; params: RouteParams }
   ): Promise<A> {
     // match route
     const routeContext = this.matchRoute(
@@ -88,18 +38,14 @@ export class Router<A = any, P = RouteProps> {
 
     // error
     if (!routeContext) {
-      console.error(`No matching route found with pathname ${pathnameOrObject}`)
+      this.#log(`No matching route found with pathname ${pathnameOrObject}`, this.routes)
       this.#options.onError?.()
-      this.#onPlugins((p) => p.onError?.())
       return
     }
 
     // save current context
     this.currentContext = routeContext
     this.#log("routeContext", routeContext)
-
-    // update plugins
-    this.#onPlugins((p) => p.onBeforeResolve?.(this.currentContext, eventType))
 
     // resolve
     if (typeof routeContext.route?.action === "function") {
@@ -109,9 +55,9 @@ export class Router<A = any, P = RouteProps> {
     }
   }
 
-  public pause(): void {
-    this.#onPlugins((p) => p.onPause?.(this.currentContext))
-    this.#options.onPause?.(this.currentContext)
+  public dispose(): void {
+    this.currentContext = null
+    this.#options.onDispose?.()
   }
 
   /**
@@ -127,17 +73,21 @@ export class Router<A = any, P = RouteProps> {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
         this.#log(`${formatRoutePath} match with ${pathname}?`, isMatch)
+
+        const currContext = {
+          pathname,
+          params,
+          query,
+          hash,
+          route,
+          base,
+          parent,
+        }
+
         if (isMatch) {
-          return {
-            pathname,
-            params,
-            query,
-            hash,
-            route: route.children?.[0] ?? route,
-            base,
-          }
+          return currContext
         } else if (route.children) {
-          const childResult = next(pathname, formatRoutePath, route.children, route.parent || route)
+          const childResult = next(pathname, formatRoutePath, route.children, currContext)
           if (childResult) return childResult
         }
       }
@@ -170,11 +120,8 @@ export class Router<A = any, P = RouteProps> {
     return next(name, params, this.routes, this.#options.base)
   }
 
-  #onPlugins(fn: (plugin: RouterPluginHooks) => void): void {
-    this.#plugins?.forEach((plugin) => fn?.(plugin))
-  }
-
   #log(...rest: any[]): void {
-    this.#options.debug && console.log(`%clow-router`, `color: rgb(16,96,173)`, ...rest)
+    this.#options.debug &&
+      console.log(`%clow-router`, `color: rgb(16,96,173)`, this.#options?.id || "", ...rest)
   }
 }

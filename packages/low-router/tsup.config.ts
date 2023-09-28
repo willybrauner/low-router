@@ -10,14 +10,6 @@ export default defineConfig({
   external: ["@wbe/debug"],
   name: "low-router",
   minify: true,
-  // terserOptions: {
-  //   compress: true,
-  //   mangle: {
-  //     properties: {
-  //       regex: /^(#.+)$/,
-  //     },
-  //   },
-  // },
   async onSuccess() {
     const process = spawn("npx", ["size-limit"], { shell: true })
     process.stdout.on("data", (data) => console.log(data.toString()))
