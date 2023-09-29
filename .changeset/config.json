@@ -3,9 +3,9 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [["@wbe/repo"]],
+  "linked": [["@wbe/low-router"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["repo-*"]
+  "ignore": ["example-*"]
 }
