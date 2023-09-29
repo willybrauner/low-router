@@ -8,6 +8,7 @@
 
 `LowRouter` is a lightweight *(~=1.5Kb)* and zero dependency, low-level router implementation designed for use in nodejs, javascript or typescript applications. By default, `LowRouter` has no link with the browser history, but this repository provide a `createBrowserHistory` util ready to use. It also includes a custom matcher function to convert a route path to a regular expression, but still open to use a custom one. 
 
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -16,7 +17,8 @@
     - [resolve](#resolve)
     - [createUrl](#createurl)
     - [dispose](#dispose)
-- [handle history](#handle-history)
+- [Handle history](#handle-history)
+- [matcher](#matcher)
 - [custom matcher](#custom-matcher)
 - [API](#api)
   - [LowRouter](#lowrouter)
@@ -25,6 +27,7 @@
   - [RouteContext](#routecontext)
   - [createBrowserHistory](#createbrowserhistory)
 - [workflow](#workflow)
+- [Acknowledgement](#acknowledgement)
 - [Credits](#credits)
 
 
@@ -109,20 +112,15 @@ Internal `createBrowserHistory` provide a way to interact with the browser's his
 
 ```javascript
 import { LowRouter, createBrowserHistory } from "@wbe/low-router";
-
 // Create the router instance
 const router = new LowRouter(routes, options);
-
 // Create the browser history
 const history = createBrowserHistory();
-
 // Listen to history changes
 const unlisten = history.listen(async (location, action) => {
- 
   // Resolve the new location.pathname
   const response = await router.resolve(location.pathname)
   // Do something with the response...
-  
 });
 
 // To push a new URL to the browser history
@@ -136,10 +134,27 @@ unlisten();
 On the same way, you can use every history lib you want to handle history changes, and resolve 
 the new pathname with the router, like [remix-run/history](https://github.com/remix-run/history).
 
+## Matcher
+
+The `matcher` is the function used to convert a route path to a regular expression. By default, `LowRouter` use an [internal matcher function](packages/low-router/src/createMatcher.ts). this matcher is called when the resolve method is called. You shouldn't have to use this function directly, but it's interesting to understand how it works. 
+
+```ts
+import { createMatcher } from "@wbe/low-router"
+
+const matcher = createMatcher()
+const [isMatch, routeParams, queryParams, hash] = matcher("/user/1?lang=fr&cat=foo#section-2", "/user/:id")
+// isMatch: true
+// routeParams: { id: "1" }
+// queryParams: { lang: "fr", cat: "foo" }
+// hash: "section-2"
+```
+
+This returns values are returned by `RouteContext` when the route match. For more information about the matcher full matcher API, read the [createMatcher unit tests](packages/low-router/tests/createMatcher.test.ts).
+
 ## Custom matcher
 
-It's possible to use a custom matcher function:
-We can use other path to regexp fn like the original [pathToRegexp package](https://github.com/pillarjs/path-to-regexp).
+If the internal matcher doesn't respond as needed, it's possible to use a custom matcher function:
+like the original [path-to-regexp package](https://github.com/pillarjs/path-to-regexp).
 
 ```ts
 import { LowRouter, createMatcher } from "@wbe/low-router"
@@ -319,11 +334,14 @@ pnpm run test:watch
 pnpm run dev
 ```
 
-## Credits
+## Acknowledgement
+
+This project is inspired by the following projects:
 
 - [universal-router](https://github.com/kriasoft/universal-router/)
 - [wouter](https://github.com/molefrog/wouter)
-- [cher-ami/router](https://github.com/cher-ami/router)
 - [history](https://github.com/remix-run/history)
+
+## Credits
 
 © [Willy Brauner](https://willybrauner.com)
