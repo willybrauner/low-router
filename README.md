@@ -121,22 +121,20 @@ Internal `createBrowserHistory` provide a way to interact with the browser's his
 
 ```javascript
 import { LowRouter, createBrowserHistory } from "@wbe/low-router";
-// Create the router instance
+
 const router = new LowRouter(routes, options);
-// Create the browser history
 const history = createBrowserHistory();
-// Listen to history changes
+
 const unlisten = history.listen(async (location, action) => {
-  // Resolve the new location.pathname
   const response = await router.resolve(location.pathname)
   // Do something with the response...
 });
 
-// To push a new URL to the browser history
+// Push a pathname to the browser history
 history.push("/foo");
 history.push({ name: "bar", params: { id: 123 } });
 
-// To stop listening to history changes, call the unlisten function
+// Stop listening to history changes
 unlisten();
 ```
 
