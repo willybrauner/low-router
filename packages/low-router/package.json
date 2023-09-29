@@ -6,7 +6,7 @@
     "dist"
   ],
   "sideEffects": false,
-  "main": "./dist/low-router.cjs",
+  "main": "./dist/low-router.js",
   "module": "./dist/low-router.js",
   "types": "./dist/low-router.d.ts",
   "repository": {
