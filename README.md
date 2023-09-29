@@ -6,8 +6,7 @@
 </p>
 <p align="center">
 
-`LowRouter` is a lightweight *(~=1.5Kb)* and zero dependency, low-level router implementation designed for use in nodejs, javascript or typescript applications. By default, `LowRouter` has no link with the browser history, but this repository provide a `createBrowserHistory` util ready to use. It also includes a custom matcher function to convert a route path to a regular expression, but still open to use a custom one. 
-
+`LowRouter` is a lightweight *(~=1.5Kb)* and zero dependency, low-level router implementation designed for use in nodejs, javascript or typescript applications. By default, `LowRouter` has no link with the browser history, but this repository provide a `createBrowserHistory` util ready to use. It also includes a `createMatcher` function to convert a route path to a regular expression, but still open to use a custom one.
 
 ## Table of Contents
 
@@ -18,8 +17,8 @@
     - [createUrl](#createurl)
     - [dispose](#dispose)
 - [Handle history](#handle-history)
-- [matcher](#matcher)
-- [custom matcher](#custom-matcher)
+- [Matcher](#matcher)
+- [Custom matcher](#custom-matcher)
 - [API](#api)
   - [LowRouter](#lowrouter)
   - [options](#options)
