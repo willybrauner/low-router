@@ -35,7 +35,7 @@
 
 The examples of this repo are available on codesandbox:
 
-- [Basic](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/basic)
+- [basic](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/basic)
 - [compose](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/compose)
 - [custom-matcher](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/custom-path-to-regexp)
 - [react-nested-routes](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/react-nested-routes)
@@ -130,7 +130,7 @@ const unlisten = history.listen(async (location, action) => {
   // Do something with the response...
 });
 
-// Push a pathname to the browser history
+// Push to the browser history will trigger the router resolve method
 history.push("/foo");
 history.push({ name: "bar", params: { id: 123 } });
 
@@ -143,7 +143,7 @@ the new pathname with the router, like [remix-run/history](https://github.com/re
 
 ## Matcher
 
-The `matcher` is the function used to convert a route path to a regular expression. By default, `LowRouter` use an [internal matcher function](packages/low-router/src/createMatcher.ts). this matcher is called when the resolve method is called. You shouldn't have to use this function directly, but it's interesting to understand how it works. 
+The `matcher` is the function used to convert a route path to a regular expression. By default, `LowRouter` use an [internal matcher function](packages/low-router/src/createMatcher.ts). this matcher is called when the resolve method is called. You shouldn't have to use this function directly, but it's interesting to understand how it works, specially if you need to use a custom one. 
 
 ```ts
 import { createMatcher } from "@wbe/low-router"
