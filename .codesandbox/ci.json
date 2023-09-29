@@ -3,8 +3,9 @@
   "packages": ["./packages/*"],
   "sandboxes": [
     "./examples/basic",
-    "./examples/compose"
+    "./examples/compose",
+    "./examples/custom-path-to-regexp",
+    "./examples/react-nested-routes"
   ],
-
   "node": "18"
 }
