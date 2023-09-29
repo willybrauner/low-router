@@ -10,6 +10,7 @@
 
 ## Table of Contents
 
+- [Playground](#playground)
 - [Installation](#installation)
 - [Usage](#usage)
     - [instance](#instance)
@@ -29,6 +30,15 @@
 - [Acknowledgement](#acknowledgement)
 - [Credits](#credits)
 
+
+## Playground 
+
+The examples of this repo are available on codesandbox:
+
+- [Basic](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/basic)
+- [compose](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/compose)
+- [custom-matcher](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/custom-path-to-regexp)
+- [react-nested-routes](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/react-nested-routes)
 
 ## Installation
 
