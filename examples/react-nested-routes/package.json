@@ -1,5 +1,5 @@
 {
-  "name": "react-nested-routes",
+  "name": "example-react-nested-routes",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@wbe/low-router": "^0.1.0",
+    "@wbe/low-router": "latest",
     "history": "^5.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

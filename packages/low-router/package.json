@@ -1,6 +1,8 @@
 {
   "name": "@wbe/low-router",
-  "version": "0.1.0",
+  "author": "Willy Brauner",
+  "license": "MIT",
+  "version": "0.0.0",
   "type": "module",
   "files": [
     "dist"
@@ -14,15 +16,18 @@
     "url": "git://github.com/willybrauner/low-router.git"
   },
   "keywords": [
-    "repo"
+    "router",
+    "routing",
+    "low-level",
+    "flexible",
+    "isomorphic",
+    "browser-history",
+    "matcher"
   ],
   "scripts": {
     "clean": "rm -rf dist",
     "build": "tsup",
     "build:watch": "tsup --watch --sourcemap"
-  },
-  "dependencies": {
-    "@wbe/debug": "^1.2.0"
   },
   "devDependencies": {
     "path-to-regexp": "^6.2.1",

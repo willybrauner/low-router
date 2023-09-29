@@ -7,7 +7,6 @@ export default defineConfig({
   clean: true,
   dts: true,
   format: ["esm"],
-  external: ["@wbe/debug"],
   name: "low-router",
   minify: true,
   async onSuccess() {
