@@ -1,16 +1,16 @@
 import { createMatcher, Matcher } from "./createMatcher"
-import { Route, RouteContext, RouteParams, RouteProps, RouterOptions } from "./types"
+import { Route, RouteContext, RouteParams, RouterContext, RouterOptions } from "./types"
 
 /**
  * LowRouter
  */
-export class LowRouter<A = any, P = RouteProps> {
-  routes: Route<A, P>[]
-  currentContext: RouteContext
-  #options: Partial<RouterOptions<A, P>>
+export class LowRouter<A = any, C extends RouterContext = RouterContext> {
+  routes: Route<A, C>[]
+  currentContext: RouteContext<A, C> | undefined
+  #options: Partial<RouterOptions<A, C>>
   #matcher: Matcher
 
-  constructor(routes: Route<A, P>[], options: Partial<RouterOptions<A, P>> = {}) {
+  constructor(routes: Route<A, C>[], options: Partial<RouterOptions<A, C>> = {}) {
     this.routes = routes
     this.#options = options
     this.#options.base = this.#options.base || "/"
@@ -67,8 +67,8 @@ export class LowRouter<A = any, P = RouteProps> {
     pathname: string,
     base = this.#options.base,
     routes = this.routes
-  ): RouteContext | undefined {
-    const next = (pathname, base, routes, parent): RouteContext | undefined => {
+  ): RouteContext<A, C> | undefined {
+    const next = (pathname, base, routes, parent): RouteContext<A, C> | undefined => {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
