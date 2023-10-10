@@ -1,8 +1,9 @@
-name: "size"
+name: Size limit
+
 on:
   pull_request:
     branches:
-      - master
+      - main
 jobs:
   size:
     runs-on: ubuntu-latest
@@ -10,6 +11,12 @@ jobs:
       CI_JOB_NUMBER: 1
     steps:
       - uses: actions/checkout@v1
-      - uses: andresz1/size-limit-action@v1
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          version: 8
+      - name: Use Size limit
+        uses: andresz1/size-limit-action@dd31dce7dcc72a041fd3e49abf0502b13fc4ce05 # support for pnpm
+        with:
+          github_token: ${{ secrets.REPO_TOKEN }}
+          package_manager: pnpm
