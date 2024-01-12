@@ -1,5 +1,5 @@
 import { createMatcher, Matcher } from "./createMatcher"
-import { Route, RouteContext, RouteParams, RouterContext, RouterOptions } from "./types"
+import { Resolve, Route, RouteContext, RouteParams, RouterContext, RouterOptions } from "./types"
 
 /**
  * LowRouter
@@ -28,7 +28,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
    */
   public async resolve(
     pathnameOrObject: string | { name: string; params: RouteParams }
-  ): Promise<A> {
+  ): Promise<Resolve<A, C>> {
     // match route
     const routeContext = this.matchRoute(
       typeof pathnameOrObject === "string"
@@ -48,11 +48,12 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
     this.#log("routeContext", routeContext)
 
     // resolve
+    const p = { response: undefined, context: routeContext }
     if (typeof routeContext.route?.action === "function") {
-      const actionResponse = await routeContext.route.action?.(routeContext)
-      this.#options.onResolve?.(routeContext, actionResponse)
-      return Promise.resolve(actionResponse)
+      p.response = await routeContext.route.action(routeContext)
     }
+    this.#options.onResolve?.(p)
+    return Promise.resolve(p)
   }
 
   public dispose(): void {

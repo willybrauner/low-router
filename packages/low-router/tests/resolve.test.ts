@@ -15,8 +15,8 @@ describe.concurrent("resolve", () => {
         },
       ]
       const router = new LowRouter(routes)
-      const res = await router.resolve("/foo")
-      expect(res).toEqual("hello")
+      const { response, context } = await router.resolve("/foo")
+      expect(response).toEqual("hello")
       expect(mock).toHaveBeenCalledTimes(1)
 
       await router.resolve("/foo")
@@ -44,8 +44,8 @@ describe.concurrent("resolve", () => {
         },
       ]
       const router = new LowRouter(routes)
-      const res = await router.resolve("/foo")
-      expect(res).toBe("hello /foo")
+      const { response } = await router.resolve("/foo")
+      expect(response).toBe("hello /foo")
       expect(mock).toHaveBeenCalledTimes(1)
       resolve()
     })
@@ -65,9 +65,9 @@ describe.concurrent("resolve", () => {
         { path: "bar" },
       ]
       const router = new LowRouter(routes)
-      router.resolve("/bar").then((res) => {
+      router.resolve("/bar").then(({ response, context }) => {
         expect(mock).not.toHaveBeenCalled()
-        expect(res).toBe(undefined)
+        expect(response).toBe(undefined)
         resolve()
       })
     })
@@ -83,16 +83,16 @@ describe.concurrent("resolve", () => {
       ]
 
       const router = new LowRouter(routes, {
-        onResolve: (context, res) => {
+        onResolve: ({ response, context }) => {
           expect(context.pathname).toEqual("/foo")
           expect(context.base).toEqual("/")
           expect(context.params).toEqual({})
           expect(context.route.path).toEqual("/foo")
-          expect(res).toBe("action response!")
+          expect(response).toBe("action response!")
         },
       })
-      const res = await router.resolve("/foo")
-      expect(res).toBe("action response!")
+      const { response } = await router.resolve("/foo")
+      expect(response).toBe("action response!")
       resolve()
     })
   })
@@ -127,8 +127,8 @@ describe.concurrent("resolve", () => {
       ]
 
       const router = new LowRouter(routes)
-      const ctx = await router.resolve("/b")
-      expect(ctx).toBe("bbb resolve")
+      const { response, context } = await router.resolve("/b")
+      expect(response).toBe("bbb resolve")
       resolve()
     })
   })

@@ -59,7 +59,7 @@ export class App {
       {
         base: "/",
         debug: true,
-        onResolve: (ctx) => this.onRouteResolve(ctx),
+        onResolve: ({ response, context }) => this.onRouteResolve(context),
       }
     )
   }

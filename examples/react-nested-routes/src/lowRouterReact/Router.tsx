@@ -41,12 +41,12 @@ function LowReactRouter(props: {
     () =>
       new LowRouter(props.routes, {
         ...props.options,
-        onResolve: (ctx, response) => {
-          while (ctx) {
-            if (!ctx.parent) break
-            ctx = ctx.parent
+        onResolve: ({ response,context }) => {
+          while (context) {
+            if (!context.parent) break
+            context = context.parent
           }
-          setRouteContext(ctx)
+          setRouteContext(context)
         },
       }),
     []
