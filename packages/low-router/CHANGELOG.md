@@ -1,5 +1,30 @@
 # @wbe/low-router
 
+## 0.2.0
+
+### Minor Changes
+
+- c98cc80: ## breaking change: Improve `resolve` and `onResolve` params.
+
+  `router.resolve()` and `onResolve()` option return now `{response, context}` object of the matching route.
+
+  before:
+
+  ```js
+  router.resolve("/").then((res) => {
+    // res: "Hello home!"
+  })
+  ```
+
+  after:
+
+  ```js
+  router.resolve("/").then(({ response, context }) => {
+    // response: "Hello home!"
+    // context: RouteContext interface
+  })
+  ```
+
 ## 0.1.1
 
 ### Patch Changes
