@@ -83,18 +83,18 @@ const router = new LowRouter(routes);
 
 ### resolve
 
-The `resolve` method allows you to match a given pathname or route object to a defined route and execute its associated action. It returns a Promise that resolves with the action result.
+The `resolve` method allows you to match a given pathname or route object to a defined route and execute its associated action. It returns a Promise that resolves with the action result and route context.
 
 ```js
-router.resolve("/").then((res) => {
-  // res: "Hello home!"
+router.resolve("/").then(({ response, context }) => {
+  // response: "Hello home!"
 });
 ```
 
 Or, with an object param:
 ```js
-router.resolve({ name: "user", params: { id: 123 } }).then(res => {
-  // res: "Hello user! with id 123"
+router.resolve({ name: "user", params: { id: 123 } }).then(({ response, context }) => {
+  // response: "Hello user! with id 123"
 })
 ```
 
@@ -224,8 +224,8 @@ const options: Options = {
   onError: (context, error) => {},
   
   // called after a route's action has been executed successfully
-  // onResolve: (context: RouteContext<A, P>, actionResponse: ActionResponse<A>) => void
-  onResolve: (context, response) => {},
+  // onResolve: ({response: ActionResponse<A>, context: RouteContext<A, P>}) => void
+  onResolve: ({ response, context }) => {},
   
   // called when the router is disposed of using the `dispose` method
   // onDispose: () => void
