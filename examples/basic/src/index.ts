@@ -45,6 +45,6 @@ for (let link of links) {
   link.addEventListener("click", (e) => {
     e.preventDefault()
     const href = link.getAttribute("href")
-    router.resolve(href!).then((res) => console.log(href, "done"))
+    router.resolve(href!).then(({ response, context }) => console.log(href, "done"))
   })
 }

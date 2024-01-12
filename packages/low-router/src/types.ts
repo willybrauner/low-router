@@ -20,6 +20,11 @@ export interface RouteContext<A = any, C extends RouterContext = RouterContext> 
   parent: RouteContext<A, C> | null
 }
 
+export interface Resolve<A, C> {
+  response: ActionResponse<A>
+  context: RouteContext<A, C>
+}
+
 export interface Route<A = any, C extends RouterContext = RouterContext> {
   path: string
   name?: string
@@ -31,7 +36,7 @@ export interface Route<A = any, C extends RouterContext = RouterContext> {
 export interface RouterOptions<A = any, C extends RouterContext = RouterContext> {
   base: string
   onInit: () => void
-  onResolve: (context: RouteContext<A, C>, actionResponse: ActionResponse<A>) => void
+  onResolve: ({ response, context }: Resolve<A, C>) => void
   onDispose: () => void
   onError: () => void
   matcher: Matcher
