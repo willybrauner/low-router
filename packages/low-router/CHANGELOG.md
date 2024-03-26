@@ -1,5 +1,17 @@
 # @wbe/low-router
 
+## 0.3.0
+
+### Minor Changes
+
+- e02a7f3: Create resolveSync method
+
+  Resolve a route synchronously. It returns response and context without promise.
+
+  ```ts
+  const { response, context } = router.resolveSync("/foo")
+  ```
+
 ## 0.2.0
 
 ### Minor Changes
