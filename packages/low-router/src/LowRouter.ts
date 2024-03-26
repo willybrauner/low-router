@@ -1,5 +1,5 @@
 import { createMatcher, Matcher } from "./createMatcher"
-import { Resolve, Route, RouteContext, RouteParams, RouterContext, RouterOptions } from "./types"
+import { PathnameOrObject, Resolve, Route, RouteContext, RouteParams, RouterContext, RouterOptions } from "./types"
 
 /**
  * LowRouter
@@ -26,34 +26,51 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
    * Resolve
    * return a Promise witch return the action result
    */
-  public async resolve(
-    pathnameOrObject: string | { name: string; params: RouteParams }
-  ): Promise<Resolve<A, C>> {
+  public async resolve(pathnameOrObject: PathnameOrObject): Promise<Resolve<A, C>> {
+    const obj = this.#resolver(pathnameOrObject)
+    if (typeof obj.context.route?.action === "function") {
+      obj.response = await obj.context.route.action(obj.context)
+    }
+    this.#options.onResolve?.(obj)
+    return Promise.resolve(obj)
+  }
+
+  /**
+   * ResolveSync
+   * return response synchronously
+   */
+  public resolveSync(pathnameOrObject: PathnameOrObject): Resolve<A, C> {
+    const obj = this.#resolver(pathnameOrObject)
+    if (typeof obj.context?.route?.action === "function") {
+      obj.response = obj.context.route.action(obj.context)
+    }
+    this.#options.onResolve?.(obj)
+    return obj
+  }
+
+  /**
+   * Common tread for resolve and resolveSync
+   * @param pathnameOrObject
+   * @private
+   */
+  #resolver(pathnameOrObject: PathnameOrObject) {
     // match route
     const routeContext = this.matchRoute(
       typeof pathnameOrObject === "string"
         ? pathnameOrObject
         : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
     )
-
     // error
     if (!routeContext) {
       this.#log(`No matching route found with pathname ${pathnameOrObject}`, this.routes)
       this.#options.onError?.()
-      return
+      return { response: undefined, context: undefined }
     }
-
     // save current context
     this.currentContext = routeContext
     this.#log("routeContext", routeContext)
-
     // resolve
-    const p = { response: undefined, context: routeContext }
-    if (typeof routeContext.route?.action === "function") {
-      p.response = await routeContext.route.action(routeContext)
-    }
-    this.#options.onResolve?.(p)
-    return Promise.resolve(p)
+    return { response: undefined, context: routeContext }
   }
 
   public dispose(): void {

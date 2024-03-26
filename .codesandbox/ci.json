@@ -3,6 +3,7 @@
   "packages": ["./packages/*"],
   "sandboxes": [
     "./examples/basic",
+    "./examples/basic-resolve-sync",
     "./examples/compose",
     "./examples/custom-path-to-regexp",
     "./examples/react-nested-routes"

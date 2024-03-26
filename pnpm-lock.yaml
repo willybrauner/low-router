@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -39,6 +43,19 @@ importers:
         version: 0.31.0(jsdom@22.1.0)(terser@5.19.2)
 
   examples/basic:
+    dependencies:
+      '@wbe/low-router':
+        specifier: latest
+        version: link:../../packages/low-router
+    devDependencies:
+      typescript:
+        specifier: ^5.0.2
+        version: 5.0.4
+      vite:
+        specifier: ^4.4.5
+        version: 4.4.9(@types/node@20.1.0)(terser@5.19.2)
+
+  examples/basic-resolve-sync:
     dependencies:
       '@wbe/low-router':
         specifier: latest
@@ -4449,7 +4466,3 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

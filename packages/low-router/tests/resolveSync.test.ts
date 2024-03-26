@@ -1,40 +1,36 @@
 import { describe, expect, it, vi } from "vitest"
 import { LowRouter } from "../src"
 
-describe.concurrent("resolve", () => {
+describe.concurrent("resolveSync", () => {
   it("should return the action function return", () => {
-    return new Promise(async (resolve: any) => {
       const mock = vi.fn()
       const routes = [
         {
           path: "/foo",
           action: (context) => {
             mock(context)
-            return "hello"
+            return "hello sync response"
           },
         },
       ]
       const router = new LowRouter(routes)
-      const { response, context } = await router.resolve("/foo")
-      expect(response).toEqual("hello")
+      const { response, context } = router.resolveSync("/foo")
+      expect(response).toEqual("hello sync response")
       expect(mock).toHaveBeenCalledTimes(1)
 
-      await router.resolve("/foo")
+      router.resolveSync("/foo")
       expect(mock).toHaveBeenCalledTimes(2)
 
-      await router.resolve("/foo")
+      router.resolveSync("/foo")
       expect(mock).toHaveBeenCalledTimes(3)
-      resolve()
-    })
   })
-  it("should return the action async function return", () => {
-    return new Promise(async (resolve: any) => {
+
+  it("should return the action sync function return", () => {
       const mock = vi.fn()
       const routes = [
         {
           path: "/foo",
-          action: async (context) => {
-            await new Promise((resolve) => setTimeout(resolve, 200))
+          action: (context) => {
             mock(context)
             return "hello " + context.pathname
           },
@@ -44,15 +40,13 @@ describe.concurrent("resolve", () => {
         },
       ]
       const router = new LowRouter(routes)
-      const { response } = await router.resolve("/foo")
+      const { response } = router.resolveSync("/foo")
       expect(response).toBe("hello /foo")
       expect(mock).toHaveBeenCalledTimes(1)
-      resolve()
     })
-  })
+
 
   it("should return an error if the route doesn't match", () => {
-    return new Promise(async (resolve: any) => {
       const mock = vi.fn()
       const routes = [
         {
@@ -65,16 +59,12 @@ describe.concurrent("resolve", () => {
         { path: "bar" },
       ]
       const router = new LowRouter(routes)
-      router.resolve("/bar").then(({ response, context }) => {
-        expect(mock).not.toHaveBeenCalled()
-        expect(response).toBe(undefined)
-        resolve()
-      })
-    })
+      const { response } = router.resolveSync("/bar")
+      expect(mock).not.toHaveBeenCalled()
+      expect(response).toBe(undefined)
   })
 
   it("should exec onResolve handler option", () => {
-    return new Promise(async (resolve: any) => {
       const routes = [
         {
           path: "/foo",
@@ -91,14 +81,11 @@ describe.concurrent("resolve", () => {
           expect(response).toBe("action response!")
         },
       })
-      const { response } = await router.resolve("/foo")
+      const { response } = router.resolveSync("/foo")
       expect(response).toBe("action response!")
-      resolve()
-    })
   })
 
   it("should resolve child route", () => {
-    return new Promise(async (resolve: any) => {
       const routes = [
         {
           path: "/",
@@ -127,9 +114,9 @@ describe.concurrent("resolve", () => {
       ]
 
       const router = new LowRouter(routes)
-      const { response, context } = await router.resolve("/b")
+      const { response } = router.resolveSync("/b")
       expect(response).toBe("bbb resolve")
-      resolve()
-    })
   })
 })
+
+
