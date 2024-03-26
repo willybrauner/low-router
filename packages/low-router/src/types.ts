@@ -5,6 +5,7 @@ export type QueryParams = { [paramName: string]: string }
 export type Hash = string
 export type RouteProps = Record<string, any>
 export type ActionResponse<A> = Promise<A> | A
+export type PathnameOrObject = string | { name: string; params: RouteParams }
 
 export interface RouterContext {
   [prop: string]: any

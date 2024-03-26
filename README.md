@@ -15,6 +15,7 @@
 - [Usage](#usage)
     - [instance](#instance)
     - [resolve](#resolve)
+    - [resolveSync](#resolveSync)
     - [createUrl](#createurl)
     - [dispose](#dispose)
 - [Handle history](#handle-history)
@@ -96,6 +97,22 @@ Or, with an object param:
 router.resolve({ name: "user", params: { id: 123 } }).then(({ response, context }) => {
   // response: "Hello user! with id 123"
 })
+```
+
+
+### resolveSync
+
+The `resolveSync` method is the same than resolve, but synchronous. It returns the action result and route context directly.
+
+```js
+const { response, context } = router.resolveSync("/admin/config");
+// response: "Hello home!"
+```
+
+Or, with an object param:
+```js
+const { response, context } = router.resolveSync({ name: "user", params: { id: 123 } });
+// response: "Hello user! with id 123"
 ```
 
 ### createUrl
