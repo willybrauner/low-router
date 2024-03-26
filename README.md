@@ -37,6 +37,7 @@
 The examples of this repo are available on codesandbox:
 
 - [basic](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/basic)
+- [basic-resolve-sync](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/basic-resolve-sync)
 - [compose](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/compose)
 - [custom-matcher](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/custom-path-to-regexp)
 - [react-nested-routes](https://codesandbox.io/s/github/willybrauner/low-router/tree/main/examples/react-nested-routes)
@@ -102,7 +103,7 @@ router.resolve({ name: "user", params: { id: 123 } }).then(({ response, context 
 
 ### resolveSync
 
-The `resolveSync` method is the same than resolve, but synchronous. It returns the action result and route context directly.
+The `resolveSync` method is the same than resolve, but synchronously. It returns the action result and route context directly.
 
 ```js
 const { response, context } = router.resolveSync("/admin/config");
@@ -149,7 +150,7 @@ const unlisten = history.listen(async (location, action) => {
 
 // Push to the browser history will trigger the router resolve method
 history.push("/foo");
-history.push({ name: "bar", params: { id: 123 } });
+history.push(router.createUrl({ name: "bar", params: { id: 123 } }));
 
 // Stop listening to history changes
 unlisten();
@@ -213,6 +214,11 @@ const router = new LowRouter(routes, options)
 // resolve(pathnameOrObject: string | { name: string; params?: RouteParams })
 router.resolve(path)
 router.resolve({ name: "", params: {} })
+
+// Resolve synchronously
+// resolveSync(pathnameOrObject: string | { name: string; params?: RouteParams })
+router.resolveSync(path)
+router.resolveSync({ name: "", params: {} })
 
 // Create a URL based on a route name and optional parameters
 // createUrl({ name: string; params?: RouteParams }): string
