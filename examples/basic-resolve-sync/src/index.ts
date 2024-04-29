@@ -34,7 +34,7 @@ const routes: Route[] = [
 /**
  * Create router
  */
-const router = new LowRouter(routes, { base: "/", debug: true })
+const router = new LowRouter(routes, { base: "/" })
 
 /**
  * Listen links

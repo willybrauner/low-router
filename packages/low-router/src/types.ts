@@ -41,6 +41,5 @@ export interface RouterOptions<A = any, C extends RouterContext = RouterContext>
   onDispose: () => void
   onError: () => void
   matcher: Matcher
-  debug: boolean
   id?: number | string
 }

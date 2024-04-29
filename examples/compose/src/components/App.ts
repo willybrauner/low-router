@@ -58,7 +58,6 @@ export class App {
       ],
       {
         base: "/",
-        debug: true,
         onResolve: ({ response, context }) => this.onRouteResolve(context),
       }
     )

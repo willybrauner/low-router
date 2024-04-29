@@ -36,7 +36,7 @@ describe.concurrent("createUrl", () => {
         },
       ]
 
-      const router = new LowRouter(routes, { debug: false })
+      const router = new LowRouter(routes)
       expect(router.createUrl({ name: "a" })).toBe("/")
       expect(router.createUrl({ name: "b" })).toBe("/b")
       expect(router.createUrl({ name: "c", params: { id: "123" } })).toBe("/c/123")

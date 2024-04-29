@@ -8,14 +8,14 @@ export const About = () => {
   const subRoutes = routes.find((route) => route.name === "about").children
   const base = "/about"
 
-  useEffect(()=> {
-  console.log('ABOUT')
-  },[])
+  useEffect(() => {
+    console.log("ABOUT")
+  }, [])
 
   return (
     <div>
       <span>about</span>
-      <Router routes={subRoutes} options={{ base, debug: true, id: 2 }}>
+      <Router routes={subRoutes} options={{ base, id: 2 }}>
         <>
           <AboutNav />
           <Stack />

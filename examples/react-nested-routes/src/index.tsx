@@ -7,7 +7,7 @@ import { Router } from "./lowRouterReact/Router.tsx"
 import { createBrowserHistory } from "@wbe/low-router"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <Router routes={routes} options={{ debug: true, id: 1 }} history={createBrowserHistory()}>
+  <Router routes={routes} options={{ id: 1 }} history={createBrowserHistory()}>
     <App />
   </Router>
 )

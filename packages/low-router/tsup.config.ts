@@ -8,6 +8,7 @@ export default defineConfig({
   dts: true,
   format: ["esm"],
   name: "low-router",
+  external: ["@wbe/debug"],
   minify: true,
   async onSuccess() {
     const process = spawn("npx", ["size-limit"], { shell: true })

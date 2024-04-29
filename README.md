@@ -6,18 +6,18 @@
 </p>
 <p align="center">
 
-`LowRouter` is a lightweight *(~=1.5Kb)* and zero dependency, low-level router implementation designed for use in nodejs, javascript or typescript applications. By default, `LowRouter` has no link with the browser history, but this repository provide a `createBrowserHistory` util ready to use. It also includes a `createMatcher` function to convert a route path to a regular expression, but still open to use a custom one.
+`LowRouter` is a lightweight _(~=1.8Kb)_, low-level router implementation designed for use in nodejs, javascript or typescript applications. By default, `LowRouter` has no link with the browser history, but this repository provide a `createBrowserHistory` util ready to use. It also includes a `createMatcher` function to convert a route path to a regular expression, but still open to use a custom one.
 
 ## Table of Contents
 
 - [Playground](#playground)
 - [Installation](#installation)
 - [Usage](#usage)
-    - [instance](#instance)
-    - [resolve](#resolve)
-    - [resolveSync](#resolveSync)
-    - [createUrl](#createurl)
-    - [dispose](#dispose)
+  - [instance](#instance)
+  - [resolve](#resolve)
+  - [resolveSync](#resolvesync)
+  - [createUrl](#createurl)
+  - [dispose](#dispose)
 - [Handle history](#handle-history)
 - [Matcher](#matcher)
 - [Custom matcher](#custom-matcher)
@@ -31,8 +31,7 @@
 - [Acknowledgement](#acknowledgement)
 - [Credits](#credits)
 
-
-## Playground 
+## Playground
 
 The examples of this repo are available on codesandbox:
 
@@ -53,13 +52,13 @@ npm i @wbe/low-router
 ### Instance
 
 ```javascript
-import { LowRouter } from "@wbe/low-router";
+import { LowRouter } from "@wbe/low-router"
 
 const routes = [
   {
     path: "/",
     name: "home",
-    action: () => "Hello home!"
+    action: () => "Hello home!",
   },
   {
     path: "/admin",
@@ -69,18 +68,18 @@ const routes = [
       {
         path: "/config",
         name: "config",
-        action: (context) => `Hello ${context.route.name}!` 
+        action: (context) => `Hello ${context.route.name}!`,
       },
       {
         path: "/user/:id",
         name: "user",
-        action: (context) => `Hello user! with id ${context.params.id}`
-      },      
-    ]
-  }
-];
+        action: (context) => `Hello user! with id ${context.params.id}`,
+      },
+    ],
+  },
+]
 
-const router = new LowRouter(routes);
+const router = new LowRouter(routes)
 ```
 
 ### resolve
@@ -90,38 +89,39 @@ The `resolve` method allows you to match a given pathname or route object to a d
 ```js
 router.resolve("/").then(({ response, context }) => {
   // response: "Hello home!"
-});
+})
 ```
 
 Or, with an object param:
+
 ```js
 router.resolve({ name: "user", params: { id: 123 } }).then(({ response, context }) => {
   // response: "Hello user! with id 123"
 })
 ```
 
-
 ### resolveSync
 
 The `resolveSync` method is the same than resolve, but synchronously. It returns the action result and route context directly.
 
 ```js
-const { response, context } = router.resolveSync("/admin/config");
+const { response, context } = router.resolveSync("/admin/config")
 // response: "Hello home!"
 ```
 
 Or, with an object param:
+
 ```js
-const { response, context } = router.resolveSync({ name: "user", params: { id: 123 } });
+const { response, context } = router.resolveSync({ name: "user", params: { id: 123 } })
 // response: "Hello user! with id 123"
 ```
 
 ### createUrl
 
-The `createUrl` method generates a URL based on a route name and optional parameters. 
+The `createUrl` method generates a URL based on a route name and optional parameters.
 
 ```js
-router.createUrl({ name: "config" }); 
+router.createUrl({ name: "config" })
 // "/admin/config"
 ```
 
@@ -130,44 +130,47 @@ router.createUrl({ name: "config" });
 The `dispose` method is used to clean up the router instance.
 
 ```js
-router.dispose();
+router.dispose()
 ```
 
 ## Handle history
 
-Internal `createBrowserHistory` provide a way to interact with the browser's history and listen to changes in the URL. You can integrate this functionality with the `LowRouter` class to enable client-side routing with browser history support. 
+Internal `createBrowserHistory` provide a way to interact with the browser's history and listen to changes in the URL. You can integrate this functionality with the `LowRouter` class to enable client-side routing with browser history support.
 
 ```javascript
-import { LowRouter, createBrowserHistory } from "@wbe/low-router";
+import { LowRouter, createBrowserHistory } from "@wbe/low-router"
 
-const router = new LowRouter(routes, options);
-const history = createBrowserHistory();
+const router = new LowRouter(routes, options)
+const history = createBrowserHistory()
 
 const unlisten = history.listen(async (location, action) => {
   const response = await router.resolve(location.pathname)
   // Do something with the response...
-});
+})
 
 // Push to the browser history will trigger the router resolve method
-history.push("/foo");
-history.push(router.createUrl({ name: "bar", params: { id: 123 } }));
+history.push("/foo")
+history.push(router.createUrl({ name: "bar", params: { id: 123 } }))
 
 // Stop listening to history changes
-unlisten();
+unlisten()
 ```
 
-On the same way, you can use every history lib you want to handle history changes, and resolve 
+On the same way, you can use every history lib you want to handle history changes, and resolve
 the new pathname with the router, like [remix-run/history](https://github.com/remix-run/history).
 
 ## Matcher
 
-The `matcher` is the function used to convert a route path to a regular expression. By default, `LowRouter` use an [internal matcher function](packages/low-router/src/createMatcher.ts). this matcher is called when the resolve method is called. You shouldn't have to use this function directly, but it's interesting to understand how it works, specially if you need to use a custom one. 
+The `matcher` is the function used to convert a route path to a regular expression. By default, `LowRouter` use an [internal matcher function](packages/low-router/src/createMatcher.ts). this matcher is called when the resolve method is called. You shouldn't have to use this function directly, but it's interesting to understand how it works, specially if you need to use a custom one.
 
 ```ts
 import { createMatcher } from "@wbe/low-router"
 
 const matcher = createMatcher()
-const [isMatch, routeParams, queryParams, hash] = matcher("/user/1?lang=fr&cat=foo#section-2", "/user/:id")
+const [isMatch, routeParams, queryParams, hash] = matcher(
+  "/user/1?lang=fr&cat=foo#section-2",
+  "/user/:id"
+)
 // isMatch: true
 // routeParams: { id: "1" }
 // queryParams: { lang: "fr", cat: "foo" }
@@ -185,14 +188,14 @@ like the original [path-to-regexp package](https://github.com/pillarjs/path-to-r
 import { LowRouter, createMatcher } from "@wbe/low-router"
 import { pathToRegexp } from "path-to-regexp"
 
-const customPathToRegexpFn = (path: string): { keys:  Record<string, string>[]; regexp: RegExp } => {
+const customPathToRegexpFn = (path: string): { keys: Record<string, string>[]; regexp: RegExp } => {
   let keys = []
   const regexp = pathToRegexp(path, keys)
   return { keys, regexp }
 }
 
 const customMatcher = createMatcher(customPathToRegexpFn)
-// ex: customMatcher("/about/:id", "/about/1") 
+// ex: customMatcher("/about/:id", "/about/1")
 // return: [true, { id: "1" }, {}, null]
 
 // then, pass this customMatcher to the router options
@@ -229,7 +232,6 @@ router.createUrl({ name: "", params: {} })
 router.dispose()
 ```
 
-
 ### Options
 
 ```ts
@@ -237,28 +239,24 @@ const options: Options = {
   // The base URL path for all routes.
   // default: `/`.
   base: "/",
-  
+
   // called when the router is initialized
   // onInit: () => void
   onInit: () => {},
-  
+
   // called when no matching route is found during resolution
   // onError: () => void
   onError: (context, error) => {},
-  
+
   // called after a route's action has been executed successfully
   // onResolve: ({response: ActionResponse<A>, context: RouteContext<A, P>}) => void
   onResolve: ({ response, context }) => {},
-  
+
   // called when the router is disposed of using the `dispose` method
   // onDispose: () => void
   onDispose: () => {},
-  
-  // Set to `true` to enable logging for debugging purposes
-  // debug: boolean
-  debug: true,
-  
-  // Custom function to convert a route path to a regular expression. 
+
+  // Custom function to convert a route path to a regular expression.
   // Default: the internal `createMatcher()` fn
   // matcher: Matcher
   matcher: createMatcher(),
@@ -267,10 +265,8 @@ const options: Options = {
   // and you want to identify them from debug logs
   // id?: number | string
   id: 1,
-
 }
 ```
-
 
 ### RouteContext
 
@@ -281,25 +277,25 @@ It contains all the information about the current context, plus the route object
 interface RouteContext {
   // The current pathname
   pathname: string
- 
-  // The current path params 
+
+  // The current path params
   // (ex: /:foo/:bar)
   params: RouteParams
- 
-  // The current query params 
+
+  // The current query params
   // (ex: ?foo=bar&baz=qux)
   query: QueryParams
- 
+
   // The current hash
   // (ex: #foo)
   hash: Hash
- 
+
   // the route base URL
   base: string
- 
+
   // → the route object associated to this context
   route: Route
- 
+
   // parent route context, useful when the current is a child route
   parent: RouteContext | null
 }
@@ -313,37 +309,37 @@ interface RouteContext {
 interface Route {
   // The route path
   // (ex: /foo/:bar)
-  path: string;
-  
+  path: string
+
   // The route name, useful to get a route by name
-  name?: string;
+  name?: string
 
   // The route action function is the main function of the route
   // this function is called when the route is resolved
-  action?: (context: RouteContext) => Promise<any> | any;
+  action?: (context: RouteContext) => Promise<any> | any
 
-  // The route children 
-  children?: Route[];
+  // The route children
+  children?: Route[]
 
   // The route props can be any data you want to pass/associate to the route
-  props?: Record<string, any>;
+  props?: Record<string, any>
 }
 ```
 
 ### createBrowserHistory
 
 `createBrowserHistory()` will return an object:
+
 ```ts
 export interface HistoryAPI {
   // associate a callback to the history change event
   // return a function to stop listening
   listen: (callback: (location: Location, action: Action) => void) => () => void
-  
+
   // Push a new patname to the history
   push: (pathname: string) => void
 }
 ```
-
 
 ## Workflow
 
