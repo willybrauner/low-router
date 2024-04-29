@@ -21,6 +21,7 @@
 - [Handle history](#handle-history)
 - [Matcher](#matcher)
 - [Custom matcher](#custom-matcher)
+- [debug](#debug)
 - [API](#api)
   - [LowRouter](#lowrouter)
   - [options](#options)
@@ -204,6 +205,22 @@ const router = new LowRouter(routes, { matcher: customMatcher })
 ```
 
 This flexible custom matcher pattern as been created by [molefrog](https://github.com/molefrog) on [wouter](https://github.com/molefrog/wouter) 🙏
+
+### debug
+
+[@wbe/debug](https://github.com/willybrauner/debug) tool is used as dependency in this project. To enable debug logs, you can use the following commands:
+
+- Browser debug:
+
+  ```shell
+  localStorage.debug = "low-router:*"
+  ```
+
+- Node debug:
+
+  ```shell
+  DEBUG=low-router:*
+  ```
 
 ## API
 
