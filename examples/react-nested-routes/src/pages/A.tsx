@@ -14,7 +14,7 @@ export const A = () => {
   return (
     <div>
       <span>a</span>
-      <Router routes={subRoutes} options={{ base, debug: true, id: 4 }}>
+      <Router routes={subRoutes} options={{ base, id: 4 }}>
         <>
           <nav>
             {subRoutes.filter(e => e.path !== "")?.map((route, index) => (

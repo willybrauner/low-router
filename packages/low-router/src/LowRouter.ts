@@ -1,6 +1,16 @@
 import { createMatcher, Matcher } from "./createMatcher"
-import { PathnameOrObject, Resolve, Route, RouteContext, RouteParams, RouterContext, RouterOptions } from "./types"
+import debug from "@wbe/debug"
+import {
+  PathnameOrObject,
+  Resolve,
+  Route,
+  RouteContext,
+  RouteParams,
+  RouterContext,
+  RouterOptions,
+} from "./types"
 
+const log = debug("low-router")
 /**
  * LowRouter
  */
@@ -14,6 +24,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
     this.routes = routes
     this.#options = options
     this.#options.base = this.#options.base || "/"
+    this.#options.id = this.#options.id || 1
 
     this.#log("routes", this.routes)
     this.#log("options", this.#options)
@@ -90,7 +101,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
-        this.#log(`${formatRoutePath} match with ${pathname}?`, isMatch)
+        this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
 
         const currContext = {
           pathname,
@@ -139,7 +150,6 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
   }
 
   #log(...rest: any[]): void {
-    this.#options.debug &&
-      console.log(`%clow-router`, `color: rgb(16,96,173)`, this.#options?.id || "", ...rest)
+    log(this.#options?.id || "", ...rest)
   }
 }
