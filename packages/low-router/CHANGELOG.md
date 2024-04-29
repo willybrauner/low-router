@@ -1,5 +1,23 @@
 # @wbe/low-router
 
+## 0.4.0
+
+### Minor Changes
+
+- 4ce916c: Install [@wbe/debug](https://github.com/willybrauner/debug) dependency
+
+  - browser debug:
+
+    ```shell
+    localStorage.debug = "low-router:*"
+    ```
+
+  - Node debug:
+
+    ```shell
+    DEBUG=low-router:*
+    ```
+
 ## 0.3.0
 
 ### Minor Changes
