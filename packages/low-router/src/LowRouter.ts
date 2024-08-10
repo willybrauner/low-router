@@ -132,21 +132,46 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
    *  createUrl({ name: "user", params: { id: "1" } }) => "/user/1"
    */
   public createUrl({ name, params = {} }: { name: string; params?: RouteParams }): string {
-    const compile = (path, params): string => {
-      const s = path.replace(/:([^/?]+)(\?)?/g, (match, key) => params?.[key] ?? "")
-      return s.endsWith("/") ? s.slice(0, -1) : s
-    }
     const next = (name, params, routes, curBase): string => {
       for (let route of routes) {
         if (route.name === name) {
-          return (curBase + compile(route.path, params)).replace(/(\/)+/g, "/")
+          return (curBase + LowRouter.compilePath(route.path)(params)).replace(/(\/)+/g, "/")
         } else if (route.children?.length > 0) {
-          const match = next(name, params, route.children, curBase + compile(route.path, params))
+          const match = next(
+            name,
+            params,
+            route.children,
+            curBase + LowRouter.compilePath(route.path)(params)
+          )
           if (match) return match
         }
       }
     }
     return next(name, params, this.routes, this.#options.base)
+  }
+
+  /**
+   * Compile path
+   * ex:
+   *  compilePath("/foo/:id", {id: "bar"}) -> /foo/bar
+   *  compilePath("/foo/:id?", {id: "bar"}) -> /foo/bar
+   *  compilePath("/foo?param=one", {id: "bar"}) -> /foo?param=one
+   * @param path
+   */
+  public static compilePath(path: string): (params: RouteParams) => string {
+    return (params) => {
+      const [pathWithoutHash, hash] = path.split("#")
+      const query = /\?(?!\/).+$/.exec(pathWithoutHash)?.[0]
+      const pathWithoutQuery = pathWithoutHash.replace(query, "")
+      const s = pathWithoutQuery
+        .replace(/:([^/?]+)(\?)?/g, (match, key) => params?.[key] ?? "")
+        .replace(/(\/)+/g, "/")
+      return (
+        (s.endsWith("/") ? s.slice(0, -1) : s) +
+        (query ? `${query}` : "") +
+        (hash ? `#${hash}` : "")
+      )
+    }
   }
 
   #log(...rest: any[]): void {
