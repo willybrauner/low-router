@@ -1,5 +1,17 @@
 # @wbe/low-router
 
+## 0.5.0
+
+### Minor Changes
+
+- 5035b82: Externalize compile path as static method.
+
+  ex:
+
+  ```ts
+  LowRouter.compilePath("/foo/:id")({ id: "bar" }) // "/zoo/bar"
+  ```
+
 ## 0.4.0
 
 ### Minor Changes
