@@ -19,6 +19,7 @@ export interface RouteContext<A = any, C extends RouterContext = RouterContext> 
   base: string
   route: Route<A, C>
   parent: RouteContext<A, C> | null
+  relativePathname: string
 }
 
 export interface Resolve<A, C> {

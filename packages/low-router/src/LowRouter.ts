@@ -101,6 +101,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
+        const relativePathname = LowRouter.compilePath(route.path)(params)
         this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
 
         const currContext = {
@@ -111,6 +112,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
           route,
           base,
           parent,
+          relativePathname,
         }
 
         if (isMatch) {
@@ -167,7 +169,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
         .replace(/:([^/?]+)(\?)?/g, (match, key) => params?.[key] ?? "")
         .replace(/(\/)+/g, "/")
       return (
-        (s.endsWith("/") ? s.slice(0, -1) : s) +
+        (s.endsWith("/") && s !== "/" ? s.slice(0, -1) : s) +
         (query ? `${query}` : "") +
         (hash ? `#${hash}` : "")
       )
