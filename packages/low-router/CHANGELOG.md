@@ -1,5 +1,26 @@
 # @wbe/low-router
 
+## 0.6.0
+
+### Minor Changes
+
+- 358bae8: RouteContext returns relativePathname
+
+  RouteContext returns `relativePathname`. It's the compiled path of current router instance.
+
+  ```ts
+  export interface RouteContext<A = any, C extends RouterContext = RouterContext> {
+    pathname: string
+    params: RouteParams
+    query: QueryParams
+    hash: Hash
+    base: string
+    route: Route<A, C>
+    parent: RouteContext<A, C> | null
+  + relativePathname: string
+  }
+  ```
+
 ## 0.5.0
 
 ### Minor Changes
