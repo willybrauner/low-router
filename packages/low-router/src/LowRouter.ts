@@ -1,26 +1,18 @@
 import { createMatcher, Matcher } from "./createMatcher"
 import debug from "@wbe/debug"
-import {
-  PathnameOrObject,
-  Resolve,
-  Route,
-  RouteContext,
-  RouteParams,
-  RouterContext,
-  RouterOptions,
-} from "./types"
+import { PathnameOrObject, Resolve, Route, RouteContext, RouteParams, RouterOptions } from "./types"
 
 const log = debug("low-router")
 /**
  * LowRouter
  */
-export class LowRouter<A = any, C extends RouterContext = RouterContext> {
-  routes: Route<A, C>[]
-  currentContext: RouteContext<A, C> | undefined
-  options: Partial<RouterOptions<A, C>>
+export class LowRouter {
+  routes: Route[]
+  currentContext: RouteContext | undefined
+  options: Partial<RouterOptions>
   matcher: Matcher
 
-  constructor(routes: Route<A, C>[], options: Partial<RouterOptions<A, C>> = {}) {
+  constructor(routes: Route[], options: Partial<RouterOptions> = {}) {
     this.routes = routes
     this.options = options
     this.options.base = this.options.base || "/"
@@ -37,7 +29,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
    * Resolve
    * return a Promise witch return the action result
    */
-  public async resolve(pathnameOrObject: PathnameOrObject): Promise<Resolve<A, C>> {
+  public async resolve(pathnameOrObject: PathnameOrObject): Promise<Resolve> {
     const obj = this.#resolver(pathnameOrObject)
     if (typeof obj.context.route?.action === "function") {
       obj.response = await obj.context.route.action(obj.context)
@@ -50,7 +42,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
    * ResolveSync
    * return response synchronously
    */
-  public resolveSync(pathnameOrObject: PathnameOrObject): Resolve<A, C> {
+  public resolveSync(pathnameOrObject: PathnameOrObject): Resolve {
     const obj = this.#resolver(pathnameOrObject)
     if (typeof obj.context?.route?.action === "function") {
       obj.response = obj.context.route.action(obj.context)
@@ -96,8 +88,8 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
     pathname: string,
     base = this.options.base,
     routes = this.routes
-  ): RouteContext<A, C> | undefined {
-    const next = (pathname, base, routes, parent): RouteContext<A, C> | undefined => {
+  ): RouteContext | undefined {
+    const next = (pathname, base, routes, parent): RouteContext | undefined => {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.matcher(formatRoutePath, pathname)
