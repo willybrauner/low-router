@@ -6,8 +6,14 @@ interface Location {
   hash: string
 }
 export type CreateBrowserHistory = () => HistoryAPI
+
+export interface callbackParams {
+  location: Location
+  action?: Action
+}
+
 export interface HistoryAPI {
-  listen: (callback: (location: Location, action: Action) => void) => () => void
+  listen: (callback: ({ location, action }: callbackParams) => void) => () => void
   push: (pathname: string, eventType?: HistoryEvents) => void
 }
 
@@ -20,20 +26,23 @@ export const createBrowserHistory: CreateBrowserHistory = () => {
   const loc = location
   // const keepPushState = h.pushState
   // const keepReplaceState = h.replaceState
-  const listeners: ((location: Location, action: Action) => void)[] = []
+  const listeners: (({ location, action }: callbackParams) => void)[] = []
 
-  const notifyListeners = (location: Location, action: Action) => {
+  const notifyListeners = ({ location, action }: callbackParams) => {
     listeners.forEach((callback) => {
-      callback(location, action)
+      callback({ location, action })
     })
   }
 
   return {
-    listen: (callback: (location: Location, action: Action) => void) => {
+    listen: (callback: ({ location, action }: callbackParams) => void) => {
       listeners.push(callback)
 
       const handlePop = () => {
-        callback({ pathname: loc.pathname, search: loc.search, hash: loc.hash }, "POP")
+        callback({
+          location: { pathname: loc.pathname, search: loc.search, hash: loc.hash },
+          action: "POP",
+        })
       }
 
       // Handle the "popstate" event separately
@@ -48,10 +57,10 @@ export const createBrowserHistory: CreateBrowserHistory = () => {
     },
     push: (pathname: string, eventType: HistoryEvents = "pushState") => {
       h[eventType]({}, null, pathname)
-      notifyListeners(
-        { pathname, search: loc.search, hash: loc.hash },
-        eventType === "pushState" ? "PUSH" : "REPLACE"
-      )
+      notifyListeners({
+        location: { pathname, search: loc.search, hash: loc.hash },
+        action: eventType === "pushState" ? "PUSH" : "REPLACE",
+      })
     },
   }
 }
