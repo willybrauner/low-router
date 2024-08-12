@@ -1,6 +1,7 @@
-import { createMatcher, Matcher } from "./createMatcher"
+import { createMatcher, Matcher } from "./utils/createMatcher"
 import debug from "@wbe/debug"
 import { PathnameOrObject, Resolve, Route, RouteContext, RouteParams, RouterOptions } from "./types"
+import { compilePath } from "./utils/compilePath"
 
 const log = debug("low-router")
 /**
@@ -93,7 +94,7 @@ export class LowRouter {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
         const [isMatch, params, query, hash] = this.matcher(formatRoutePath, pathname)
-        const relativePathname = LowRouter.compilePath(route.path)(params)
+        const relativePathname = compilePath(route.path)(params)
         this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
 
         const currContext = {
@@ -129,43 +130,19 @@ export class LowRouter {
     const next = (name, params, routes, curBase): string => {
       for (let route of routes) {
         if (route.name === name) {
-          return (curBase + LowRouter.compilePath(route.path)(params)).replace(/(\/)+/g, "/")
+          return (curBase + compilePath(route.path)(params)).replace(/(\/)+/g, "/")
         } else if (route.children?.length > 0) {
           const match = next(
             name,
             params,
             route.children,
-            curBase + LowRouter.compilePath(route.path)(params)
+            curBase + compilePath(route.path)(params)
           )
           if (match) return match
         }
       }
     }
     return next(name, params, this.routes, this.options.base)
-  }
-
-  /**
-   * Compile path
-   * ex:
-   *  compilePath("/foo/:id", {id: "bar"}) -> /foo/bar
-   *  compilePath("/foo/:id?", {id: "bar"}) -> /foo/bar
-   *  compilePath("/foo?param=one", {id: "bar"}) -> /foo?param=one
-   * @param path
-   */
-  public static compilePath(path: string): (params: RouteParams) => string {
-    return (params) => {
-      const [pathWithoutHash, hash] = path.split("#")
-      const query = /\?(?!\/).+$/.exec(pathWithoutHash)?.[0]
-      const pathWithoutQuery = pathWithoutHash.replace(query, "")
-      const s = pathWithoutQuery
-        .replace(/:([^/?]+)(\?)?/g, (match, key) => params?.[key] ?? "")
-        .replace(/(\/)+/g, "/")
-      return (
-        (s.endsWith("/") && s !== "/" ? s.slice(0, -1) : s) +
-        (query ? `${query}` : "") +
-        (hash ? `#${hash}` : "")
-      )
-    }
   }
 
   #log(...rest: any[]): void {

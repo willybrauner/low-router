@@ -1,4 +1,4 @@
-import { Matcher } from "./createMatcher"
+import { Matcher } from "./utils/createMatcher"
 
 export type RouteParams = { [paramName: string]: string }
 export type QueryParams = { [paramName: string]: string }

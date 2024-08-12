@@ -162,7 +162,7 @@ the new pathname with the router, like [remix-run/history](https://github.com/re
 
 ## Matcher
 
-The `matcher` is the function used to convert a route path to a regular expression. By default, `LowRouter` use an [internal matcher function](packages/low-router/src/createMatcher.ts). this matcher is called when the resolve method is called. You shouldn't have to use this function directly, but it's interesting to understand how it works, specially if you need to use a custom one.
+The `matcher` is the function used to convert a route path to a regular expression. By default, `LowRouter` use an [internal matcher function](packages/low-router/src/utils/createMatcher.ts). this matcher is called when the resolve method is called. You shouldn't have to use this function directly, but it's interesting to understand how it works, specially if you need to use a custom one.
 
 ```ts
 import { createMatcher } from "@wbe/low-router"
