@@ -18,7 +18,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
   routes: Route<A, C>[]
   currentContext: RouteContext<A, C> | undefined
   options: Partial<RouterOptions<A, C>>
-  #matcher: Matcher
+  matcher: Matcher
 
   constructor(routes: Route<A, C>[], options: Partial<RouterOptions<A, C>> = {}) {
     this.routes = routes
@@ -29,7 +29,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
     this.#log("routes", this.routes)
     this.#log("options", this.options)
 
-    this.#matcher = this.options.matcher || createMatcher()
+    this.matcher = this.options.matcher || createMatcher()
     this.options.onInit?.()
   }
 
@@ -100,7 +100,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
     const next = (pathname, base, routes, parent): RouteContext<A, C> | undefined => {
       for (let route of routes) {
         const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
-        const [isMatch, params, query, hash] = this.#matcher(formatRoutePath, pathname)
+        const [isMatch, params, query, hash] = this.matcher(formatRoutePath, pathname)
         const relativePathname = LowRouter.compilePath(route.path)(params)
         this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
 
