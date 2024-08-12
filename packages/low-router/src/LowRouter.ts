@@ -17,20 +17,20 @@ const log = debug("low-router")
 export class LowRouter<A = any, C extends RouterContext = RouterContext> {
   routes: Route<A, C>[]
   currentContext: RouteContext<A, C> | undefined
-  #options: Partial<RouterOptions<A, C>>
+  options: Partial<RouterOptions<A, C>>
   #matcher: Matcher
 
   constructor(routes: Route<A, C>[], options: Partial<RouterOptions<A, C>> = {}) {
     this.routes = routes
-    this.#options = options
-    this.#options.base = this.#options.base || "/"
-    this.#options.id = this.#options.id || 1
+    this.options = options
+    this.options.base = this.options.base || "/"
+    this.options.id = this.options.id || 1
 
     this.#log("routes", this.routes)
-    this.#log("options", this.#options)
+    this.#log("options", this.options)
 
-    this.#matcher = this.#options.matcher || createMatcher()
-    this.#options.onInit?.()
+    this.#matcher = this.options.matcher || createMatcher()
+    this.options.onInit?.()
   }
 
   /**
@@ -42,7 +42,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
     if (typeof obj.context.route?.action === "function") {
       obj.response = await obj.context.route.action(obj.context)
     }
-    this.#options.onResolve?.(obj)
+    this.options.onResolve?.(obj)
     return Promise.resolve(obj)
   }
 
@@ -55,7 +55,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
     if (typeof obj.context?.route?.action === "function") {
       obj.response = obj.context.route.action(obj.context)
     }
-    this.#options.onResolve?.(obj)
+    this.options.onResolve?.(obj)
     return obj
   }
 
@@ -74,7 +74,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
     // error
     if (!routeContext) {
       this.#log(`No matching route found with pathname ${pathnameOrObject}`, this.routes)
-      this.#options.onError?.()
+      this.options.onError?.()
       return { response: undefined, context: undefined }
     }
     // save current context
@@ -86,7 +86,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
 
   public dispose(): void {
     this.currentContext = null
-    this.#options.onDispose?.()
+    this.options.onDispose?.()
   }
 
   /**
@@ -94,7 +94,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
    */
   matchRoute(
     pathname: string,
-    base = this.#options.base,
+    base = this.options.base,
     routes = this.routes
   ): RouteContext<A, C> | undefined {
     const next = (pathname, base, routes, parent): RouteContext<A, C> | undefined => {
@@ -149,7 +149,7 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
         }
       }
     }
-    return next(name, params, this.routes, this.#options.base)
+    return next(name, params, this.routes, this.options.base)
   }
 
   /**
@@ -177,6 +177,6 @@ export class LowRouter<A = any, C extends RouterContext = RouterContext> {
   }
 
   #log(...rest: any[]): void {
-    log(this.#options?.id || "", ...rest)
+    log(this.options?.id || "", ...rest)
   }
 }
