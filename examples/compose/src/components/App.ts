@@ -27,14 +27,16 @@ export class App {
 
     // implement a history listener
     // each time the history change, the router will resolve the new location
-    const handleHistory = (location, action?): void => {
+    const handleHistory = ({ location }): void => {
       this.router.resolve(location.pathname + location.search + location.hash)
     }
     // first call to resolve the current location
     handleHistory({
-      pathname: window.location.pathname,
-      search: window.location.search,
-      hash: window.location.hash,
+      location: {
+        pathname: window.location.pathname,
+        search: window.location.search,
+        hash: window.location.hash,
+      },
     })
     // listen to history and return the unlisten function
     const unlisten = this.browserHistory.listen(handleHistory)

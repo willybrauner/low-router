@@ -41,7 +41,7 @@ function LowReactRouter(props: {
     () =>
       new LowRouter(props.routes, {
         ...props.options,
-        onResolve: ({ response,context }) => {
+        onResolve: ({ response, context }) => {
           while (context) {
             if (!context.parent) break
             context = context.parent
@@ -67,15 +67,17 @@ function LowReactRouter(props: {
 
     if (!STORE.history || !router) return
 
-    const handleHistory = (location): void => {
+    const handleHistory = ({ location, action }: { location; action? }): void => {
       // console.log(props.options.id, "handleHistory", location)
       router.resolve(location.pathname + location.search + location.hash)
     }
     // first call to resolve the current location
     handleHistory({
-      pathname: window.location.pathname,
-      search: window.location.search,
-      hash: window.location.hash,
+      location: {
+        pathname: window.location.pathname,
+        search: window.location.search,
+        hash: window.location.hash,
+      },
     })
 
     // listen to history and return the unlisten function
