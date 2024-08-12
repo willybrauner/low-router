@@ -4,41 +4,36 @@ export type RouteParams = { [paramName: string]: string }
 export type QueryParams = { [paramName: string]: string }
 export type Hash = string
 export type RouteProps = Record<string, any>
-export type ActionResponse<A> = Promise<A> | A
 export type PathnameOrObject = string | { name: string; params: RouteParams }
 
-export interface RouterContext {
-  [prop: string]: any
-}
-
-export interface RouteContext<A = any, C extends RouterContext = RouterContext> {
+export interface RouteContext {
   pathname: string
   params: RouteParams
   query: QueryParams
   hash: Hash
   base: string
-  route: Route<A, C>
-  parent: RouteContext<A, C> | null
+  route: Route
+  parent: RouteContext | null
   relativePathname: string
 }
 
-export interface Resolve<A, C> {
-  response: ActionResponse<A>
-  context: RouteContext<A, C>
+export interface Resolve {
+  response: any
+  context: RouteContext
 }
 
-export interface Route<A = any, C extends RouterContext = RouterContext> {
+export interface Route {
   path: string
   name?: string
   props?: RouteProps
-  children?: Route<A, C>[] | null | undefined
-  action?: (context?: RouteContext<A, C>) => ActionResponse<A>
+  children?: Route[] | null | undefined
+  action?: (context?: RouteContext) => any
 }
 
-export interface RouterOptions<A = any, C extends RouterContext = RouterContext> {
+export interface RouterOptions {
   base: string
   onInit: () => void
-  onResolve: ({ response, context }: Resolve<A, C>) => void
+  onResolve: ({ response, context }: Resolve) => void
   onDispose: () => void
   onError: () => void
   matcher: Matcher
