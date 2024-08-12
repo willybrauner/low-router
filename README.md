@@ -144,7 +144,7 @@ import { LowRouter, createBrowserHistory } from "@wbe/low-router"
 const router = new LowRouter(routes, options)
 const history = createBrowserHistory()
 
-const unlisten = history.listen(async (location, action) => {
+const unlisten = history.listen(async ({ location, action }) => {
   const response = await router.resolve(location.pathname)
   // Do something with the response...
 })
@@ -351,7 +351,7 @@ interface Route {
 export interface HistoryAPI {
   // associate a callback to the history change event
   // return a function to stop listening
-  listen: (callback: (location: Location, action: Action) => void) => () => void
+  listen: (callback: ({ location, action }) => void) => () => void
 
   // Push a new patname to the history
   push: (pathname: string) => void
