@@ -1,5 +1,13 @@
 # @wbe/low-router
 
+## 0.8.1
+
+### Patch Changes
+
+- 2abc0f7: export compilePath
+
+  Add missing `compilePath` export in `index.ts`
+
 ## 0.8.0
 
 ### Minor Changes
