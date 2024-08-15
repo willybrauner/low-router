@@ -1,5 +1,27 @@
 # @wbe/low-router
 
+## 0.8.0
+
+### Minor Changes
+
+- e5eca20: extract compile path function
+
+  before:
+
+  ```ts
+  LowRouter.compilePath(path)(params)
+  ```
+
+  after:
+
+  ```ts
+  compilePath(path)(params)
+  ```
+
+  - compile base if it contains params in createUrl
+
+- 71279f3: extract compilePath static method as external function
+
 ## 0.7.0
 
 ### Minor Changes
