@@ -1,3 +1,4 @@
+// router
 export { LowRouter } from "./LowRouter"
 export type {
   RouteContext,
@@ -7,8 +8,9 @@ export type {
   RouterOptions,
   PathnameOrObject,
 } from "./types"
-export { createMatcher, pathToRegexp } from "./utils/createMatcher"
 
-// additional exports
+// utils
+export { createMatcher, pathToRegexp } from "./utils/createMatcher"
+export { compilePath } from "./utils/compilePath"
 export { createBrowserHistory } from "./utils/browserHistory"
 export type { CreateBrowserHistory, HistoryAPI } from "./utils/browserHistory"
