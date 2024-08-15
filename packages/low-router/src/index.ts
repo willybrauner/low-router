@@ -1,5 +1,12 @@
 export { LowRouter } from "./LowRouter"
-export type { RouteContext, Route, RouteParams, RouteProps, RouterOptions } from "./types"
+export type {
+  RouteContext,
+  Route,
+  RouteParams,
+  RouteProps,
+  RouterOptions,
+  PathnameOrObject,
+} from "./types"
 export { createMatcher, pathToRegexp } from "./utils/createMatcher"
 
 // additional exports
