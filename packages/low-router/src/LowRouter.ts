@@ -129,15 +129,11 @@ export class LowRouter {
   public createUrl({ name, params = {} }: { name: string; params?: RouteParams }): string {
     const next = (name, params, routes, curBase): string => {
       for (let route of routes) {
+        const compiledPath = compilePath(curBase + route.path)(params).replace(/(\/)+/g, "/")
         if (route.name === name) {
-          return (curBase + compilePath(route.path)(params)).replace(/(\/)+/g, "/")
+          return compiledPath
         } else if (route.children?.length > 0) {
-          const match = next(
-            name,
-            params,
-            route.children,
-            curBase + compilePath(route.path)(params)
-          )
+          const match = next(name, params, route.children, compiledPath)
           if (match) return match
         }
       }
