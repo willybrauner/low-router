@@ -112,7 +112,7 @@ export class LowRouter {
         if (isMatch) {
           return currContext
         } else if (route.children) {
-          const childResult = next(pathname, fPath, route.children, currContext)
+          const childResult = next(pathname, fPath, route.children, parent ?? currContext)
           if (childResult) return childResult
         }
       }
