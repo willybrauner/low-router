@@ -1,5 +1,44 @@
 # @wbe/low-router
 
+## 0.9.0
+
+### Minor Changes
+
+- 8529535: Matcher returns params even if not matching
+
+  ```ts
+  const path = "/base/:lang/a-propos/bar"
+  const matcher = createMatcher()
+  ```
+
+  before:
+
+  ```ts
+  expect(matcher(path, "/base/fr/a-propos/bar/b")).toEqual([false, null, null, null])
+  ```
+
+  after:
+
+  ```ts
+  expect(matcher(path, "/base/fr/a-propos/bar/b")).toEqual([false, { lang: "fr" }, {}, null])
+  ```
+
+- 7018e00: nomalize path
+
+  Create normalize path helper to get a formatted and constant path format.
+
+  ```ts
+  path
+    // remove multiples slashes
+    ?.replace(/(https?:\/\/)|(\/)+/g, "$1$2")
+    // remove trailing slash
+    .replace(/\/$/, "") ||
+    // add trailing slash if path is empty
+    "/"
+  ```
+
+  `normalizePath(path) => string` is available : `import { normalizePath } from "@wbe/low-router`
+
 ## 0.8.1
 
 ### Patch Changes
