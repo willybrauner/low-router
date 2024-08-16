@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { compilePath } from "../src/utils/compilePath"
+import { compilePath } from "../src"
 
 describe.concurrent("compile path", () => {
   it("should compile path with params", () => {
