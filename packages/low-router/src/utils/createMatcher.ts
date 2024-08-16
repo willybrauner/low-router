@@ -49,17 +49,38 @@ export const createMatcher: CreateMatcher = (regexFn: RegexFn = pathToRegexp): M
     // exec custom regexFn
     const { regexp, keys } = getRegexp(pattern || "")
     const test = regexp.exec(pathname)
-    if (!test) return [false, null, null, null]
 
-    const params = keys.reduce((params, key, i) => {
-      params[key.name] = test[i + 1]
+    // Initialize params object with undefined values initially
+    const params = keys.reduce((params, key) => {
+      params[key.name] = undefined
       return params
     }, {})
-    return [true, params, queryParams, hash]
+
+    // If test exists, populate params with actual values
+    if (test) {
+      keys.forEach((key, i) => {
+        params[key.name] = test[i + 1]
+      })
+    } else {
+      // very naive partial match handling
+      // In case of partial matches, handle returning what was matched
+      const segments = pathname.split("/").filter(Boolean)
+      const patternSegments = pattern.split("/").filter(Boolean)
+      patternSegments.forEach((seg, i) => {
+        if (seg.startsWith(":") && segments[i]) {
+          const paramName = seg.slice(1)
+          params[paramName] = segments[i]
+        }
+      })
+    }
+
+    return [!!test, params, queryParams, hash]
   }
 }
 
-export const pathToRegexp = (pattern: string): { keys: Record<"name", string>[]; regexp: RegExp } => {
+export const pathToRegexp = (
+  pattern: string
+): { keys: Record<"name", string>[]; regexp: RegExp } => {
   // escapes a regexp string (borrowed from path-to-regexp sources)
   // https://github.com/pillarjs/path-to-regexp/blob/v3.0.0/index.js#L202
   const _escapeRx = (str) => str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1")

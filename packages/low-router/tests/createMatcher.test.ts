@@ -7,8 +7,8 @@ describe("path to regex", () => {
 
     const matcher = createMatcher()
     expect(matcher(path, "/foo")).toEqual([true, {}, {}, null])
-    expect(matcher(path, "foo")).toEqual([false, null, null, null])
-    expect(matcher(path, "/other")).toEqual([false, null, null, null])
+    expect(matcher(path, "foo")).toEqual([false, {}, {}, null])
+    expect(matcher(path, "/other")).toEqual([false, {}, {}, null])
   })
 
   it("should parse the path with param", () => {
@@ -17,8 +17,8 @@ describe("path to regex", () => {
     expect(matcher(path, "/test/foo")).toEqual([true, { id: "foo" }, {}, null])
     expect(matcher(path, "/test/foo/")).toEqual([true, { id: "foo" }, {}, null])
     expect(matcher(path, "/test/bar")).toEqual([true, { id: "bar" }, {}, null])
-    expect(matcher(path, "/test")).toEqual([false, null, null, null])
-    expect(matcher(path, "/test/bar/foo")).toEqual([false, null, null, null])
+    expect(matcher(path, "/test")).toEqual([false, {}, {}, null])
+    expect(matcher(path, "/test/bar/foo")).toEqual([false, { id: "bar" }, {}, null])
   })
 
   it("should parse the path with optional param", () => {
@@ -59,7 +59,7 @@ describe("path to regex", () => {
     const matcher = createMatcher()
     expect(matcher(path, "/test#foo")).toEqual([true, {}, {}, "foo"])
     expect(matcher(path, "/test#foobar")).toEqual([true, {}, {}, "foobar"])
-    expect(matcher(path, "/tt#foobar")).toEqual([false, null, null, null])
+    expect(matcher(path, "/tt#foobar")).toEqual([false, {}, {}, "foobar"])
   })
 
   it("should parse the path with params, query and hash", () => {
@@ -76,5 +76,13 @@ describe("path to regex", () => {
       },
       "foo",
     ])
+  })
+
+  it("should returns params even if pattern and path doesn't match", () => {
+    const path = "/base/:lang/a-propos/bar"
+    const matcher = createMatcher()
+    expect(matcher(path, "/base/fr/a-propos/bar")).toEqual([true, { lang: "fr" }, {}, null])
+    expect(matcher(path, "/base/fr/a-propos/bar/b")).toEqual([false, { lang: "fr" }, {}, null])
+    expect(matcher(path, "/base/fr/a-propos")).toEqual([false, { lang: "fr" }, {}, null])
   })
 })
