@@ -1,7 +1,8 @@
-import { createMatcher, Matcher } from "./utils/createMatcher"
 import debug from "@wbe/debug"
 import { PathnameOrObject, Resolve, Route, RouteContext, RouteParams, RouterOptions } from "./types"
+import { createMatcher, Matcher } from "./utils/createMatcher"
 import { compilePath } from "./utils/compilePath"
+import { normalizePath } from "./utils/normalizePath"
 
 const log = debug("low-router")
 /**
@@ -85,17 +86,17 @@ export class LowRouter {
   /**
    * Takes pathname a return matching route object
    */
-  matchRoute(
+  public matchRoute(
     pathname: string,
     base = this.options.base,
     routes = this.routes
   ): RouteContext | undefined {
     const next = (pathname, base, routes, parent): RouteContext | undefined => {
       for (let route of routes) {
-        const formatRoutePath = `${base}${route.path}`.replace(/(\/)+/g, "/")
-        const [isMatch, params, query, hash] = this.matcher(formatRoutePath, pathname)
+        const fPath = normalizePath(base + route.path)
+        const [isMatch, params, query, hash] = this.matcher(fPath, pathname)
         const relativePathname = compilePath(route.path)(params)
-        this.#log(`'${formatRoutePath}' match with '${pathname}'?`, isMatch)
+        this.#log(`'${fPath}' match with '${pathname}'?`, isMatch)
 
         const currContext = {
           pathname,
@@ -111,7 +112,7 @@ export class LowRouter {
         if (isMatch) {
           return currContext
         } else if (route.children) {
-          const childResult = next(pathname, formatRoutePath, route.children, currContext)
+          const childResult = next(pathname, fPath, route.children, currContext)
           if (childResult) return childResult
         }
       }
@@ -129,7 +130,7 @@ export class LowRouter {
   public createUrl({ name, params = {} }: { name: string; params?: RouteParams }): string {
     const next = (name, params, routes, curBase): string => {
       for (let route of routes) {
-        const compiledPath = compilePath(curBase + route.path)(params).replace(/(\/)+/g, "/")
+        const compiledPath = normalizePath(compilePath(curBase + route.path)(params))
         if (route.name === name) {
           return compiledPath
         } else if (route.children?.length > 0) {
