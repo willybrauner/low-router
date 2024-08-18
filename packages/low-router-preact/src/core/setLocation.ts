@@ -1,5 +1,8 @@
 import { normalizePath, RouteParams } from "@wbe/low-router"
-import { addLocaleToUrl, composeUrlByRouteName, joinPaths, ROUTERS } from ".."
+import { ROUTERS } from "../components/Router"
+import { joinPaths } from "../helpers/joinPaths"
+import { addLocaleToUrl } from "../helpers/addLocaleToUrl"
+import { composeUrlByRouteName } from "./composeUrlByRouteName"
 
 export function setLocation(
   to: string | { name: string; params?: RouteParams },

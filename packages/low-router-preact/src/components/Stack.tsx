@@ -1,10 +1,10 @@
-import { h } from 'preact'
+import { h } from "preact"
 import { useLayoutEffect, useMemo, useReducer } from "preact/compat"
 import { useRef } from "preact/hooks"
 import debug from "@wbe/debug"
 import { RouteContext } from "@wbe/low-router"
 import { isServer } from "@wbe/utils"
-import { useRouter } from ".."
+import { useRouter } from "../hooks/useRouter"
 
 export interface RouteRef {
   playIn: () => Promise<void>

@@ -4,8 +4,11 @@ import { createContext, memo, ReactElement, useEffect, useReducer } from "preact
 import { useRef } from "preact/hooks"
 import debug from "@wbe/debug"
 import { isServer } from "@wbe/utils"
-import { composeUrlByRouteName, I18n, InitialStaticProps, safeMergeObjects, useCache } from ".."
-import { CacheAPI } from "../core/useCache"
+import { CacheAPI, useCache } from "../core/useCache"
+import { safeMergeObjects } from "../helpers/safeMergeObjects"
+import { I18n } from "../services/I18n"
+import { InitialStaticProps } from "../core/getStaticPropsFromUrl"
+import { composeUrlByRouteName } from "../core/composeUrlByRouteName"
 
 // ------------------------------------------------------------------------------------------------- GLOBAL
 

@@ -1,5 +1,5 @@
 import { compilePath, Route, RouteParams } from "@wbe/low-router"
-import { ROUTERS } from ".."
+import { ROUTERS } from "../components/Router"
 
 /**
  * return a compile pathname (or url) by route name

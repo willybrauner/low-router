@@ -1,6 +1,7 @@
 import { useMemo } from "preact/compat"
 import { LowRouter, normalizePath } from "@wbe/low-router"
-import { joinPaths, useRouter } from ".."
+import { joinPaths } from "../helpers/joinPaths"
+import { useRouter } from "./useRouter"
 
 /**
  * Shortcut to create a router instance passed to <Router> component

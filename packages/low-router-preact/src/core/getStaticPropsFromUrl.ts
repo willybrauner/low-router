@@ -1,6 +1,7 @@
 import { LowRouter, RouteContext } from "@wbe/low-router"
 import debug from "@wbe/debug"
-import { I18n, composeUrlByRouteName } from ".."
+import { I18n } from "../services/I18n"
+import { composeUrlByRouteName } from "./composeUrlByRouteName"
 
 export type InitialStaticProps = Record<string, Record<string, any>>
 

@@ -1,14 +1,18 @@
-import { h } from 'preact';
-import { normalizePath, RouteParams } from "@wbe/low-router"
+import { h } from "preact"
 import {
-  useMemo,
-  forwardRef,
   AnchorHTMLAttributes,
+  forwardRef,
   MutableRefObject,
   PropsWithChildren,
+  useMemo,
 } from "preact/compat"
+import { normalizePath, RouteParams } from "@wbe/low-router"
+import { useRouter } from "../hooks/useRouter"
+import { joinPaths } from "../helpers/joinPaths"
+import { ROUTERS } from "./Router"
+import { addLocaleToUrl } from "../helpers/addLocaleToUrl"
+import { composeUrlByRouteName } from "../core/composeUrlByRouteName"
 import { isServer } from "@wbe/utils"
-import { addLocaleToUrl, composeUrlByRouteName, joinPaths, ROUTERS, useRouter } from ".."
 
 // exclude href because it collides with "to"
 type TAnchorWithoutHref = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href">

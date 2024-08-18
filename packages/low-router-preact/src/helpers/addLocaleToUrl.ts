@@ -1,4 +1,5 @@
-import { ROUTERS, joinPaths } from ".."
+import { joinPaths } from "./joinPaths"
+import { ROUTERS } from "../components/Router"
 
 /**
  * if locale service exist, set lang key to URL

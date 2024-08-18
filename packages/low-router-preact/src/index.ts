@@ -18,9 +18,3 @@ export { composeUrlByRouteName } from "./core/composeUrlByRouteName"
 export { getStaticPropsFromUrl } from "./core/getStaticPropsFromUrl"
 export type { InitialStaticProps } from "./core/getStaticPropsFromUrl"
 export { setLocation } from "./core/setLocation"
-export { useCache } from "./core/useCache"
-
-// helpers
-export { addLocaleToUrl } from "./helpers/addLocaleToUrl"
-export { joinPaths } from "./helpers/joinPaths"
-export { safeMergeObjects } from "./helpers/safeMergeObjects"

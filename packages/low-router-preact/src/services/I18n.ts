@@ -1,7 +1,9 @@
 import debug from "@wbe/debug"
-import { composeUrlByRouteName, joinPaths, ROUTERS } from ".."
 import { isServer } from "@wbe/utils"
 import { normalizePath, Route } from "@wbe/low-router"
+import { composeUrlByRouteName } from "../core/composeUrlByRouteName"
+import { ROUTERS } from "../components/Router"
+import { joinPaths } from "../helpers/joinPaths"
 
 const log = debug(`router:I18n`)
 
