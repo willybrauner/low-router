@@ -153,7 +153,7 @@ function LowReactRouter(props: {
     const ctx = props.router.matchRoute(location.pathname + location.search + location.hash)
 
     if (!ctx) {
-      log(id, "no route context found, return.")
+      log(id, "no context found, return.")
       return
     }
 
@@ -195,7 +195,7 @@ function LowReactRouter(props: {
     // SERVER (first route)
     if (IS_SERVER) {
       if (ROUTERS.initialStaticProps) {
-        log(id, "[firstRoute | isServer] assign initialStaticProps to route.props & set cache")
+        // log(id, "[firstRoute | isServer] assign initialStaticProps to route.props & set cache")
         context.route.props = safeMergeObjects(
           context.route.props,
           ROUTERS.initialStaticProps?.[url]
@@ -208,14 +208,14 @@ function LowReactRouter(props: {
       // CLIENT > FIRST ROUTE
       if (ROUTERS.isFirstRoute) {
         if (ROUTERS.initialStaticProps?.[url]) {
-          log(id, "[firstRoute | isClient] assign initialStaticProps to route.props & set cache")
+          // log(id, "[firstRoute | isClient] assign initialStaticProps to route.props & set cache")
           context.route.props = safeMergeObjects(
             context.route.props,
             ROUTERS.initialStaticProps?.[url]
           )
           cache.set(url, context.route.props)
         } else if (context.route.getStaticProps) {
-          log(id, "[firstRoute | isClient] request getStaticProps & set cache")
+          //log(id, "[firstRoute | isClient] request getStaticProps & set cache")
           await _requestAndCacheStaticProps(context.route, cache, url)
         }
       }
@@ -223,10 +223,10 @@ function LowReactRouter(props: {
       else {
         const cacheData = cache.get(url)
         if (cacheData) {
-          log(id, "[not firstRoute | isClient] assign existing cache to route.props", cacheData)
+          // log(id, "[not firstRoute | isClient] assign existing cache to route.props", cacheData)
           context.route.props = safeMergeObjects(context.route.props, cacheData)
         } else if (context.route.getStaticProps) {
-          log(id, "[not firstRoute | isClient] request getStaticProps & set cache")
+          // log(id, "[not firstRoute | isClient] request getStaticProps & set cache")
           await _requestAndCacheStaticProps(context.route, cache, url)
         }
       }
