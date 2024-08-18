@@ -22,7 +22,7 @@ export const viteMaestroCustomLogger = ({
     ``,
     `  ${chalk.green.bold.underline(packageJson.name)} ${chalk.gray("v" + packageJson['version'])} \n`,
     `  ${chalk.bold("Local")}:      ${chalk.cyan(`${protocol}://${chalk.bold('localhost')}${port ? `:${port}`: ""}${formatBase}`)}`,
-    !hostIsLocalhost && `  ${chalk.bold("Network")}:    ${chalk.cyan(`${protocol}://${chalk.bold(host)}${port ? `:${port}`: ""}${formatBase}`)}`,
+//    !hostIsLocalhost && `  ${chalk.bold("Network")}:    ${chalk.cyan(`${protocol}://${chalk.bold(host)}${port ? `:${port}`: ""}${formatBase}`)}`,
   ].filter(e => e).join('\n');
 
   logger.warnOnce(template)

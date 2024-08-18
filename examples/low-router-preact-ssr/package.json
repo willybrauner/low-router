@@ -2,6 +2,7 @@
   "name": "low-router-preact-ssr",
   "main": "src/index-client.tsx",
   "type": "module",
+  "version": "0.1.0",
   "scripts": {
     "dev": "tsx server.dev.ts",
     "build:spa": "cross-env VITE_SPA=true vite build --outDir dist/spa",

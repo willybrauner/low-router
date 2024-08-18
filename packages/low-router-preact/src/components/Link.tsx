@@ -1,10 +1,10 @@
 import { h } from "preact"
 import {
   AnchorHTMLAttributes,
-  forwardRef,
   MutableRefObject,
   PropsWithChildren,
   useMemo,
+  forwardRef,
 } from "preact/compat"
 import { normalizePath, RouteParams } from "@wbe/low-router"
 import { useRouter } from "../hooks/useRouter"

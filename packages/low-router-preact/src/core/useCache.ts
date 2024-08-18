@@ -1,5 +1,5 @@
 import debug from "@wbe/debug"
-const log = debug("low-router:cache")
+const log = debug("low-router-preact:cache")
 
 export interface CacheAPI {
   get: (key: string) => any
@@ -12,7 +12,7 @@ export interface CacheAPI {
 export function useCache(cache: Record<any, any>, id: number | string): CacheAPI {
   const dataAlreadyExist = (key: string) => Object.keys(cache).some((el) => el === key)
 
-  return Object.freeze({
+  return {
     get: (key: string): any => {
       if (!dataAlreadyExist(key)) return null
       return cache[key]
@@ -25,5 +25,5 @@ export function useCache(cache: Record<any, any>, id: number | string): CacheAPI
       cache[key] = data
       log(id, `"${key}"`, "has been cached", cache)
     },
-  })
+  }
 }

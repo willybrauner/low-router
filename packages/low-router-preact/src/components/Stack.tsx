@@ -1,7 +1,6 @@
 import { h } from "preact"
 import { useLayoutEffect, useMemo, useReducer } from "preact/compat"
 import { useRef } from "preact/hooks"
-import debug from "@wbe/debug"
 import { RouteContext } from "@wbe/low-router"
 import { isServer } from "@wbe/utils"
 import { useRouter } from "../hooks/useRouter"
@@ -39,8 +38,6 @@ const DEFAULT_TRANSITION = async ({ prev, current, unmountPrev }: StackTransitio
   if (current?.playIn) await current?.playIn?.()
 }
 
-const log = debug("low-router:Stack")
-
 /**
  * Stack
  * @param transitions
@@ -72,7 +69,7 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
           const newStackRoutes = clampRoutesRender
             ? [action.prevContext, action.currentContext].filter(Boolean)
             : [...state.stackRoutes, action.currentContext].filter(Boolean)
-          // log(id, "stackRoutes", newStackRoutes)
+          // console.log(id, "stackRoutes", newStackRoutes)
           return {
             prevContext: action.prevContext,
             currentContext: action.prevContext,
@@ -82,7 +79,7 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
           const stackRoutes = state.stackRoutes?.filter(
             (e) => e?.routeId !== action.routeIdToRemove
           )
-          // log(id, "stackRoutes after remove", stackRoutes)
+          // console.log(id, "stackRoutes after remove", stackRoutes)
           return {
             ...state,
             stackRoutes,

@@ -5,7 +5,7 @@ import { composeUrlByRouteName } from "./composeUrlByRouteName"
 
 export type InitialStaticProps = Record<string, Record<string, any>>
 
-const log = debug("router:staticProps")
+const log = debug("low-router-preact:staticProps")
 /**
  * get static props from url
  *
@@ -27,16 +27,11 @@ export async function getStaticPropsFromUrl(
   try {
     resolve = await router.resolve(url)
   } catch (e) {
-    log("resolve error", e)
+    console.error("resolve error", e)
     return
   }
 
-  const context = resolve?.context
-  if (!context) {
-    log("No context, return")
-    return
-  }
-
+  const context = resolve.context
   const initialStaticProps: InitialStaticProps = {}
   /**
    * Parse the route three from the end to the beginning
@@ -54,11 +49,9 @@ export async function getStaticPropsFromUrl(
         log("fetch getStaticProps data error", e)
       }
     }
-
     if (context.parent) {
       return recursive(context.parent)
     }
-
     return initialStaticProps
   }
   return await recursive(context)

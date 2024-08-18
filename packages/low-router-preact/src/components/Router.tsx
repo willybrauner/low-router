@@ -26,16 +26,16 @@ export interface IRouterContext {
 }
 
 export const RouterContext = createContext<IRouterContext>({
-  prevContext: null,
-  currentContext: null,
-  router: null,
-  base: null,
-  routes: null,
-  options: null,
-  history: null,
+  prevContext: undefined,
+  currentContext: undefined,
+  router: undefined,
+  base: undefined,
+  routes: undefined,
+  options: undefined,
+  history: undefined,
   counter: 0,
-  staticLocation: null,
-  i18n: null,
+  staticLocation: undefined,
+  i18n: undefined,
 })
 
 interface IRouters {
@@ -52,7 +52,7 @@ interface IRouters {
   i18n: I18n
 }
 
-export const ROUTERS: IRouters = {
+export let ROUTERS: IRouters = {
   router: undefined,
   base: undefined,
   routes: undefined,
@@ -66,18 +66,15 @@ export const ROUTERS: IRouters = {
   i18n: null,
 }
 
-const log = debug("low-router:Router")
+const log = debug("low-router-preact:Router")
 const IS_SERVER = isServer()
-let routeId = 0
+let ROUTE_ID = 0
 
 // ------------------------------------------------------------------------------------------------- ROUTER
 
 /**
- * LowRouter
+ * LowReactRouter
  * A Single react/preact router instance
- *
- * - takes
- *
  *
  */
 function LowReactRouter(props: {
@@ -88,33 +85,27 @@ function LowReactRouter(props: {
   initialStaticProps?: InitialStaticProps
   i18n?: I18n
 }) {
-  const id = props.router.options?.id
+  const id = props.router.options.id
   const IS_ROOT_ROUTER = !!props.staticLocation || !!props.history
 
-  // reset store values on server side if is root router
+  // reset store values is root-router
   const first = useRef(true)
-  if (IS_SERVER && IS_ROOT_ROUTER && first.current) {
+  if (IS_ROOT_ROUTER && first.current) {
     first.current = false
-    ROUTERS.router = undefined
-    ROUTERS.base = undefined
-    ROUTERS.routes = undefined
-    ROUTERS.history = undefined
-    ROUTERS.currentContext = undefined
-    ROUTERS.staticLocation = undefined
-    ROUTERS.initialStaticProps = undefined
-    ROUTERS.staticPropsCache = {}
-    ROUTERS.isFirstRoute = true
-    ROUTERS.routeCounter = 0
-    ROUTERS.i18n = undefined
+    ROUTERS = {
+      router: props.router,
+      base: props.router.options.base,
+      routes: props.router.routes,
+      history: props.history,
+      currentContext: undefined,
+      staticLocation: props.staticLocation,
+      initialStaticProps: props.initialStaticProps,
+      staticPropsCache: {},
+      isFirstRoute: true,
+      routeCounter: 0,
+      i18n: props.i18n,
+    }
   }
-
-  if (!ROUTERS.router) ROUTERS.router = props.router
-  if (!ROUTERS.base) ROUTERS.base = props.router.options.base
-  if (!ROUTERS.i18n) ROUTERS.i18n = props.i18n
-  if (!ROUTERS.routes) ROUTERS.routes = props.router.routes as Route[]
-  if (!ROUTERS.history) ROUTERS.history = props.history
-  if (!ROUTERS.staticLocation) ROUTERS.staticLocation = props.staticLocation
-  if (!ROUTERS.initialStaticProps) ROUTERS.initialStaticProps = props.initialStaticProps
 
   /**
    * Global reducer to store current and previous context
@@ -144,10 +135,7 @@ function LowReactRouter(props: {
    * Router instance dispose
    */
   useEffect(() => {
-    return () => {
-      log(id, "router dispose")
-      props.router?.dispose()
-    }
+    return () => props.router?.dispose()
   }, [])
 
   /**
@@ -174,19 +162,11 @@ function LowReactRouter(props: {
     while (context.parent) {
       context = context.parent
     }
-
     log(id, "context", context)
 
     // check if this is the same route 'relative pathname', and if true, return
     // This step allows to avoid the rerender of parent router instances if we visit a nested route
-    const prevRelativePathname = _prevCtx.current?.relativePathname
-    const currentRelativePathname = context.relativePathname
-    log(id, "relative pathnames", {
-      prev: prevRelativePathname,
-      current: currentRelativePathname,
-    })
-
-    if (prevRelativePathname === currentRelativePathname) {
+    if (_prevCtx.current?.relativePathname === context.relativePathname) {
       log(id, "Same relativePathname, return.")
       return
     }
@@ -253,7 +233,7 @@ function LowReactRouter(props: {
     }
 
     // add route id to context & dispatch to the router context
-    context.routeId = routeId++
+    context.routeId = ROUTE_ID++
     dispatch({ type: "update", currentContext: context })
     ROUTERS.currentContext = context
     _prevCtx.current = context
@@ -267,8 +247,8 @@ function LowReactRouter(props: {
   const firstHandleHistory = useRef(true)
   if (IS_SERVER && ROUTERS.staticLocation && firstHandleHistory.current) {
     firstHandleHistory.current = false
-    const { pathname, search, hash } = new URL(`https://a${ROUTERS.staticLocation}`)
-    handleHistory({ location: { pathname, search, hash } })
+    const { pathname, search } = new URL(`https://a${ROUTERS.staticLocation}`)
+    handleHistory({ location: { pathname, search } })
   }
 
   /**

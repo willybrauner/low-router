@@ -5,7 +5,7 @@ import { composeUrlByRouteName } from "../core/composeUrlByRouteName"
 import { ROUTERS } from "../components/Router"
 import { joinPaths } from "../helpers/joinPaths"
 
-const log = debug(`router:I18n`)
+const log = debug(`low-router-preact:I18n`)
 
 export type Locale<T = any> = {
   code: T | string
