@@ -6,7 +6,8 @@
     "./examples/basic-resolve-sync",
     "./examples/compose",
     "./examples/custom-path-to-regexp",
-    "./examples/react-nested-routes"
+    "./examples/react-nested-routes",
+    "./examples/low-router-preact-ssr"
   ],
   "node": "18"
 }

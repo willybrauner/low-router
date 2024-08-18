@@ -1,0 +1,47 @@
+{
+  "name": "@wbe/low-router-preact",
+  "author": "Willy Brauner",
+  "license": "MIT",
+  "version": "0.1.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "main": "./dist/low-router-preact.js",
+  "module": "./dist/low-router-preact.js",
+  "types": "./dist/low-router-preact.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/willybrauner/low-router-preact.git"
+  },
+  "keywords": [
+    "preact",
+    "react",
+    "router",
+    "routing",
+    "low-level",
+    "flexible",
+    "isomorphic",
+    "browser-history",
+    "matcher"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup",
+    "build:watch": "tsup --watch --sourcemap"
+  },
+  "dependencies": {
+    "@wbe/debug": "^1.2.0",
+    "@wbe/low-router": "workspace:*",
+    "@wbe/utils": "^0.1.2",
+    "preact": "^10.23.1"
+  },
+  "devDependencies": {
+    "path-to-regexp": "^6.2.1",
+    "terser": "^5.19.2",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4",
+    "vitest": "^0.31.0"
+  }
+}
