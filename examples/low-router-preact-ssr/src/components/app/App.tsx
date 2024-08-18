@@ -1,5 +1,5 @@
 import css from "./App.module.scss"
-import { Link, setLocation, Stack, StackTransitionsParams, useRouter } from "@wbe/low-router-preact"
+import { Link, Stack, StackTransitionsParams, useRouter } from "@wbe/low-router-preact"
 
 function App() {
   const router = useRouter()
@@ -22,11 +22,7 @@ function App() {
         <Link to={{ name: "home" }}>{"home"}</Link>
         <Link to={{ name: "about" }}>{"about"}</Link>
         <Link to={{ name: "work", params: { id: "test-1" } }}>{"work test-1"}</Link>
-        <Link to={router.i18n.currentLocale.code === "fr" ? "/a-propos/foo" : "/about/foo"}>
-          {"about foo"}
-        </Link>
-
-        <button onClick={() => setLocation({ name: "home" })}>home</button>
+        <Link to={{ name: "dd" }}>{"about/bar/bb/dd"}</Link>
       </div>
 
       <Stack transitions={custom} clampRoutesRender={false} />

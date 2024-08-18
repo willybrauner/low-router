@@ -3,7 +3,7 @@ import { composeUrlByRouteName, joinPaths, ROUTERS } from ".."
 import { isServer } from "@wbe/utils"
 import { normalizePath, Route } from "@wbe/low-router"
 
-const log = debug(`router:LocaleService`)
+const log = debug(`router:I18n`)
 
 export type Locale<T = any> = {
   code: T | string
@@ -20,12 +20,7 @@ class I18n<T = any> {
   public base: string
   public staticLocation: string
 
-  /**
-   * Init locales service
-   * @param locales
-   * @param options
-   */
-  public constructor(
+  constructor(
     locales: Locale<T>[],
     options?: Partial<{
       base: string
@@ -33,14 +28,11 @@ class I18n<T = any> {
       staticLocation: string
     }>
   ) {
-    if (locales?.length === 0) {
-      throw new Error("ERROR, no locale is set.")
-    }
     this.locales = locales
     this.base = normalizePath(options.base ?? "/")
     this.staticLocation = options.staticLocation
     this.defaultLocale = this.#getDefaultLocale(locales)
-    this.currentLocale = this.#getLocaleFromString() || this.defaultLocale
+    this.currentLocale = this.#getLocaleFromUrl() || this.defaultLocale
     this.browserLocale = this.#getBrowserLocale(locales)
     this.defaultLocaleInUrl = options.defaultLocaleInUrl ?? true
   }
@@ -68,17 +60,17 @@ class I18n<T = any> {
     if (typeof toLocale === "string") {
       toLocale = this.locales.find((locale) => locale.code === toLocale)
       if (!toLocale) {
-        log(`setLocale: locale code string ${toLocale} is not available in locales list, exit.`)
+        log(`locale code ${toLocale} is not available, exit.`)
         return
       }
     }
 
     if (toLocale.code === this.currentLocale.code) {
-      log("setLocale: This is the same locale, exit.")
+      log("this is the same locale, exit.")
       return
     }
     if (!this.#localeIsAvailable(toLocale)) {
-      log(`setLocale: locale ${toLocale.code} is not available in locales list, exit.`)
+      log(`locale ${toLocale.code} is not available in locales list, exit.`)
       return
     }
 
@@ -90,9 +82,7 @@ class I18n<T = any> {
     })
     log("composedUrl by routeName", composedUrl)
 
-    // create newUrl variable to set in each condition
     let newUrl: string
-    // choose force page reload in condition below
     let chooseForcePageReload = forcePageReload
 
     // 1. if default locale should be always visible in URL
@@ -102,9 +92,9 @@ class I18n<T = any> {
 
     // 2. if toLocale is default locale, need to REMOVE locale from URL
     else if (!this.defaultLocaleInUrl && this.isDefaultLocaleCode(toLocale.code)) {
-      const urlPartToRemove = `${this.base}/${toLocale.code}`
+      const baseAndLocale = `${this.base}/${toLocale.code}`
       const newUrlWithoutBaseAndLocale = composedUrl.substring(
-        urlPartToRemove.length,
+        baseAndLocale.length,
         composedUrl.length
       )
       newUrl = joinPaths([this.base, newUrlWithoutBaseAndLocale])
@@ -125,10 +115,6 @@ class I18n<T = any> {
       log("4, other case")
     }
 
-    if (!newUrl) {
-      log("newUrl is no set, do not reload or refresh, return.", newUrl)
-      return
-    }
     // register current locale (not useful if we reload the app.)
     this.currentLocale = toLocale
     // remove last / if exist and if he is not alone
@@ -137,6 +123,10 @@ class I18n<T = any> {
     this.#reloadOrRefresh(newUrl, chooseForcePageReload)
   }
 
+  /**
+   * Redirect to browser locale
+   * @param forcePageReload
+   */
   public redirectToBrowserLocale(forcePageReload: boolean = true) {
     log("browserLocale object", this.browserLocale)
     // If browser locale doesn't match, redirect to default locale
@@ -149,8 +139,7 @@ class I18n<T = any> {
     if (location.pathname === this.base || normalizePath(location.pathname) === this.base) {
       // prepare path and build URL
       const newUrl = `${this.base}/${this.browserLocale.code}`
-
-      log("redirect: to browser locale >", { newUrl })
+      log("redirect: to browser locale", newUrl)
       // reload or refresh all application
       this.#reloadOrRefresh(newUrl, forcePageReload)
     }
@@ -161,33 +150,21 @@ class I18n<T = any> {
    * @param forcePageReload
    */
   public redirectToDefaultLocale(forcePageReload: boolean = true): void {
-    if (isServer()) return
-
     if (!this.defaultLocaleInUrl) {
       log("redirect: URLs have a locale param or locale is valid, don't redirect.")
       return
     }
-    if (this.#localeIsAvailable(this.#getLocaleFromString())) {
+    if (this.#localeIsAvailable(this.#getLocaleFromUrl())) {
       log("redirect: locale from URL is valid, don't redirect")
       return
     }
     // We want to redirect only in case user is on / or /base/
     if (location.pathname === this.base || normalizePath(location.pathname) === this.base) {
-      // prepare path & build new URL
       const newUrl = `${this.base}/${this.defaultLocale.code}`
-      log("redirect to default locale >", { newUrl })
+      log("redirect to default locale >", newUrl)
       // reload or refresh all application
       this.#reloadOrRefresh(newUrl, forcePageReload)
     }
-  }
-
-  /**
-   * Get current code string
-   * Can be used inside path string
-   * `/base/${i18n.currentCode()}/path/`
-   */
-  public currentCode(): string {
-    return this.showLocaleInUrl() ? (this.currentLocale.code as string) : ""
   }
 
   /**
@@ -198,26 +175,19 @@ class I18n<T = any> {
   }
 
   /**
-   * Determine when we need to show current locale in URL
+   * Show locale in URL
    */
   public showLocaleInUrl(): boolean {
-    // if option is true, always display locale in URL
-    if (this.defaultLocaleInUrl) {
-      return true
-    } else {
-      // show in URL only if whe are not on the default locale
-      return !this.isDefaultLocaleCode(this.currentLocale.code)
-    }
+    return this.defaultLocaleInUrl || !this.isDefaultLocaleCode(this.currentLocale.code)
   }
-
   /**
    * Add :lang param on path
    * @param pPath
-   * @param pShowLocale
+   * @param showLocale
    */
-  public patchLangParam(pPath: string, pShowLocale: boolean = this.showLocaleInUrl()): string {
+  public patchLangParam(pPath: string, showLocale: boolean = this.showLocaleInUrl()): string {
     return normalizePath(
-      joinPaths([pShowLocale && !pPath.includes("*") && "/:code", pPath !== "/" ? pPath : "/"])
+      joinPaths([showLocale && !pPath.includes("*") && "/:code", pPath !== "/" ? pPath : "/"])
     )
   }
 
@@ -288,12 +258,10 @@ class I18n<T = any> {
    *
    * getTranslatePathByLocale(route, "fr") // will return  "/a-propos"
    *
-   * @param route
-   * @param locale
    */
   #getTranslatePathByLocale(
     route: Route,
-    locale = this.#getLocaleFromString(this.staticLocation || window.location.pathname)?.code ||
+    locale = this.#getLocaleFromUrl(this.staticLocation || window.location.pathname)?.code ||
       this.defaultLocale.code
   ): string {
     return route.translations ? route.translations?.[locale as string] ?? route.path : route.path
@@ -302,7 +270,6 @@ class I18n<T = any> {
   /**
    * Returns default locale of the list
    * If no default locale exist, it returns the first locale object of the locales array
-   * @param locales
    */
   #getDefaultLocale(locales: Locale<T>[]): Locale<T> {
     return locales.find((el) => el?.default) ?? locales[0]
@@ -310,14 +277,11 @@ class I18n<T = any> {
 
   /**
    * Get Browser locale
-   * @protected
    */
   #getBrowserLocale(locales: Locale[]): Locale<T> {
     if (typeof navigator === "undefined") return
-
     const browserLocale = navigator.language
     log("Browser locale detected", browserLocale)
-
     return locales.find((locale) =>
       locale.code.includes("-")
         ? (locale.code as string) === browserLocale.toLowerCase()
@@ -327,9 +291,8 @@ class I18n<T = any> {
 
   /**
    * Get current locale from URL
-   * @param pathname
    */
-  #getLocaleFromString(pathname = this.staticLocation || window.location.pathname): Locale<T> {
+  #getLocaleFromUrl(pathname = this.staticLocation || window.location.pathname): Locale<T> {
     let pathnameWithoutBase = pathname.replace(this.base, "/")
     const firstPart = joinPaths([pathnameWithoutBase]).split("/")[1]
     return this.locales.find((locale) => {
@@ -339,21 +302,16 @@ class I18n<T = any> {
 
   /**
    * Check if locale is available in locale list
-   * @protected
    */
-  #localeIsAvailable(localeObject: Locale<T>, localeuesList = this.locales): boolean {
-    return localeuesList.some((locale) => locale.code === localeObject?.code)
+  #localeIsAvailable(locale: Locale<T>, locales = this.locales): boolean {
+    return locales.some((l) => l.code === locale?.code)
   }
 
   /**
    * Reload full page or refresh with router push
-   * @param newUrl
-   * @param forcePageReload
-   * @protected
    */
-  #reloadOrRefresh(newUrl: string, forcePageReload = true): void {
-    if (isServer()) return
-    forcePageReload ? window?.open(newUrl, "_self") : ROUTERS.history.push(newUrl)
+  #reloadOrRefresh(url: string, forceReload = true, history = ROUTERS.history): void {
+    forceReload ? !isServer() && window.open(url, "_self") : history.push(url)
   }
 }
 
