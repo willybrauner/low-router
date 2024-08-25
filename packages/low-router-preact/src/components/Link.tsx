@@ -5,6 +5,7 @@ import {
   PropsWithChildren,
   useMemo,
   forwardRef,
+  ReactElement,
 } from "preact/compat"
 import { normalizePath, RouteParams } from "@wbe/low-router"
 import { useRouter } from "../hooks/useRouter"
@@ -23,7 +24,7 @@ export interface ILinkProps extends PropsWithChildren<TAnchorWithoutHref> {
   className?: string
   children
 }
-function Link(props: ILinkProps, ref: MutableRefObject<any>) {
+function Link(props: ILinkProps, ref: MutableRefObject<any>): ReactElement {
   const { router, history, staticLocation, currentContext, i18n } = useRouter()
 
   const url = useMemo(() => {

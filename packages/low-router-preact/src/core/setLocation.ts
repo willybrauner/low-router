@@ -9,7 +9,7 @@ export function setLocation(
   i18n = ROUTERS.i18n,
   base = ROUTERS.base,
   history = ROUTERS.history
-) {
+): void {
   let url: string
   if (typeof to === "string") {
     url = normalizePath(joinPaths([base, addLocaleToUrl(to)]))

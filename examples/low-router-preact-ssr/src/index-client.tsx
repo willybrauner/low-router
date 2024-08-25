@@ -1,6 +1,6 @@
 import "preact/debug"
 import "./index.scss"
-import App from "./components/app/App"
+import App from "~/components/App/App"
 import * as packageJson from "../package.json"
 import debug from "@wbe/debug"
 import { render, hydrate } from "preact"

@@ -1,4 +1,4 @@
-import App from "./components/app/App"
+import App from "~/components/App/App"
 import { ScriptsTags } from "~/core/server-utils/ScriptsTags"
 import { RawScript } from "~/core/server-utils/RawScript"
 import { locales, routes, defaultLocaleInUrl } from "~/routes"
