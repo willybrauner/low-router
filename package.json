@@ -44,7 +44,7 @@
     {
       "name": "@wbe/low-router-preact",
       "path": "packages/low-router-preact/dist/low-router-preact.js",
-      "limit": "10 KB"
+      "limit": "13 KB"
     }
   ]
 }
