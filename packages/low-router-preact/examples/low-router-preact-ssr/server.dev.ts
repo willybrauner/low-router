@@ -6,9 +6,8 @@ import portFinderSync from "portfinder-sync"
 import chalk from "chalk"
 import config from "./config/config"
 
-const vars = loadEnv(process.env.NODE_ENV, process.cwd(), "")
-const BASE = vars.VITE_APP_BASE || process.env.VITE_APP_BASE || "/"
-const PORT = process.env.DOCKER_NODE_PORT ?? portFinderSync.getPort(5173)
+const BASE = "/"
+const PORT = portFinderSync.getPort(5173)
 const INDEX_SERVER_PATH = `${config.srcDir}/index-server.tsx`
 const DEV_SCRIPTS = {
   js: [{ tag: "script", attr: { type: "module", src: "/src/index-client.tsx" } }],

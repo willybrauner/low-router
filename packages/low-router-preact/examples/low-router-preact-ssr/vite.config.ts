@@ -16,7 +16,6 @@ import os from "node:os"
  * Vite config
  */
 export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
-  const ip = os.networkInterfaces()["en0"].find((e) => e.family === "IPv4")?.address
   const isDevelopment = mode === "development"
   const loadEnvVars = loadEnv(mode, process.cwd(), "")
   const protocol: "http" | "https" = (loadEnvVars.PROTOCOL as "http" | "https") ?? "http"
@@ -27,8 +26,8 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
   process.env = {
     ...loadEnvVars,
     ...process.env,
-    PORT: `${loadEnvVars.DOCKER_NODE_PORT ?? portFinderSync.getPort(5173)}`,
-    HOST: loadEnvVars["HOST"] ?? ip,
+    PORT: `${portFinderSync.getPort(5173)}`,
+    HOST: "localhost",
     PROTOCOL: protocol,
   }
 

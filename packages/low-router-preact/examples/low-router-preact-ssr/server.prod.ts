@@ -7,9 +7,8 @@ import portFinderSync from "portfinder-sync"
 import { renderToStringAsync } from "preact-render-to-string"
 import config from "./config/config"
 
-const vars = loadEnv(process.env.NODE_ENV, process.cwd(), "")
-const BASE = vars.VITE_APP_BASE || process.env.VITE_APP_BASE || "/"
-const PORT = process.env.DOCKER_NODE_PORT ?? portFinderSync.getPort(5173)
+const BASE = "/"
+const PORT = portFinderSync.getPort(5173)
 const MANIFEST_PARSER_PATH = `${config.outDirSsrScripts}/ManifestParser.js`
 const VITE_MANIFEST_PATH = `${config.outDirSsrClient}/.vite/manifest.json`
 const INDEX_SERVER_PATH = `${config.outDirSsrServer}/index-server.js`
