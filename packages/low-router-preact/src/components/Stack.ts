@@ -1,5 +1,4 @@
-import { h } from "preact"
-import { useLayoutEffect, useMemo, useReducer } from "preact/compat"
+import { createElement, useLayoutEffect, useMemo, useReducer } from "preact/compat"
 import { useRef } from "preact/hooks"
 import { RouteContext } from "@wbe/low-router"
 import { isServer } from "@wbe/utils"
@@ -129,26 +128,23 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
     })
   }, [state.stackRoutes])
 
-  return (
-    <div className={"Stack"}>
-      {state.stackRoutes?.map((context, i) => {
-        const Route = context.route.action?.()
-        if (!Route) return
-        const routeId = context.routeId
-        return (
-          <Route
-            // https://react.dev/blog/2024/04/25/react-19#cleanup-functions-for-refs
-            ref={(e) => {
-              routeRefs.current[i] = { ...e, routeId } as RouteRef
-            }}
-            key={routeId}
-            params={context.params}
-            query={context.query}
-            hash={context.hash}
-            {...(context.route.props || {})}
-          />
-        )
-      })}
-    </div>
+  return createElement(
+    "div",
+    { className: "Stack" },
+    state.stackRoutes?.map((context, i) => {
+      const Route = context.route.action?.()
+      if (!Route) return null
+      const routeId = context.routeId
+      return createElement(Route, {
+        ref: (e: RouteRef) => {
+          routeRefs.current[i] = { ...e, routeId } as RouteRef
+        },
+        key: routeId,
+        params: context.params,
+        query: context.query,
+        hash: context.hash,
+        ...(context.route.props || {}),
+      })
+    })
   )
 }

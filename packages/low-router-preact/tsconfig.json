@@ -6,14 +6,8 @@
     "declaration": true,
     "outDir": "dist",
     "strict": false,
-
-    "jsx": "react",
-    "jsxFactory": "h",
-
-    "paths": {
-      "react": ["./node_modules/preact/compat/"],
-      "react-dom": ["./node_modules/preact/compat/"]
-    }
+    "moduleResolution": "node",
+    "types": ["preact"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

@@ -1,4 +1,3 @@
-import { h } from "preact"
 import {
   AnchorHTMLAttributes,
   MutableRefObject,
@@ -6,7 +5,9 @@ import {
   useMemo,
   forwardRef,
   ReactElement,
+  createElement,
 } from "preact/compat"
+
 import { normalizePath, RouteParams } from "@wbe/low-router"
 import { useRouter } from "../hooks/useRouter"
 import { joinPaths } from "../helpers/joinPaths"
@@ -47,15 +48,17 @@ function Link(props: ILinkProps, ref: MutableRefObject<any>): ReactElement {
     return location === url || location === normalizePath(url)
   }, [staticLocation, currentContext, url])
 
-  return (
-    <a
-      {...{ ...props, to: undefined }}
-      className={joinPaths(["Link", props.className, isActive && "active"], " ")}
-      children={props.children}
-      onClick={click}
-      href={url}
-      ref={ref}
-    />
+  return createElement(
+    "a",
+    {
+      ...props,
+      to: undefined,
+      className: joinPaths(["Link", props.className, isActive && "active"], " "),
+      onClick: click,
+      href: url,
+      ref: ref,
+    },
+    props.children
   )
 }
 

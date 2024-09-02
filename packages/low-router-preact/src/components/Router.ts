@@ -1,6 +1,12 @@
-import { h } from "preact"
 import { LowRouter, Route, RouterOptions, RouteContext, HistoryAPI } from "@wbe/low-router"
-import { createContext, memo, ReactElement, useEffect, useReducer } from "preact/compat"
+import {
+  createContext,
+  createElement,
+  memo,
+  ReactElement,
+  useEffect,
+  useReducer,
+} from "preact/compat"
 import { useRef } from "preact/hooks"
 import debug from "@wbe/debug"
 import { isServer } from "@wbe/utils"
@@ -260,23 +266,21 @@ function LowReactRouter(props: {
     return ROUTERS.history?.listen(handleHistory)
   }, [])
 
-  return (
-    <RouterContext.Provider
-      children={props.children}
-      value={{
-        router: props.router,
-        base: props.router.options.base,
-        routes: props.router.routes,
-        options: props.router.options,
-        history: ROUTERS.history,
-        prevContext: state.prevContext,
-        currentContext: state.currentContext,
-        counter: state.counter,
-        staticLocation: ROUTERS.staticLocation,
-        i18n: ROUTERS.i18n,
-      }}
-    />
-  )
+  return createElement(RouterContext.Provider, {
+    children: props.children,
+    value: {
+      router: props.router,
+      base: props.router.options.base,
+      routes: props.router.routes,
+      options: props.router.options,
+      history: ROUTERS.history,
+      prevContext: state.prevContext,
+      currentContext: state.currentContext,
+      counter: state.counter,
+      staticLocation: ROUTERS.staticLocation,
+      i18n: ROUTERS.i18n,
+    },
+  })
 }
 
 const Router = memo(LowReactRouter)
