@@ -34,7 +34,9 @@
   "dependencies": {
     "@wbe/debug": "^1.2.0",
     "@wbe/low-router": "workspace:*",
-    "@wbe/utils": "^0.1.2",
+    "@wbe/utils": "^0.1.2"
+  },
+  "peerDependencies": {
     "preact": "^10.23.1"
   },
   "devDependencies": {

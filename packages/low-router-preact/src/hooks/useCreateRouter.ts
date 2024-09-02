@@ -1,4 +1,4 @@
-import { useMemo } from "preact/compat"
+import { useMemo } from "../deps"
 import { LowRouter, normalizePath } from "@wbe/low-router"
 import { joinPaths } from "../helpers/joinPaths"
 import { useRouter } from "./useRouter"

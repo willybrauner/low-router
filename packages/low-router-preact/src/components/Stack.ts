@@ -1,5 +1,5 @@
-import { createElement, useLayoutEffect, useMemo, useReducer } from "preact/compat"
-import { useRef } from "preact/hooks"
+import { useRef, createElement, useMemo, useReducer, useLayoutEffect } from "../deps"
+
 import { RouteContext } from "@wbe/low-router"
 import { isServer } from "@wbe/utils"
 import { useRouter } from "../hooks/useRouter"
