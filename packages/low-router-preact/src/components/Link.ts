@@ -1,4 +1,12 @@
-import { useMemo, forwardRef, createElement } from "../deps"
+import {
+  AnchorHTMLAttributes,
+  MutableRefObject,
+  PropsWithChildren,
+  useMemo,
+  forwardRef,
+  ReactElement,
+  createElement,
+} from "../deps"
 
 import { normalizePath, RouteParams } from "@wbe/low-router"
 import { useRouter } from "../hooks/useRouter"
@@ -9,15 +17,15 @@ import { composeUrlByRouteName } from "../core/composeUrlByRouteName"
 import { isServer } from "@wbe/utils"
 
 // exclude href because it collides with "to"
-type TAnchorWithoutHref = {}
+type TAnchorWithoutHref = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 
-export interface ILinkProps {
+export interface ILinkProps extends PropsWithChildren<TAnchorWithoutHref> {
   to: string | { name: string; params?: RouteParams }
   onClick?: () => void
   className?: string
   children
 }
-function Link(props: ILinkProps, ref) {
+function Link(props: ILinkProps, ref: MutableRefObject<any>): ReactElement {
   const { router, history, staticLocation, currentContext, i18n } = useRouter()
 
   const url = useMemo(() => {

@@ -1,5 +1,13 @@
 import { LowRouter, Route, RouterOptions, RouteContext, HistoryAPI } from "@wbe/low-router"
-import { useRef, createContext, createElement, memo, useEffect, useReducer } from "../deps"
+import {
+  useRef,
+  createContext,
+  createElement,
+  memo,
+  ReactElement,
+  useEffect,
+  useReducer,
+} from "../deps"
 
 import debug from "@wbe/debug"
 import { isServer } from "@wbe/utils"
@@ -78,7 +86,7 @@ let ROUTE_ID = 0
  */
 function LowReactRouter(props: {
   router: LowRouter
-  children
+  children: ReactElement | ReactElement[]
   history?: HistoryAPI | any
   staticLocation?: string
   initialStaticProps?: InitialStaticProps
