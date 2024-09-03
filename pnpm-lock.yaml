@@ -314,6 +314,9 @@ importers:
       '@types/node':
         specifier: ^20.16.0
         version: 20.16.0
+      esbuild-plugin-alias:
+        specifier: ^0.2.1
+        version: 0.2.1
       tsup:
         specifier: ^6.7.0
         version: 6.7.0(@swc/core@1.7.22)(postcss@8.4.41)(typescript@5.5.4)
@@ -2655,6 +2658,9 @@ packages:
   entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
+
+  esbuild-plugin-alias@0.2.1:
+    resolution: {integrity: sha512-jyfL/pwPqaFXyKnj8lP8iLk6Z0m099uXR45aSN8Av1XD4vhvQutxxPzgA2bTcAwQpa1zCXDcWOlhFgyP3GKqhQ==}
 
   esbuild-visualizer@0.4.1:
     resolution: {integrity: sha512-5XI3unzqPr3xqfzR/mzK3LhoAJs3FQhiIXBsKJ3Oh6CjyjuXz6HVmhJMoisrcpeTZip65fR54Dk53MZncA0AUQ==}
@@ -6878,6 +6884,8 @@ snapshots:
       strip-ansi: 6.0.1
 
   entities@4.5.0: {}
+
+  esbuild-plugin-alias@0.2.1: {}
 
   esbuild-visualizer@0.4.1:
     dependencies:

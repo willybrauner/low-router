@@ -7,7 +7,7 @@ import {
   ReactElement,
   useEffect,
   useReducer,
-} from "../deps"
+} from "../preact-deps"
 
 import debug from "@wbe/debug"
 import { isServer } from "@wbe/utils"

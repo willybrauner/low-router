@@ -13,7 +13,7 @@
   "types": "./dist/low-router-react.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/willybrauner/low-router-react.git"
+    "url": "git://github.com/willybrauner/low-router.git"
   },
   "keywords": [
     "preact",
@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.16.0",
+    "esbuild-plugin-alias": "^0.2.1",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4",
     "vitest": "^0.31.0"

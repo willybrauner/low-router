@@ -6,7 +6,7 @@ import {
   forwardRef,
   ReactElement,
   createElement,
-} from "../deps"
+} from "../preact-deps"
 
 import { normalizePath, RouteParams } from "@wbe/low-router"
 import { useRouter } from "../hooks/useRouter"

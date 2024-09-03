@@ -1,4 +1,4 @@
-import { useRef, createElement, useMemo, useReducer, useLayoutEffect } from "../deps"
+import { useRef, createElement, useMemo, useReducer, useLayoutEffect } from "../preact-deps"
 
 import { RouteContext } from "@wbe/low-router"
 import { isServer } from "@wbe/utils"

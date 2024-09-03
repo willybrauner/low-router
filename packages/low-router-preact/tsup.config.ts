@@ -5,7 +5,7 @@ import fs from "node:fs/promises"
 export default defineConfig([
   {
     entry: {
-      deps: "src/deps.ts",
+      "preact-deps": "src/preact-deps.ts",
     },
     splitting: true,
     clean: true,
@@ -23,7 +23,14 @@ export default defineConfig([
     dts: true,
     format: ["esm"],
     minify: true,
-    external: [/deps/, "preact", "preact/hooks", "@wbe/utils", "@wbe/debug", "@wbe/low-router"],
+    external: [
+      /preact-deps/,
+      "preact",
+      "preact/hooks",
+      "@wbe/utils",
+      "@wbe/debug",
+      "@wbe/low-router",
+    ],
 
     esbuildPlugins: [
       {
@@ -32,7 +39,7 @@ export default defineConfig([
           build.onLoad({ filter: /\.ts$/ }, async (args) => {
             let contents = await fs.readFile(args.path, "utf8")
             // Replace `from "../deps"` with `from "./deps"`
-            contents = contents.replace(/from\s+['"]\.\.\/deps['"]/g, 'from "./deps"')
+            contents = contents.replace(/from\s+['"]\.\.\/preact-deps['"]/g, 'from "./preact-deps"')
             return {
               contents,
               loader: "default",

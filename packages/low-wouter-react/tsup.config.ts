@@ -1,13 +1,15 @@
 import { defineConfig } from "tsup"
 // @ts-ignore
 import fs from "node:fs/promises"
-
-// -------------------------
+// @ts-ignore
+import { createRequire } from "module"
+const require = createRequire(import.meta.url)
+import alias from "esbuild-plugin-alias"
 
 export default defineConfig([
   {
     entry: {
-      deps: "src/deps.ts",
+      "react-deps": "src/react-deps.ts",
     },
     splitting: true,
     clean: true,
@@ -18,32 +20,49 @@ export default defineConfig([
   },
   {
     entry: {
-      // "low-router-react": "./node_modules/@wbe/low-router-preact/src/index.ts",
-      "low-router-react": "src/index.ts",
+      "low-router-react": require.resolve("@wbe/low-router-preact/src/index.ts"),
     },
-    splitting: true,
+    splitting: false,
     clean: true,
     dts: true,
     format: ["esm"],
     minify: true,
 
-    external: [
-      /deps/,
-      "preact",
-      "preact/hooks",
-      "preact/compat",
-      "@wbe/utils",
-      "@wbe/debug",
-      "@wbe/low-router",
-    ],
+    external: ["react", /react-deps/],
     esbuildPlugins: [
+      // {
+      //   name: "replace-preact-with-react",
+      //   setup(build) {
+      //     build.onLoad({ filter: /\.ts$/ }, async (args) => {
+      //       let contents = await fs.readFile(args.path, "utf8")
+      //
+      //       // Replace Preact imports with React imports
+      //       contents = contents
+      //         .replace(/from\s+['"]preact['"]/g, 'from "react"')
+      //         .replace(/from\s+['"]preact\/hooks['"]/g, 'from "react"')
+      //         .replace(/from\s+['"]preact\/compat['"]/g, 'from "react"')
+      //         // .replace(
+      //         //   /import\s+{(.+)}\s+from\s+['"]\.\/preact-deps['"]/g,
+      //         //   'import {$1} from "./react-deps"'
+      //         // )
+      //       return {
+      //         contents,
+      //         loader: "ts",
+      //       }
+      //     })
+      //   },
+      // },
+      // alias({
+      //   preact: require.resolve("react"),
+      //   "preact/compat": require.resolve("react"),
+      //   "preact/hooks": require.resolve("react"),
+      // }),
       {
         name: "replace-import",
         setup(build) {
           build.onLoad({ filter: /\.ts$/ }, async (args) => {
             let contents = await fs.readFile(args.path, "utf8")
-            // Replace `from "../deps"` with `from "./deps"`
-            contents = contents.replace(/from\s+['"]\.\.\/deps['"]/g, 'from "./deps"')
+            contents = contents.replace(/from\s+['"]\.\.\/preact-deps['"]/g, 'from "./react-deps"')
             return {
               contents,
               loader: "default",

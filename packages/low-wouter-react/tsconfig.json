@@ -10,9 +10,14 @@
     "moduleResolution": "node",
     "allowJs": true
   },
+  "types": ["node", "src/router.d.ts"],
   "paths": {
-    "@wbe/low-router-preact": ["../low-router-preact/src/index.ts"]
+    "@wbe/low-router-preact": ["../low-router-preact/src/index.ts"],
+    "preact": ["./node_modules/react"],
+    "preact/hooks": ["./node_modules/react"],
+    "preact/compat": ["./node_modules/react"]
   },
-  "include": ["src/**/*", "../low-router-preact/src/**/*.ts"],
+
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

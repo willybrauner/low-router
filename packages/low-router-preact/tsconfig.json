@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "types": ["preact"]
   },
-  "types": ["node"],
+  "types": ["node", "src/router.d.ts"],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
