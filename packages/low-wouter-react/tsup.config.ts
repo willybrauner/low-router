@@ -2,6 +2,8 @@ import { defineConfig } from "tsup"
 // @ts-ignore
 import fs from "node:fs/promises"
 
+// -------------------------
+
 export default defineConfig([
   {
     entry: {
@@ -12,19 +14,28 @@ export default defineConfig([
     dts: true,
     format: ["esm"],
     minify: true,
-    external: ["preact", "preact/hooks", "preact/compat"],
+    external: ["react"],
   },
   {
     entry: {
-      "low-router-preact": "src/index.ts",
+      // "low-router-react": "./node_modules/@wbe/low-router-preact/src/index.ts",
+      "low-router-react": "src/index.ts",
     },
     splitting: true,
     clean: true,
     dts: true,
     format: ["esm"],
     minify: true,
-    external: [/deps/, "preact", "preact/hooks", "@wbe/utils", "@wbe/debug", "@wbe/low-router"],
 
+    external: [
+      /deps/,
+      "preact",
+      "preact/hooks",
+      "preact/compat",
+      "@wbe/utils",
+      "@wbe/debug",
+      "@wbe/low-router",
+    ],
     esbuildPlugins: [
       {
         name: "replace-import",

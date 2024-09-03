@@ -4,12 +4,15 @@
     "target": "esnext",
     "module": "esnext",
     "declaration": true,
+    "emitDeclarationOnly": true,
     "outDir": "dist",
     "strict": false,
     "moduleResolution": "node",
-    "types": ["preact"]
+    "allowJs": true
   },
-  "types": ["node"],
-  "include": ["src/**/*"],
+  "paths": {
+    "@wbe/low-router-preact": ["../low-router-preact/src/index.ts"]
+  },
+  "include": ["src/**/*", "../low-router-preact/src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

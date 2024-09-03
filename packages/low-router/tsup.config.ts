@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup"
+// @ts-ignore
 import { spawn } from "child_process"
 
 export default defineConfig({
