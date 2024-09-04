@@ -18,6 +18,6 @@
     "preact/compat": ["./node_modules/react"]
   },
 
-  "include": ["src/**/*"],
+  "include": ["src/react-deps.ts", "src/router.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

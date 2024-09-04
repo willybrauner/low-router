@@ -38,7 +38,6 @@ export default defineConfig([
         setup(build) {
           build.onLoad({ filter: /\.ts$/ }, async (args) => {
             let contents = await fs.readFile(args.path, "utf8")
-            // Replace `from "../deps"` with `from "./deps"`
             contents = contents.replace(/from\s+['"]\.\.\/preact-deps['"]/g, 'from "./preact-deps"')
             return {
               contents,
