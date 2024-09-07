@@ -1,5 +1,6 @@
 {
-  "name": "low-router-preact-ssr",
+  "name": "example-preact-ssr",
+  "private": "true",
   "main": "src/index-client.tsx",
   "type": "module",
   "version": "0.1.0",
