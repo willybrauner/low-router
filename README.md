@@ -10,8 +10,8 @@
 
 This package contains:
 
-- [@wbe/low-router](https://github.com/willybrauner/low-router/tree/main/packages/low-router) - low-router core
-- [@wbe/low-router-preact](https://github.com/willybrauner/low-router/tree/main/packages/low-router) - high level low-router wrapper for preact  
+- [@wbe/low-router](https://github.com/willybrauner/low-router/tree/main/packages/low-router) - low-router core vanilla
+- [@wbe/low-router-preact](https://github.com/willybrauner/low-router/tree/main/packages/low-router-preact) - low-router wrapper for preact  
 
 
 ## Credits
