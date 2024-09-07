@@ -29,7 +29,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "tsup",
-    "build:watch": "tsup --watch --sourcemap"
+    "build:watch": "tsup --watch --sourcemap",
+    "reset": "rm -rf dist node_modules package-lock.json pnpm-lock.yaml tsconfig.tsbuildinfo .turbo"
   },
   "dependencies": {
     "@wbe/debug": "^1.2.0",
@@ -40,9 +41,9 @@
     "preact": "^10.23.1"
   },
   "devDependencies": {
-    "@types/node": "^20.16.0",
-    "tsup": "^6.7.0",
-    "typescript": "^5.0.4",
-    "vitest": "^0.31.0"
+    "@types/node": "^22.5.4",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   }
 }

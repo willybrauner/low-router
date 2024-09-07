@@ -27,14 +27,15 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "tsup",
-    "build:watch": "tsup --watch --sourcemap"
+    "build:watch": "tsup --watch --sourcemap",
+    "reset": "rm -rf dist node_modules package-lock.json pnpm-lock.yaml tsconfig.tsbuildinfo .turbo"
   },
   "devDependencies": {
-    "path-to-regexp": "^6.2.1",
-    "terser": "^5.19.2",
-    "tsup": "^6.7.0",
-    "typescript": "^5.0.4",
-    "vitest": "^0.31.0"
+    "path-to-regexp": "^8.0.0",
+    "terser": "^5.31.6",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   },
   "dependencies": {
     "@wbe/debug": "^1.2.0"
