@@ -16,6 +16,7 @@ import { safeMergeObjects } from "../helpers/safeMergeObjects"
 import { I18n } from "../services/I18n"
 import { InitialStaticProps } from "../core/getStaticPropsFromUrl"
 import { composeUrlByRouteName } from "../core/composeUrlByRouteName"
+import { joinPaths } from "../helpers/joinPaths"
 
 // ------------------------------------------------------------------------------------------------- GLOBAL
 
@@ -120,7 +121,7 @@ function LowReactRouter(props: {
   const [state, dispatch] = useReducer(
     (
       state: { prevContext: RouteContext; currentContext: RouteContext; counter: number },
-      action: { type: "update"; currentContext?: RouteContext }
+      action: { type: "update"; currentContext?: RouteContext },
     ) => {
       switch (action.type) {
         case "update":
@@ -135,7 +136,7 @@ function LowReactRouter(props: {
       prevContext: null,
       currentContext: null,
       counter: 0,
-    }
+    },
   )
 
   /**
@@ -157,7 +158,9 @@ function LowReactRouter(props: {
     }
 
     // Get matching context
-    const ctx = props.router.matchRoute(location.pathname + location.search + location.hash)
+    const ctx = props.router.matchRoute(
+      joinPaths([location.pathname, location.search, location.hash]),
+    )
 
     if (!ctx) {
       log(id, "no context found, return.")
@@ -188,7 +191,7 @@ function LowReactRouter(props: {
     const _requestAndCacheStaticProps = async (
       route: Route,
       cache: CacheAPI,
-      url: string
+      url: string,
     ): Promise<void> => {
       try {
         const request = await route.getStaticProps(route.props, ROUTERS.i18n?.currentLocale)
@@ -205,7 +208,7 @@ function LowReactRouter(props: {
         // log(id, "[firstRoute | isServer] assign initialStaticProps to route.props & set cache")
         context.route.props = safeMergeObjects(
           context.route.props,
-          ROUTERS.initialStaticProps?.[url]
+          ROUTERS.initialStaticProps?.[url],
         )
         cache.set(url, context.route.props)
       }
@@ -218,7 +221,7 @@ function LowReactRouter(props: {
           // log(id, "[firstRoute | isClient] assign initialStaticProps to route.props & set cache")
           context.route.props = safeMergeObjects(
             context.route.props,
-            ROUTERS.initialStaticProps?.[url]
+            ROUTERS.initialStaticProps?.[url],
           )
           cache.set(url, context.route.props)
         } else if (context.route.getStaticProps) {

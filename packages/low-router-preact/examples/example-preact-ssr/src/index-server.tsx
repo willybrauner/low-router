@@ -4,6 +4,9 @@ import { RawScript } from "~/core/server-utils/RawScript"
 import { locales, routes, defaultLocaleInUrl } from "~/routes"
 import { LowRouter, normalizePath } from "@wbe/low-router"
 import { getStaticPropsFromUrl, I18n, Router } from "@wbe/low-router-preact"
+import debug from "@wbe/debug"
+
+const log = debug("low-router-preact:index-server")
 
 /**
  * Server render
@@ -20,14 +23,19 @@ export async function render(
 ): Promise<any> {
   // prepare base & URL, remove trailing slashes
   staticLocation = normalizePath(`${isPrerender ? base : ""}${staticLocation}`)
+  log("staticLocation:", staticLocation)
 
   // Init router
   const i18n = new I18n(locales, { base, defaultLocaleInUrl, staticLocation })
   const router = new LowRouter(i18n.addLocaleParamToRoutes(routes), { base, id: 1 })
+
   // Request initial static props
   const initialStaticProps = await getStaticPropsFromUrl(staticLocation, router, i18n)
+  log("initialStaticProps", initialStaticProps)
+
   // Current route props
   const props = initialStaticProps && Object.values(initialStaticProps)?.[0]
+  log("props", props)
 
   return (
     <html lang={i18n.currentLocale.code}>

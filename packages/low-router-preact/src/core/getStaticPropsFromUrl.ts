@@ -20,7 +20,7 @@ const log = debug("low-router-preact:staticProps")
 export async function getStaticPropsFromUrl(
   url: string,
   router: LowRouter,
-  i18n?: I18n
+  i18n?: I18n,
 ): Promise<InitialStaticProps> {
   // need to resolve the final route
   let resolve
@@ -43,7 +43,13 @@ export async function getStaticPropsFromUrl(
     if (route.getStaticProps) {
       try {
         const data = await route.getStaticProps(route.props, i18n?.currentLocale)
-        const url = composeUrlByRouteName(route?.name, context.params)
+        const url = composeUrlByRouteName(
+          route?.name,
+          context.params,
+          router.routes,
+          i18n,
+          router.options.base,
+        )
         initialStaticProps[url] = data
       } catch (e) {
         log("fetch getStaticProps data error", e)
