@@ -1,5 +1,11 @@
 # @wbe/low-router-preact
 
+## 0.2.0
+
+### Minor Changes
+
+- cd68512: Internalize preact dependencies in bundle
+
 ## 0.1.0
 
 ### Minor Changes
