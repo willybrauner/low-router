@@ -13,7 +13,7 @@ import { ROUTERS } from "../components/Router"
 export function addLocaleToUrl(
   url: string,
   base: string = ROUTERS.base,
-  code: string = ROUTERS?.i18n?.currentLocale.code,
+  code: string = ROUTERS.i18n?.currentLocale.code,
   enable = ROUTERS.i18n?.showLocaleInUrl()
 ): string {
   if (!enable) return url
