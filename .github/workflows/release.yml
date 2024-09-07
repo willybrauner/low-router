@@ -39,11 +39,11 @@ jobs:
           run_install: |
             args: [--filter "@wbe/*"]
 
-      - name: Copy README file to package
-        uses: canastro/copy-file-action@master
-        with:
-          source: "README.md"
-          target: "packages/low-router/README.md"
+#      - name: Copy README file to package
+#        uses: canastro/copy-file-action@master
+#        with:
+#          source: "README.md"
+#          target: "packages/low-router/README.md"
 
       - name: Set up NPM credentials
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc

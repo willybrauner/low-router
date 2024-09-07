@@ -1,0 +1,61 @@
+{
+  "name": "example-preact-ssr",
+  "private": "true",
+  "main": "src/index-client.tsx",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "tsx server.dev.ts",
+    "build:spa": "cross-env VITE_SPA=true vite build --outDir dist/spa",
+    "build:ssr-scripts": "vite build -c vite.ssr-scripts.config.ts",
+    "build:ssr-client": "vite build --outDir dist/ssr/client",
+    "build:ssr-server": "vite build --ssr src/index-server.tsx --outDir dist/ssr/server",
+    "build:ssr": "npm run build:ssr-scripts && npm run build:ssr-client && npm run build:ssr-server",
+    "build": "npm run build:spa && npm run build:ssr",
+    "start": "cross-env NODE_ENV=production node dist/ssr/scripts/server.prod.js",
+    "test:watch": "vitest",
+    "test": "vitest run",
+    "reset": "rm -rf dist node_modules package-lock.json pnpm-lock.yaml tsconfig.tsbuildinfo",
+    "reinstall": "pnpm reset && pnpm install"
+  },
+  "dependencies": {
+    "@wbe/debug": "^1.2.0",
+    "@wbe/interpol": "^0.15.1",
+    "@wbe/low-router": "workspace:*",
+    "@wbe/low-router-preact": "workspace:*",
+    "@wbe/utils": "^0.1.2",
+    "fastify": "^4.28.1",
+    "gsap": "^3.12.5",
+    "path-to-regexp": "^8.0.0",
+    "preact": "^10.23.2",
+    "preact-render-to-string": "^6.5.10"
+  },
+  "devDependencies": {
+    "@fastify/middie": "^8.3.1",
+    "@preact/preset-vite": "^2.9.0",
+    "@types/events": "^3.0.3",
+    "@types/node": "^22.5.4",
+    "@vitejs/plugin-legacy": "^5.4.2",
+    "@wbe/mfs": "^0.3.0",
+    "autoprefixer": "^10.4.20",
+    "chalk": "^5.3.0",
+    "compression": "^1.7.4",
+    "cross-env": "^7.0.3",
+    "husky": "^9.1.5",
+    "portfinder-sync": "^0.0.2",
+    "prettier": "^3.3.3",
+    "rollup-plugin-visualizer": "^5.12.0",
+    "sass": "^1.78.0",
+    "sirv": "^2.0.4",
+    "terser": "^5.31.6",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.3",
+    "vite-plugin-checker": "^0.8.0",
+    "vitest": "^2.0.5"
+  },
+  "prettier": {
+    "semi": false,
+    "printWidth": 100
+  }
+}

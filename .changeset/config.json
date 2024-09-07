@@ -1,9 +1,9 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
+  "$schema": "https://unpkg.com/@changesets/config@3.0.3/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [["@wbe/low-router"]],
+  "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",

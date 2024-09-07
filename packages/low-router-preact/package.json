@@ -1,21 +1,23 @@
 {
-  "name": "@wbe/low-router",
+  "name": "@wbe/low-router-preact",
   "author": "Willy Brauner",
   "license": "MIT",
-  "version": "0.9.0",
+  "version": "0.0.1",
   "type": "module",
   "files": [
     "dist"
   ],
   "sideEffects": false,
-  "main": "./dist/low-router.js",
-  "module": "./dist/low-router.js",
-  "types": "./dist/low-router.d.ts",
+  "main": "./dist/low-router-preact.js",
+  "module": "./dist/low-router-preact.js",
+  "types": "./dist/low-router-preact.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/willybrauner/low-router.git"
+    "url": "git://github.com/willybrauner/low-router-preact.git"
   },
   "keywords": [
+    "preact",
+    "react",
     "router",
     "routing",
     "low-level",
@@ -30,14 +32,18 @@
     "build:watch": "tsup --watch --sourcemap",
     "reset": "rm -rf dist node_modules package-lock.json pnpm-lock.yaml tsconfig.tsbuildinfo .turbo"
   },
+  "dependencies": {
+    "@wbe/debug": "^1.2.0",
+    "@wbe/low-router": "workspace:*",
+    "@wbe/utils": "^0.1.2"
+  },
+  "peerDependencies": {
+    "preact": "^10.23.1"
+  },
   "devDependencies": {
-    "path-to-regexp": "^8.0.0",
-    "terser": "^5.31.6",
+    "@types/node": "^22.5.4",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4",
     "vitest": "^2.0.5"
-  },
-  "dependencies": {
-    "@wbe/debug": "^1.2.0"
   }
 }

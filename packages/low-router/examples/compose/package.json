@@ -1,5 +1,5 @@
 {
-  "name": "example-low-router-basic",
+  "name": "example-low-router-compose",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,11 +8,14 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "devDependencies": {
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
-  },
   "dependencies": {
+    "@wbe/interpol": "^0.15.1",
     "@wbe/low-router": "latest"
+  },
+  "devDependencies": {
+    "@wbe/debug": "^1.2.0",
+    "gsap": "^3.12.5",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.3"
   }
 }

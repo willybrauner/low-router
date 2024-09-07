@@ -1,12 +1,13 @@
 {
   "buildCommand": "build",
-  "packages": ["./packages/*"],
+  "packages": ["./packages/low-router", "./packages/low-router-preact"],
   "sandboxes": [
-    "./examples/basic",
-    "./examples/basic-resolve-sync",
-    "./examples/compose",
-    "./examples/custom-path-to-regexp",
-    "./examples/react-nested-routes"
+    "/packages/low-router/examples/basic",
+    "/packages/low-router/examples/basic-resolve-sync",
+    "/packages/low-router/examples/compose",
+    "/packages/low-router/examples/custom-path-to-regexp",
+    "/packages/low-router/examples/react-nested-routes",
+    "/packages/low-router-preact/examples/example-preact-ssr"
   ],
   "node": "18"
 }
