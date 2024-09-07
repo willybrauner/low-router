@@ -32,7 +32,7 @@ It supports out of the box, SSR routing, nested router instances, I18n and route
 ## Installation
 
 ```shell
-npm i @wbe/low-router-preact
+npm i @wbe/low-router @wbe/low-router-preact
 ```
 
 ## Usage
