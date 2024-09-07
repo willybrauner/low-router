@@ -1,5 +1,11 @@
 # @wbe/low-router-preact
 
+## 0.3.0
+
+### Minor Changes
+
+- 193e647: Prevent hash pathname on server to avoid '/undefined' as matching route
+
 ## 0.2.0
 
 ### Minor Changes
