@@ -3,7 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [["@wbe/low-router"]],
+  "linked": [["@wbe/low-router", "@wbe/low-router-preact"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
