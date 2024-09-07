@@ -13,7 +13,7 @@
   "types": "./dist/low-router-preact.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/willybrauner/low-router-preact.git"
+    "url": "https://github.com/willybrauner/low-router"
   },
   "keywords": [
     "preact",
