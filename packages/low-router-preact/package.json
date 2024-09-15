@@ -7,7 +7,6 @@
   "files": [
     "dist"
   ],
-  "sideEffects": false,
   "main": "./dist/low-router-preact.js",
   "module": "./dist/low-router-preact.js",
   "types": "./dist/low-router-preact.d.ts",

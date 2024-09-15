@@ -18,3 +18,6 @@ export { composeUrlByRouteName } from "./core/composeUrlByRouteName"
 export { getStaticPropsFromUrl } from "./core/getStaticPropsFromUrl"
 export type { InitialStaticProps } from "./core/getStaticPropsFromUrl"
 export { setLocation } from "./core/setLocation"
+
+// import extended interfaces
+import "./low-router.d.ts"

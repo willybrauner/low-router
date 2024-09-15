@@ -125,7 +125,7 @@ export const routes = [
     name: "not-found",
     action: () => NotFoundPage,
   },
-]
+] as const satisfies Route[]
 
 /**
  * Locale

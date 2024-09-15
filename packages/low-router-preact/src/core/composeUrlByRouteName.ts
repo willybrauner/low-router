@@ -25,7 +25,7 @@ export function composeUrlByRouteName(
     console.error("composeUrlByRouteName > name is invalid, return", name)
     return
   }
-  // prettier-ignore
+
   const next = (routes: Route[], params: RouteParams, curBase: string): string => {
     for (let route of routes) {
       const lang = params?.lang || params?.code || i18n?.currentLocale.code
@@ -33,8 +33,7 @@ export function composeUrlByRouteName(
       const compiledPath = compilePath(curBase + selectPath)(params)
       if (route?.name === name) {
         return compiledPath
-      }
-      else if (route.children?.length > 0) {
+      } else if (route.children?.length > 0) {
         const match = next(route.children, params, compiledPath)
         if (match) {
           return match
