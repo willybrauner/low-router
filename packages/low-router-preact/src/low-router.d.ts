@@ -1,16 +1,14 @@
 import "@wbe/low-router"
-import { Locale } from "~/core/router"
+import { Locale } from "./services/I18n"
 
-/**
- * Augmentation of Route & RouteContext interfaces
- */
 declare module "@wbe/low-router" {
-  interface Route {
+  export interface Route {
+    path?: string
     name: string
     getStaticProps?: (props: Record<any, any>, locale: Locale) => Promise<any>
     translations?: Record<string, string>
-    path?: string
   }
+
   export interface RouteContext {
     routeId: number
     route: Route

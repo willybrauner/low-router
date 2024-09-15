@@ -3,13 +3,13 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "declaration": true,
     "outDir": "dist",
     "strict": false,
+    "declaration": true,
     "moduleResolution": "node",
-    "types": ["preact"]
+    "types": ["preact", "node", "./src/low-router.d.ts"]
   },
-  "types": ["node", "src/router.d.ts"],
-  "include": ["src/**/*"],
+
+  "include": ["./src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
