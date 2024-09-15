@@ -1,5 +1,11 @@
 # @wbe/low-router-preact
 
+## 0.4.0
+
+### Minor Changes
+
+- cfb9bf4: Allow augmented Route & RouteContext interfaces
+
 ## 0.3.0
 
 ### Minor Changes
