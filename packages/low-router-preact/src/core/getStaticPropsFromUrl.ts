@@ -39,12 +39,11 @@ export async function getStaticPropsFromUrl(
    * @param context
    */
   const recursive = async (context: RouteContext): Promise<InitialStaticProps> => {
-    const { route } = context
-    if (route.getStaticProps) {
+    if (context.route.getStaticProps) {
       try {
-        const data = await route.getStaticProps(route.props, i18n?.currentLocale)
+        const data = await context.route.getStaticProps(context, i18n?.currentLocale)
         const url = composeUrlByRouteName(
-          route?.name,
+          context.route?.name,
           context.params,
           router.routes,
           i18n,

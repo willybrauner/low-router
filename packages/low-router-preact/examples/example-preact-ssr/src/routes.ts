@@ -10,8 +10,6 @@ import CCPage from "~/pages/CCPage"
 import DDPage from "~/pages/DDPage"
 import HomeSubAPage from "~/pages/HomeSubAPage"
 import HomeSubBPage from "~/pages/HomeSubBPage"
-
-import { Route } from "@wbe/low-router"
 import { Locale } from "@wbe/low-router-preact"
 
 export const routes = [
@@ -19,7 +17,7 @@ export const routes = [
     path: "/",
     name: "home",
     action: () => HomePage,
-    getStaticProps: async (props, locale) => {
+    getStaticProps: async (context, locale) => {
       return {
         title: `hello home ${locale.code}`,
       }
@@ -52,7 +50,7 @@ export const routes = [
       fr: "/a-propos",
     },
     name: "about",
-    getStaticProps: async (props, locale: Locale) => ({
+    getStaticProps: async (context, locale: Locale) => ({
       title: "hello About",
     }),
     action: () => AboutPage,
@@ -84,7 +82,7 @@ export const routes = [
             path: "/bb",
             name: "bb",
             action: () => BBPage,
-            getStaticProps: async (props, locale) => ({
+            getStaticProps: async (context, locale) => ({
               title: `hello BBPage (static props) ${locale.code}`,
             }),
             children: [
@@ -93,10 +91,10 @@ export const routes = [
                 name: "root-bb",
               },
               {
-                path: "/cc",
+                path: "context",
                 name: "cc",
                 action: () => CCPage,
-                getStaticProps: async (props, locale) => ({
+                getStaticProps: async (context, locale) => ({
                   title: `CC Page ${locale.code}`,
                 }),
               },
@@ -119,6 +117,10 @@ export const routes = [
     },
     name: "work",
     action: () => WorkPage,
+    getStaticProps: (context, locale) => {
+      console.log("context", context.params.id)
+      context
+    },
   },
   {
     path: "/:404*",

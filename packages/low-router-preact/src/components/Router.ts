@@ -189,13 +189,13 @@ function LowReactRouter(props: {
 
     // Request & cache static props
     const _requestAndCacheStaticProps = async (
-      route: Route,
+      context: RouteContext,
       cache: CacheAPI,
       url: string,
     ): Promise<void> => {
       try {
-        const request = await route.getStaticProps(route.props, ROUTERS.i18n?.currentLocale)
-        route.props = safeMergeObjects(route.props, request)
+        const request = await context.route.getStaticProps(context, ROUTERS.i18n?.currentLocale)
+        context.route.props = safeMergeObjects(context.route.props, request)
         cache.set(url, request)
       } catch (e) {
         console.error(id, "requestStaticProps failed", e)
@@ -226,7 +226,7 @@ function LowReactRouter(props: {
           cache.set(url, context.route.props)
         } else if (context.route.getStaticProps) {
           //log(id, "[firstRoute | isClient] request getStaticProps & set cache")
-          await _requestAndCacheStaticProps(context.route, cache, url)
+          await _requestAndCacheStaticProps(context, cache, url)
         }
       }
       // CLIENT > NOT FIRST ROUTE
@@ -237,7 +237,7 @@ function LowReactRouter(props: {
           context.route.props = safeMergeObjects(context.route.props, cacheData)
         } else if (context.route.getStaticProps) {
           // log(id, "[not firstRoute | isClient] request getStaticProps & set cache")
-          await _requestAndCacheStaticProps(context.route, cache, url)
+          await _requestAndCacheStaticProps(context, cache, url)
         }
       }
     }
