@@ -1,5 +1,31 @@
 # @wbe/low-router-preact
 
+## 0.5.0
+
+### Minor Changes
+
+- ec4a034: `getStaticProps` params returns `RouteContext` instead route `props` (#54)
+
+  before:
+
+  ```ts
+    {
+      path: "/",
+      getStaticProps: async (props, locale) => {}
+    }
+
+  ```
+
+  after:
+
+  ```ts
+    {
+      path: "/",
+      getStaticProps: async (context, locale) => {}
+    }
+
+  ```
+
 ## 0.4.0
 
 ### Minor Changes
