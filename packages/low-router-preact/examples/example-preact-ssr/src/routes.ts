@@ -11,6 +11,7 @@ import DDPage from "~/pages/DDPage"
 import HomeSubAPage from "~/pages/HomeSubAPage"
 import HomeSubBPage from "~/pages/HomeSubBPage"
 import { Locale } from "@wbe/low-router-preact"
+import { Route } from "@wbe/low-router"
 
 export const routes = [
   {
@@ -119,7 +120,7 @@ export const routes = [
     action: () => WorkPage,
     getStaticProps: (context, locale) => {
       console.log("context", context.params.id)
-      context
+      return Promise.resolve()
     },
   },
   {
