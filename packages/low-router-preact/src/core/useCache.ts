@@ -14,7 +14,7 @@ export function useCache(cache: Record<any, any>, id: number | string): CacheAPI
 
   return {
     get: (key: string): any => {
-      if (!dataAlreadyExist(key)) return null
+      if (!dataAlreadyExist(key)) return
       return cache[key]
     },
     set: (key: string, data: Record<string, any>): void => {
