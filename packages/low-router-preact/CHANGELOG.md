@@ -1,5 +1,15 @@
 # @wbe/low-router-preact
 
+## 0.8.0
+
+### Minor Changes
+
+- 90935b1: Patch missing route props on \_props copy
+
+  reference to #56
+
+  In case the route didn't had a specific props object, `_props` was `undefined`, and last `route.props` of the same route was registered in `route._props` object. To avoid this behavior, we set an empty object on `props.route` if no props exist on the initial route object.
+
 ## 0.7.0
 
 ### Minor Changes
