@@ -22,9 +22,6 @@ export const routes = [
   {
     path: "/work/:id",
     name: "work",
-    props: {
-      color: "red",
-    },
     action: () => WorkPage,
     getStaticProps: async (context, locale) => {
       if (import.meta.env.SSR) {

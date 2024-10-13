@@ -189,7 +189,7 @@ function LowReactRouter(props: {
 
     // save props stored on the route object before mute it
     // if it had been already saved, return it
-    context.route._props = context.route._props || context.route.props
+    context.route._props = context.route._props || context.route.props || {}
 
     // Request get static props
     // update props with saved route._props
