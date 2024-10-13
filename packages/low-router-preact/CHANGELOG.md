@@ -1,5 +1,11 @@
 # @wbe/low-router-preact
 
+## 0.7.0
+
+### Minor Changes
+
+- dc02cc3: Bump all deps
+
 ## 0.6.0
 
 ### Minor Changes
