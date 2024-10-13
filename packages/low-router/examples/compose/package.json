@@ -15,7 +15,7 @@
   "devDependencies": {
     "@wbe/debug": "^1.2.0",
     "gsap": "^3.12.5",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.3"
+    "typescript": "^5.6.3",
+    "vite": "^5.4.8"
   }
 }
