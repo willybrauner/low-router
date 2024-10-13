@@ -187,7 +187,13 @@ function LowReactRouter(props: {
     // the matcher will match even if the URL ends with a slash
     let url = composeUrlByRouteName(context.route?.name, context.params)
 
-    // Request & cache static props
+    // save props stored on the route object before mute it
+    // if it had been already saved, return it
+    context.route._props = context.route._props || context.route.props
+
+    // Request get static props
+    // update props with saved route._props
+    // cache the request
     const _requestAndCacheStaticProps = async (
       context: RouteContext,
       cache: CacheAPI,
@@ -195,7 +201,7 @@ function LowReactRouter(props: {
     ): Promise<void> => {
       try {
         const request = await context.route.getStaticProps(context, ROUTERS.i18n?.currentLocale)
-        context.route.props = safeMergeObjects(context.route.props, request)
+        context.route.props = safeMergeObjects(context.route._props, request)
         cache.set(url, request)
       } catch (e) {
         console.error(id, "requestStaticProps failed", e)
@@ -225,7 +231,7 @@ function LowReactRouter(props: {
           )
           cache.set(url, context.route.props)
         } else if (context.route.getStaticProps) {
-          //log(id, "[firstRoute | isClient] request getStaticProps & set cache")
+          // log(id, "[firstRoute | isClient] request getStaticProps & set cache")
           await _requestAndCacheStaticProps(context, cache, url)
         }
       }
@@ -233,7 +239,7 @@ function LowReactRouter(props: {
       else {
         const cacheData = cache.get(url)
         if (cacheData) {
-          // log(id, "[not firstRoute | isClient] assign existing cache to route.props", cacheData)
+          // log(id, "[not firstRoute | isClient] assign existing cache to route.props")
           context.route.props = safeMergeObjects(context.route.props, cacheData)
         } else if (context.route.getStaticProps) {
           // log(id, "[not firstRoute | isClient] request getStaticProps & set cache")

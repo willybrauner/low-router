@@ -34,7 +34,10 @@ const DEFAULT_TRANSITION = async ({ prev, current, unmountPrev }: StackTransitio
     await prev.playOut?.()
     unmountPrev()
   }
-  if (current?.playIn) await current?.playIn?.()
+  if (current?.playIn) {
+    await current?.playIn?.()
+    if (current?.root) current.root.style.opacity = "1"
+  }
 }
 
 /**
