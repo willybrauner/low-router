@@ -7,7 +7,8 @@
     "/packages/low-router/examples/compose",
     "/packages/low-router/examples/custom-path-to-regexp",
     "/packages/low-router/examples/react-nested-routes",
-    "/packages/low-router-preact/examples/example-preact-ssr"
+    "/packages/low-router-preact/examples/example-preact-ssr",
+    "/packages/low-router-preact/examples/example-preact-ssr-static-props"
   ],
   "node": "18"
 }
