@@ -1,5 +1,11 @@
 # @wbe/low-router-preact
 
+## 0.6.0
+
+### Minor Changes
+
+- 865c942: Improve getStaticProps in case we request the same route object differently on server & client.
+
 ## 0.5.0
 
 ### Minor Changes
