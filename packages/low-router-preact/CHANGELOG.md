@@ -1,5 +1,11 @@
 # @wbe/low-router-preact
 
+## 0.9.0
+
+### Minor Changes
+
+- ae073fc: Remove memo wrapper on Router component
+
 ## 0.8.0
 
 ### Minor Changes
