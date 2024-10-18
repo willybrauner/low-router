@@ -3,7 +3,6 @@ import {
   useRef,
   createContext,
   createElement,
-  memo,
   ReactElement,
   useEffect,
   useReducer,
@@ -293,5 +292,4 @@ function LowReactRouter(props: {
   })
 }
 
-const Router = memo(LowReactRouter)
-export { Router }
+export { LowReactRouter as Router }
