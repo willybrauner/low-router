@@ -24,23 +24,18 @@ const routes = [
 
 // we can use other path to regexp fn like the original "pathToRegexp" package
 // https://github.com/pillarjs/path-to-regexp
-import { pathToRegexp } from "path-to-regexp"
+import { compile, pathToRegexp } from "path-to-regexp"
 
-const customPathToRegexpFn = (path: string): { keys: any[]; regexp: RegExp } => {
-  let keys = []
-  const regexp = pathToRegexp(path, keys)
-  console.log({ keys, regexp })
-  return { keys, regexp }
-}
-
-const customMatcher = createMatcher(customPathToRegexpFn)
 // ex: customMatcher("/about/:id", "/about/1")
 // return: [true, { id: "1" }, {}, null]
+const customMatcher = createMatcher((path: string): { keys: any[]; regexp: RegExp } => {
+  return pathToRegexp(path)
+})
 
 /**
  * Create router
  */
-const router = new LowRouter(routes, { matcher: customMatcher })
+const router = new LowRouter(routes, { matcher: customMatcher, compile })
 
 /**
  * Listen links

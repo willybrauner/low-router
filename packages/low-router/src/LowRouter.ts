@@ -13,6 +13,7 @@ export class LowRouter {
   currentContext: RouteContext | undefined
   options: Partial<RouterOptions>
   matcher: Matcher
+  compile: RouterOptions["compile"]
 
   constructor(routes: Route[], options: Partial<RouterOptions> = {}) {
     this.routes = routes
@@ -24,6 +25,7 @@ export class LowRouter {
     this.#log("options", this.options)
 
     this.matcher = this.options.matcher || createMatcher()
+    this.compile = this.options.compile || compilePath
     this.options.onInit?.()
   }
 
