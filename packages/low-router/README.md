@@ -170,7 +170,7 @@ import { createMatcher } from "@wbe/low-router"
 const matcher = createMatcher()
 const [isMatch, routeParams, queryParams, hash] = matcher(
   "/user/1?lang=fr&cat=foo#section-2",
-  "/user/:id"
+  "/user/:id",
 )
 // isMatch: true
 // routeParams: { id: "1" }
@@ -190,9 +190,7 @@ import { LowRouter, createMatcher } from "@wbe/low-router"
 import { pathToRegexp } from "path-to-regexp"
 
 const customPathToRegexpFn = (path: string): { keys: Record<string, string>[]; regexp: RegExp } => {
-  let keys = []
-  const regexp = pathToRegexp(path, keys)
-  return { keys, regexp }
+  return pathToRegexp(path, keys)
 }
 
 const customMatcher = createMatcher(customPathToRegexpFn)

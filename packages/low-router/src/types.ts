@@ -37,5 +37,6 @@ export interface RouterOptions {
   onDispose: () => void
   onError: () => void
   matcher: Matcher
+  compile: (path: string, options) => (params) => string
   id?: number | string
 }
