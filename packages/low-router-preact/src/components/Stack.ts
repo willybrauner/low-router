@@ -1,8 +1,9 @@
 import { useRef, createElement, useMemo, useReducer, useLayoutEffect } from "../preact-deps"
-
 import { RouteContext } from "@wbe/low-router"
 import { isServer } from "@wbe/utils"
 import { useRouter } from "../hooks/useRouter"
+// import debug from "@wbe/debug"
+// const log = debug("low-router-preact:Stack")
 
 export interface RouteRef {
   playIn: () => Promise<void>
@@ -64,24 +65,26 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
         prevContext?: RouteContext
         currentContext?: RouteContext
         routeIdToRemove?: number
-      }
+      },
     ) => {
       switch (action.type) {
         case "update":
-          const newStackRoutes = clampRoutesRender
-            ? [action.prevContext, action.currentContext].filter(Boolean)
-            : [...state.stackRoutes, action.currentContext].filter(Boolean)
-          // console.log(id, "stackRoutes", newStackRoutes)
-          return {
-            prevContext: action.prevContext,
+          const newStates = {
             currentContext: action.prevContext,
-            stackRoutes: newStackRoutes,
+            prevContext: action.prevContext,
+            updateId: state.updateId + 1,
+            stackRoutes: [...state.stackRoutes, action.currentContext]
+              .filter(Boolean)
+              .slice(clampRoutesRender ? -2 : 0),
           }
+          // log(id, "update", newStates)
+          return newStates
+
         case "unmount-prev":
           const stackRoutes = state.stackRoutes?.filter(
-            (e) => e?.routeId !== action.routeIdToRemove
+            (e) => e?.routeId !== action.routeIdToRemove,
           )
-          // console.log(id, "stackRoutes after remove", stackRoutes)
+          // log(id, "stackRoutes after remove", stackRoutes)
           return {
             ...state,
             stackRoutes,
@@ -90,10 +93,10 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
     },
     {
       stackRoutes: [],
-      routeIdToRemove: null,
       currentContext,
       prevContext,
-    }
+      updateId: 0,
+    },
   )
 
   /**
@@ -121,15 +124,19 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
     if (state.stackRoutes?.length === 0) return
     const prev = routeRefs.current?.[state.stackRoutes?.length - 2]
     const current = routeRefs.current?.[state.stackRoutes?.length - 1]
-    const unmountPrev = () => {
+
+    // Unmount previous route
+    const unmountPrev = (): void => {
       dispatch({ type: "unmount-prev", routeIdToRemove: prev?.routeId })
     }
+
+    // execute custom transitions function if passed as props
     ;(transitions || DEFAULT_TRANSITION)({
       unmountPrev,
       prev,
       current,
     })
-  }, [state.stackRoutes])
+  }, [state.updateId])
 
   return createElement(
     "div",
@@ -148,6 +155,6 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
         hash: context.hash,
         ...(context.route.props || {}),
       })
-    })
+    }),
   )
 }
