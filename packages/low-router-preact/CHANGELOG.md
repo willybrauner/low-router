@@ -1,5 +1,11 @@
 # @wbe/low-router-preact
 
+## 0.9.1
+
+### Patch Changes
+
+- 0569d55: Avoid multiple rerenders on the Stack transition function when the route change.
+
 ## 0.9.0
 
 ### Minor Changes
