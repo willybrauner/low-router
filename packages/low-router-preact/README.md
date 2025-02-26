@@ -2,7 +2,6 @@
 <p align="center">
 <img alt="npm" src="https://img.shields.io/npm/v/@wbe/low-router-preact">
 <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/%40wbe%2Flow-router-preact">
-<img alt="build" src="https://github.com/willybrauner/low-router-preact/workflows/tests/badge.svg">
 </p>
 <p align="center">
 
