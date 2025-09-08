@@ -48,7 +48,7 @@ main.tsx:
 
 ```tsx
 import { render } from "preact"
-import { createBrowserHistory } from "@wbe/wbe-router"
+import { createBrowserHistory } from "@wbe/low-router"
 import { Router } from "@wbe/low-router-preact"
 
 // Prepare the routes list
