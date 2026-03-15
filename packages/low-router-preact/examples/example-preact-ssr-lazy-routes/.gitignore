@@ -1,0 +1,12 @@
+dist
+vendor
+.env.local
+node_modules
+.DS_Store
+.idea
+.vscode
+*.local
+.cache
+vite.config.ts.timestamp*
+stats.html
+tsconfig.tsbuildinfo

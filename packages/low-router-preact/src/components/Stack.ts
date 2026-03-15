@@ -1,4 +1,11 @@
-import { Suspense, createElement, useLayoutEffect, useMemo, useReducer, useRef } from "preact/compat"
+import {
+  Suspense,
+  createElement,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useRef,
+} from "preact/compat"
 import { RouteContext } from "@wbe/low-router"
 import { isServer } from "@wbe/utils"
 import { useRouter } from "../hooks/useRouter"
@@ -146,7 +153,7 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
       // non-lazy: ref is already attached, run immediately
       runTransition(current)
     } else {
-      // [change 3] lazy: ref not yet attached — defer until the ref callback fires
+      // lazy: ref not yet attached, defer until the ref callback fires
       pendingTransitionRef.current = runTransition
     }
   }, [state.updateId])
@@ -158,8 +165,6 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
       const Route = context.route.action?.()
       if (!Route) return null
       const routeId = context.routeId
-      // [change 4] wrap in Suspense so lazy route components don't throw unhandled
-      // promises, and key moves here so it survives the Suspense boundary
       return createElement(
         Suspense,
         { fallback: null, key: routeId },
@@ -167,8 +172,7 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
           ref: (e: RouteRef) => {
             routeRefs.current[i] = e ? { ...e, routeId } : null
 
-            // if this is the current route and a transition is waiting for its ref,
-            // execute it now that the lazy component has resolved and mounted
+            // if this is the current route and a transition is waiting for its ref, execute it
             if (e && i === state.stackRoutes.length - 1 && pendingTransitionRef.current) {
               pendingTransitionRef.current({ ...e, routeId })
               pendingTransitionRef.current = null
