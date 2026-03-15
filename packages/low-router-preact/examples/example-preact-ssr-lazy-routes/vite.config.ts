@@ -77,6 +77,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
     },
 
     resolve: {
+      dedupe: ["preact"],
       alias: {
         "~": resolve(__dirname, "."),
         react: "preact/compat",
