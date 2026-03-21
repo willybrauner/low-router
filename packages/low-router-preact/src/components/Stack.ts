@@ -152,10 +152,18 @@ export function Stack({ transitions, clampRoutesRender = true, as = "div", class
         current: resolvedCurrent,
       })
     }
+  
+    // Check if the current route has an action (renders a component)
+    const currentRouteContext = state.stackRoutes?.[state.stackRoutes?.length - 1]
+    const currentRouteHasAction = !!currentRouteContext?.route?.action
 
     if (current) {
       // non-lazy: ref is already attached, run immediately
       runTransition(current)
+    } else if (!currentRouteHasAction) {
+      // Route has no action (no component to render), run transition immediately
+      // so that the previous route can still play out
+      runTransition(null as RouteRef)
     } else {
       // lazy: ref not yet attached, defer until the ref callback fires
       pendingTransitionRef.current = runTransition
