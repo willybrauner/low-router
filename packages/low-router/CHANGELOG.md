@@ -1,5 +1,11 @@
 # @wbe/low-router
 
+## 0.10.1
+
+### Patch Changes
+
+- 21bb6d0: Try catch compilePath to avoid errors
+
 ## 0.10.0
 
 ### Minor Changes
