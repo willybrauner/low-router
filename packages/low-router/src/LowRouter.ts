@@ -99,6 +99,11 @@ export class LowRouter {
         const [isMatch, params, query, hash] = this.matcher(fPath, pathname)
         this.#log(`'${fPath}' match with '${pathname}'?`, isMatch)
 
+        let relativePathname: string | undefined
+        try {
+          relativePathname = this.compilePath(route.path)(params)
+        } catch {}
+
         const ctx = {
           pathname,
           params,
@@ -107,7 +112,7 @@ export class LowRouter {
           route,
           base,
           parent,
-          relativePathname: isMatch ? this.compilePath(route.path)(params) : undefined,
+          relativePathname,
         }
 
         if (isMatch) {
