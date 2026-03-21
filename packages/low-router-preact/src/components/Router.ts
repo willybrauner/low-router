@@ -1,9 +1,9 @@
 import { LowRouter, Route, RouterOptions, RouteContext, HistoryAPI } from "@wbe/low-router"
+import { ComponentChildren } from "preact"
 import {
   useRef,
   createContext,
   createElement,
-  ReactElement,
   useEffect,
   useReducer,
 } from "../preact-deps"
@@ -86,7 +86,7 @@ let ROUTE_ID = 0
  */
 function LowReactRouter(props: {
   router: LowRouter
-  children: ReactElement | ReactElement[]
+  children: ComponentChildren
   history?: HistoryAPI | any
   staticLocation?: string
   initialStaticProps?: InitialStaticProps

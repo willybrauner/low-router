@@ -1,4 +1,11 @@
-import { useRef, createElement, useMemo, useReducer, useLayoutEffect } from "../preact-deps"
+import {
+  Suspense,
+  createElement,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useRef,
+} from "preact/compat"
 import { RouteContext } from "@wbe/low-router"
 import { isServer } from "@wbe/utils"
 import { useRouter } from "../hooks/useRouter"
@@ -24,6 +31,10 @@ interface Props {
   transitions?: (T: StackTransitionsParams) => Promise<void>
   // Clamp Routes render number to two routes, prev & next
   clampRoutesRender?: boolean
+  // HTML tag to render as wrapper element (default: "div")
+  as?: string
+  // CSS class name for the wrapper element
+  className?: string
 }
 
 /**
@@ -46,13 +57,14 @@ const DEFAULT_TRANSITION = async ({ prev, current, unmountPrev }: StackTransitio
  * @param transitions
  * @param clampRoutesRender
  */
-export function Stack({ transitions, clampRoutesRender = true }: Props) {
-  const {
-    options: { id },
-    prevContext,
-    currentContext,
-  } = useRouter()
-  const routeRefs = useRef<RouteRef[]>([])
+export function Stack({ transitions, clampRoutesRender = true, as = "div", className }: Props) {
+  const { prevContext, currentContext } = useRouter()
+  // Allow null entries for lazy components whose ref is not yet attached
+  const routeRefs = useRef<(RouteRef | null)[]>([])
+
+  // Stores a deferred transition callback when the current route ref is null
+  // (lazy component not yet resolved). Consumed by the ref callback once it mounts.
+  const pendingTransitionRef = useRef<((current: RouteRef) => void) | null>(null)
 
   /**
    * Reducer state
@@ -70,12 +82,12 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
       switch (action.type) {
         case "update":
           const newStates = {
-            currentContext: action.prevContext,
-            prevContext: action.prevContext,
+            currentContext: action.prevContext as RouteContext,
+            prevContext: action.prevContext as RouteContext,
             updateId: state.updateId + 1,
             stackRoutes: [...state.stackRoutes, action.currentContext]
               .filter(Boolean)
-              .slice(clampRoutesRender ? -2 : 0),
+              .slice(clampRoutesRender ? -2 : 0) as RouteContext[],
           }
           // log(id, "update", newStates)
           return newStates
@@ -92,7 +104,7 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
       }
     },
     {
-      stackRoutes: [],
+      stackRoutes: [] as RouteContext[],
       currentContext,
       prevContext,
       updateId: 0,
@@ -122,6 +134,8 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
    */
   useLayoutEffect(() => {
     if (state.stackRoutes?.length === 0) return
+    // Cancel any stale pending transition from a previous navigation
+    pendingTransitionRef.current = null
     const prev = routeRefs.current?.[state.stackRoutes?.length - 2]
     const current = routeRefs.current?.[state.stackRoutes?.length - 1]
 
@@ -130,31 +144,50 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
       dispatch({ type: "unmount-prev", routeIdToRemove: prev?.routeId })
     }
 
-    // execute custom transitions function if passed as props
-    ;(transitions || DEFAULT_TRANSITION)({
-      unmountPrev,
-      prev,
-      current,
-    })
+    const runTransition = (resolvedCurrent: RouteRef): void => {
+      // execute custom transitions function if passed as props
+      ;(transitions || DEFAULT_TRANSITION)({
+        unmountPrev,
+        prev: prev as RouteRef,
+        current: resolvedCurrent,
+      })
+    }
+
+    if (current) {
+      // non-lazy: ref is already attached, run immediately
+      runTransition(current)
+    } else {
+      // lazy: ref not yet attached, defer until the ref callback fires
+      pendingTransitionRef.current = runTransition
+    }
   }, [state.updateId])
 
   return createElement(
-    "div",
-    { className: "Stack" },
+    as,
+    { className },
     state.stackRoutes?.map((context, i) => {
       const Route = context.route.action?.()
       if (!Route) return null
       const routeId = context.routeId
-      return createElement(Route, {
-        ref: (e: RouteRef) => {
-          routeRefs.current[i] = { ...e, routeId } as RouteRef
-        },
-        key: routeId,
-        params: context.params,
-        query: context.query,
-        hash: context.hash,
-        ...(context.route.props || {}),
-      })
+      return createElement(
+        Suspense,
+        { fallback: null, key: routeId },
+        createElement(Route, {
+          ref: (e: RouteRef) => {
+            routeRefs.current[i] = e ? { ...e, routeId } : null
+
+            // if this is the current route and a transition is waiting for its ref, execute it
+            if (e && i === state.stackRoutes.length - 1 && pendingTransitionRef.current) {
+              pendingTransitionRef.current({ ...e, routeId })
+              pendingTransitionRef.current = null
+            }
+          },
+          params: context.params,
+          query: context.query,
+          hash: context.hash,
+          ...(context.route.props || {}),
+        }),
+      )
     }),
   )
 }

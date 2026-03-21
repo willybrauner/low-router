@@ -20,13 +20,13 @@ function App() {
 
       <div>
         <Link to={{ name: "home" }}>{"home"}</Link>
-        <Link to={{ name: "about" }}>{"about"}</Link>
+        <Link to={{ name: "about" }}>{"about (lazy)"}</Link>
         <Link to={{ name: "work", params: { id: "test-1" } }}>{"work test-1"}</Link>
         <Link to={{ name: "work", params: { id: "test-2" } }}>{"work test-2"}</Link>
         <Link to={{ name: "dd" }}>{"about/bar/bb/dd"}</Link>
       </div>
 
-      <Stack transitions={custom} clampRoutesRender={false} />
+      <Stack className="Stack" transitions={custom} clampRoutesRender={false} />
     </div>
   )
 }

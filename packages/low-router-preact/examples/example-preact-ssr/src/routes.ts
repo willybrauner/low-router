@@ -1,6 +1,11 @@
+import { lazy } from "preact/compat"
 import HomePage from "~/pages/HomePage"
 import WorkPage from "~/pages/WorkPage"
-import AboutPage from "~/pages/AboutPage"
+
+//import AboutPage from "~/pages/AboutPage"
+// import lazily AboutPage
+const AboutPage = lazy(() => import("~/pages/AboutPage"))
+
 import NotFoundPage from "~/pages/NotFoundPage"
 import FooPage from "~/pages/FooPage"
 import BarPage from "~/pages/BarPage"
