@@ -1,7 +1,6 @@
 <h1 align="center" style="text-align:center">low-router 🚌‍</h1>
 <p align="center">
 <img alt="npm" src="https://img.shields.io/npm/v/@wbe/low-router">
-<img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/%40wbe%2Flow-router">
 <img alt="build" src="https://github.com/willybrauner/low-router/workflows/ci/badge.svg">
 </p>
 <p align="center">
