@@ -97,10 +97,9 @@ export class LowRouter {
       for (let route of routes) {
         const fPath = normalizePath(base + route.path)
         const [isMatch, params, query, hash] = this.matcher(fPath, pathname)
-        const relativePathname = this.compilePath(route.path)(params)
         this.#log(`'${fPath}' match with '${pathname}'?`, isMatch)
 
-        const currContext = {
+        const ctx = {
           pathname,
           params,
           query,
@@ -108,13 +107,13 @@ export class LowRouter {
           route,
           base,
           parent,
-          relativePathname,
+          relativePathname: isMatch ? this.compilePath(route.path)(params) : undefined,
         }
 
         if (isMatch) {
-          return currContext
+          return ctx
         } else if (route.children) {
-          const childResult = next(pathname, fPath, route.children, currContext)
+          const childResult = next(pathname, fPath, route.children, ctx)
           if (childResult) return childResult
         }
       }
