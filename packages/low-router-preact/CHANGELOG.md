@@ -1,5 +1,34 @@
 # @wbe/low-router-preact
 
+## 0.11.0
+
+### Minor Changes
+
+- f8f4c76: Add suspense API support to be able to load lazy routes
+
+  ```ts
+  import { lazy } from "preact/compat"
+
+  const routes = [
+    {
+      name: "home",
+      path: "/",
+      action: () => lazy(() => import("./Home")),
+    },
+    {
+      name: "about",
+      path: "/about",
+      action: () => lazy(() => import("./About")),
+    },
+  ]
+  ```
+
+  Others changes:
+
+  - Add Stack `as` props
+  - Add Stack `className` props
+  - Breaking change: Remove the "Stack" string className from the root of `Stack` component
+
 ## 0.10.0
 
 ### Minor Changes
