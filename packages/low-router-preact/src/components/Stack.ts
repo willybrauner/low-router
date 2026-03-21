@@ -31,6 +31,10 @@ interface Props {
   transitions?: (T: StackTransitionsParams) => Promise<void>
   // Clamp Routes render number to two routes, prev & next
   clampRoutesRender?: boolean
+  // HTML tag to render as wrapper element (default: "div")
+  as?: string
+  // CSS class name for the wrapper element
+  className?: string
 }
 
 /**
@@ -53,7 +57,7 @@ const DEFAULT_TRANSITION = async ({ prev, current, unmountPrev }: StackTransitio
  * @param transitions
  * @param clampRoutesRender
  */
-export function Stack({ transitions, clampRoutesRender = true }: Props) {
+export function Stack({ transitions, clampRoutesRender = true, as = "div", className }: Props) {
   const { prevContext, currentContext } = useRouter()
   // Allow null entries for lazy components whose ref is not yet attached
   const routeRefs = useRef<(RouteRef | null)[]>([])
@@ -159,8 +163,8 @@ export function Stack({ transitions, clampRoutesRender = true }: Props) {
   }, [state.updateId])
 
   return createElement(
-    "div",
-    { className: "Stack" },
+    as,
+    { className },
     state.stackRoutes?.map((context, i) => {
       const Route = context.route.action?.()
       if (!Route) return null
