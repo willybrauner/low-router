@@ -21,6 +21,7 @@
 - [Handle history](#handle-history)
 - [Matcher](#matcher)
 - [Custom matcher](#custom-matcher)
+- [Custom compilePath](#custom-compilepath)
 - [debug](#debug)
 - [API](#api)
   - [LowRouter](#lowrouter)
@@ -182,29 +183,44 @@ This returns values are returned by `RouteContext` when the route match. For mor
 
 ## Custom matcher
 
-If the internal matcher doesn't respond as needed, it's possible to use a custom matcher function:
-like the original [path-to-regexp package](https://github.com/pillarjs/path-to-regexp).
+If the internal matcher doesn't respond as needed, it's possible to use a custom matcher function.
+You can use `createMatcher` with a custom `regexFn`, or write a `Matcher` from scratch.
 
 ```ts
 import { LowRouter, createMatcher } from "@wbe/low-router"
 import { pathToRegexp } from "path-to-regexp"
 
-const customPathToRegexpFn = (path: string): { keys: Record<string, string>[]; regexp: RegExp } => {
-  let keys = []
-  const regexp = pathToRegexp(path, keys)
+// path-to-regexp v8 returns { regexp, keys } directly
+const customPathToRegexpFn = (path: string): { keys: { name: string }[]; regexp: RegExp } => {
+  const { regexp, keys } = pathToRegexp(path)
   return { keys, regexp }
 }
 
 const customMatcher = createMatcher(customPathToRegexpFn)
-// ex: customMatcher("/about/:id", "/about/1")
-// return: [true, { id: "1" }, {}, null]
-
-// then, pass this customMatcher to the router options
-// Now, the router will use this custom matcher with path-to-regexp to match routes
 const router = new LowRouter(routes, { matcher: customMatcher })
 ```
 
-This flexible custom matcher pattern as been created by [molefrog](https://github.com/molefrog) on [wouter](https://github.com/molefrog/wouter) 🙏
+For a complete example with `path-to-regexp` (custom matcher from scratch, wildcards, 404 route), see the [custom-path-to-regexp example](examples/custom-path-to-regexp).
+
+This flexible custom matcher pattern has been created by [molefrog](https://github.com/molefrog) on [wouter](https://github.com/molefrog/wouter) 🙏
+
+## Custom compilePath
+
+The `compilePath` option allows you to swap the internal path compiler with a custom one, like [path-to-regexp](https://github.com/pillarjs/path-to-regexp)'s `compile` function. This is useful when you use a custom matcher and want URL generation (`createUrl`) to use the same path syntax.
+
+```ts
+import { LowRouter } from "@wbe/low-router"
+import { match, compile } from "path-to-regexp"
+
+const router = new LowRouter(routes, {
+  matcher: customMatcher,
+  compilePath: compile,
+})
+
+// createUrl will now use path-to-regexp's compile to generate URLs
+router.createUrl({ name: "user", params: { id: "123" } })
+// "/user/123"
+```
 
 ### debug
 
@@ -277,6 +293,11 @@ const options: Options = {
   // Default: the internal `createMatcher()` fn
   // matcher: Matcher
   matcher: createMatcher(),
+
+  // Custom function to compile a route path with params into a URL string.
+  // Default: the internal `compilePath` fn
+  // compilePath: CompilePath
+  compilePath: compilePath,
 
   // give an id to the router instance, useful when you have multiple router instances
   // and you want to identify them from debug logs

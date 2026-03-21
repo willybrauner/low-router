@@ -1,3 +1,7 @@
 packages:
   - "packages/*"
   - "packages/**/examples/*"
+
+overrides:
+  "@wbe/low-router": "workspace:*"
+  "@wbe/low-router-preact": "workspace:*"
