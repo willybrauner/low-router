@@ -1,5 +1,13 @@
 # @wbe/low-router-preact
 
+## 0.11.1
+
+### Patch Changes
+
+- 21bb6d0: Try catch compilePath to avoid errors
+- Updated dependencies [21bb6d0]
+  - @wbe/low-router@0.10.1
+
 ## 0.11.0
 
 ### Minor Changes
