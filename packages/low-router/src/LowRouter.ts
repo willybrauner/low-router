@@ -1,7 +1,7 @@
 import debug from "@wbe/debug"
 import { PathnameOrObject, Resolve, Route, RouteContext, RouteParams, RouterOptions } from "./types"
 import { createMatcher, Matcher } from "./utils/createMatcher"
-import { compilePath } from "./utils/compilePath"
+import { compilePath as defaultCompilePath, CompilePath } from "./utils/compilePath"
 import { normalizePath } from "./utils/normalizePath"
 
 const log = debug("low-router")
@@ -13,6 +13,7 @@ export class LowRouter {
   currentContext: RouteContext | undefined
   options: Partial<RouterOptions>
   matcher: Matcher
+  compilePath: CompilePath
 
   constructor(routes: Route[], options: Partial<RouterOptions> = {}) {
     this.routes = routes
@@ -24,6 +25,7 @@ export class LowRouter {
     this.#log("options", this.options)
 
     this.matcher = this.options.matcher || createMatcher()
+    this.compilePath = this.options.compilePath || defaultCompilePath
     this.options.onInit?.()
   }
 
@@ -95,7 +97,7 @@ export class LowRouter {
       for (let route of routes) {
         const fPath = normalizePath(base + route.path)
         const [isMatch, params, query, hash] = this.matcher(fPath, pathname)
-        const relativePathname = compilePath(route.path)(params)
+        const relativePathname = this.compilePath(route.path)(params)
         this.#log(`'${fPath}' match with '${pathname}'?`, isMatch)
 
         const currContext = {
@@ -130,7 +132,7 @@ export class LowRouter {
   public createUrl({ name, params = {} }: { name: string; params?: RouteParams }): string {
     const next = (name, params, routes, curBase): string => {
       for (let route of routes) {
-        const compiledPath = normalizePath(compilePath(curBase + route.path)(params))
+        const compiledPath = normalizePath(this.compilePath(curBase + route.path)(params))
         if (route.name === name) {
           return compiledPath
         } else if (route.children?.length > 0) {

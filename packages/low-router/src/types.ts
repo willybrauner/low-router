@@ -1,4 +1,5 @@
 import { Matcher } from "./utils/createMatcher"
+import { CompilePath } from "./utils/compilePath"
 
 export type RouteParams = { [paramName: string]: string }
 export type QueryParams = { [paramName: string]: string }
@@ -37,5 +38,6 @@ export interface RouterOptions {
   onDispose: () => void
   onError: () => void
   matcher: Matcher
+  compilePath: CompilePath
   id?: number | string
 }
