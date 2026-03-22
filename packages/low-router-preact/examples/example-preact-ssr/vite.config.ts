@@ -21,7 +21,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
   process.env = {
     ...loadEnvVars,
     ...process.env,
-    PORT: `${portFinderSync.getPort(5173)}`,
+    PORT: `${portFinderSync.getPort(5186)}`,
     HOST: "localhost",
     PROTOCOL: protocol,
   }

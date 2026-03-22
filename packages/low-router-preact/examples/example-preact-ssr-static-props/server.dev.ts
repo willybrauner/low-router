@@ -1,13 +1,13 @@
 import fastify from "fastify"
 import fastifyMiddie from "@fastify/middie"
-import { createServer, loadEnv } from "vite"
+import { createServer } from "vite"
 import { renderToStringAsync } from "preact-render-to-string"
 import portFinderSync from "portfinder-sync"
 import chalk from "chalk"
 import config from "./config/config"
 
 const BASE = "/"
-const PORT = portFinderSync.getPort(5183)
+const PORT = portFinderSync.getPort(5184)
 const INDEX_SERVER_PATH = `${config.srcDir}/index-server.tsx`
 const DEV_SCRIPTS = {
   js: [{ tag: "script", attr: { type: "module", src: "/src/index-client.tsx" } }],
@@ -20,7 +20,7 @@ async function server() {
     base: BASE,
     appType: "custom",
     logLevel: "info",
-    server: { middlewareMode: true, cors: false, hmr: { port: 24681 } },
+    server: { middlewareMode: true, cors: false, hmr: { port: 24684 } },
   })
 
   // Handle vite dev-server script HMR & filter requests

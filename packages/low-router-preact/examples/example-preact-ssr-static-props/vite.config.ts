@@ -21,7 +21,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
   process.env = {
     ...loadEnvVars,
     ...process.env,
-    PORT: `${portFinderSync.getPort(5183)}`,
+    PORT: `${portFinderSync.getPort(5184)}`,
     HOST: "localhost",
     PROTOCOL: protocol,
   }
@@ -56,7 +56,6 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
       },
       preprocessorOptions: {
         scss: {
-          api: "modern-compiler",
           silenceDeprecations: ["legacy-js-api"],
         },
       },

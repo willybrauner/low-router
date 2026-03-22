@@ -7,7 +7,7 @@ import chalk from "chalk"
 import config from "./config/config"
 
 const BASE = "/"
-const PORT = portFinderSync.getPort(5173)
+const PORT = portFinderSync.getPort(5186)
 const INDEX_SERVER_PATH = `${config.srcDir}/index-server.tsx`
 const DEV_SCRIPTS = {
   js: [{ tag: "script", attr: { type: "module", src: "/src/index-client.tsx" } }],
