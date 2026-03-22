@@ -1,20 +1,20 @@
 import { lazy } from "preact/compat"
-import HomePage from "~/pages/HomePage"
-import WorkPage from "~/pages/WorkPage"
+import HomePage from "~/src/pages/HomePage"
+import WorkPage from "~/src/pages/WorkPage"
 
-//import AboutPage from "~/pages/AboutPage"
+//import AboutPage from "~/src/pages/AboutPage"
 // import lazily AboutPage
-const AboutPage = lazy(() => import("~/pages/AboutPage"))
+const AboutPage = lazy(() => import("~/src/pages/AboutPage"))
 
-import NotFoundPage from "~/pages/NotFoundPage"
-import FooPage from "~/pages/FooPage"
-import BarPage from "~/pages/BarPage"
-import AAPage from "~/pages/AAPage"
-import BBPage from "~/pages/BBPage"
-import CCPage from "~/pages/CCPage"
-import DDPage from "~/pages/DDPage"
-import HomeSubAPage from "~/pages/HomeSubAPage"
-import HomeSubBPage from "~/pages/HomeSubBPage"
+import NotFoundPage from "~/src/pages/NotFoundPage"
+import FooPage from "~/src/pages/FooPage"
+import BarPage from "~/src/pages/BarPage"
+import AAPage from "~/src/pages/AAPage"
+import BBPage from "~/src/pages/BBPage"
+import CCPage from "~/src/pages/CCPage"
+import DDPage from "~/src/pages/DDPage"
+import HomeSubAPage from "~/src/pages/HomeSubAPage"
+import HomeSubBPage from "~/src/pages/HomeSubBPage"
 import { Locale } from "@wbe/low-router-preact"
 import { Route } from "@wbe/low-router"
 import debug from "@wbe/debug"

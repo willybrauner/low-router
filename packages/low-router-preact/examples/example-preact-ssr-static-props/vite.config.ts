@@ -78,7 +78,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
 
     resolve: {
       alias: {
-        "~": resolve(__dirname, "src"),
+        "~": resolve(__dirname),
         react: "preact/compat",
         "react-dom": "preact/compat",
       },

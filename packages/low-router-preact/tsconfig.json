@@ -6,10 +6,8 @@
     "outDir": "dist",
     "strict": false,
     "declaration": true,
-    "moduleResolution": "node",
     "types": ["preact", "node", "./src/low-router.d.ts"]
   },
-
   "include": ["./src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

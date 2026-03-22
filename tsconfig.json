@@ -2,8 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
-    "importHelpers": true,
+    "moduleResolution": "bundler",
     "outDir": "dist",
     "strict": false,
     "declaration": true,
@@ -11,7 +10,6 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "experimentalDecorators": true,
     "types": ["vite/client"],
     "lib": ["esnext", "dom"]
   },

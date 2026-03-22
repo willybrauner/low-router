@@ -2,7 +2,7 @@ import css from "./AboutPage.module.scss"
 import debug from "@wbe/debug"
 import { useImperativeHandle, useRef } from "preact/hooks"
 import { MutableRefObject, forwardRef } from "preact/compat"
-import { defaultTransitions } from "~/helpers/defaultTransitions"
+import { defaultTransitions } from "~/src/helpers/defaultTransitions"
 import { Link, Router, Stack, useCreateRouter } from "@wbe/low-router-preact"
 
 interface IProps {

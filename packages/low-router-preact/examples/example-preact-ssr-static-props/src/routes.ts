@@ -1,5 +1,5 @@
-import HomePage from "~/pages/HomePage"
-import WorkPage from "~/pages/WorkPage"
+import HomePage from "~/src/pages/HomePage"
+import WorkPage from "~/src/pages/WorkPage"
 import { Locale } from "@wbe/low-router-preact"
 import { Route } from "@wbe/low-router"
 

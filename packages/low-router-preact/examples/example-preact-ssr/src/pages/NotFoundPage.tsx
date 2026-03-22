@@ -1,7 +1,7 @@
 import debug from "@wbe/debug"
 import { useImperativeHandle, useRef } from "preact/hooks"
 import { MutableRefObject, forwardRef } from "preact/compat"
-import { defaultTransitions } from "~/helpers/defaultTransitions"
+import { defaultTransitions } from "~/src/helpers/defaultTransitions"
 
 interface IProps {
   title: string
