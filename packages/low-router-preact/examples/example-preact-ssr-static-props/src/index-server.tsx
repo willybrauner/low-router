@@ -62,7 +62,6 @@ export async function render(
         </div>
         <ScriptsTags scripts={scripts.js} />
         <RawScript name={"__INITIAL_STATIC_PROPS__"} data={initialStaticProps} />
-        <RawScript name={"__GLOBAL_DATA__"} data={{}} />
       </body>
     </html>
   )
