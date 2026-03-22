@@ -3,7 +3,7 @@ import "./index.scss"
 import App from "~/src/components/App/App"
 import * as packageJson from "../package.json"
 import debug from "@wbe/debug"
-import { render, hydrate } from "preact"
+import { hydrate } from "preact"
 import { locales, routes, defaultLocaleInUrl } from "~/src/routes"
 import { createBrowserHistory, LowRouter } from "@wbe/low-router"
 import { StrictMode } from "preact/compat"
@@ -42,5 +42,4 @@ const dom = (
   </StrictMode>
 )
 
-if (import.meta.env.SPA) render(dom, root)
-else hydrate(dom, root)
+hydrate(dom, root)

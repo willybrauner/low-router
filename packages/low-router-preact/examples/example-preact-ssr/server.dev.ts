@@ -1,6 +1,6 @@
 import fastify from "fastify"
 import fastifyMiddie from "@fastify/middie"
-import { createServer, loadEnv } from "vite"
+import { createServer } from "vite"
 import { renderToStringAsync } from "preact-render-to-string"
 import portFinderSync from "portfinder-sync"
 import chalk from "chalk"

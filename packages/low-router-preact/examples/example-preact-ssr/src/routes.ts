@@ -1,11 +1,7 @@
 import { lazy } from "preact/compat"
 import HomePage from "~/src/pages/HomePage"
 import WorkPage from "~/src/pages/WorkPage"
-
-//import AboutPage from "~/src/pages/AboutPage"
-// import lazily AboutPage
 const AboutPage = lazy(() => import("~/src/pages/AboutPage"))
-
 import NotFoundPage from "~/src/pages/NotFoundPage"
 import FooPage from "~/src/pages/FooPage"
 import BarPage from "~/src/pages/BarPage"
@@ -17,8 +13,6 @@ import HomeSubAPage from "~/src/pages/HomeSubAPage"
 import HomeSubBPage from "~/src/pages/HomeSubBPage"
 import { Locale } from "@wbe/low-router-preact"
 import { Route } from "@wbe/low-router"
-import debug from "@wbe/debug"
-const log = debug("front:routes")
 
 export const routes = [
   {
@@ -125,10 +119,6 @@ export const routes = [
     },
     name: "work",
     action: () => WorkPage,
-    getStaticProps: (context, locale) => {
-      log("context", context.params.id)
-      return Promise.resolve()
-    },
   },
   {
     path: "/:404*",
