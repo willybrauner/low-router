@@ -20,7 +20,7 @@ async function server() {
     base: BASE,
     appType: "custom",
     logLevel: "info",
-    server: { middlewareMode: true, cors: false },
+    server: { middlewareMode: true, cors: false, hmr: { port: 24680 } },
   })
 
   // Handle vite dev-server script HMR & filter requests

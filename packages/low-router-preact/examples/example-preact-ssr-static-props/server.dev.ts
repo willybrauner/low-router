@@ -7,7 +7,7 @@ import chalk from "chalk"
 import config from "./config/config"
 
 const BASE = "/"
-const PORT = portFinderSync.getPort(5173)
+const PORT = portFinderSync.getPort(5183)
 const INDEX_SERVER_PATH = `${config.srcDir}/index-server.tsx`
 const DEV_SCRIPTS = {
   js: [{ tag: "script", attr: { type: "module", src: "/src/index-client.tsx" } }],
@@ -20,7 +20,7 @@ async function server() {
     base: BASE,
     appType: "custom",
     logLevel: "info",
-    server: { middlewareMode: true, cors: false },
+    server: { middlewareMode: true, cors: false, hmr: { port: 24681 } },
   })
 
   // Handle vite dev-server script HMR & filter requests

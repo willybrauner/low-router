@@ -6,7 +6,13 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "allowJs": true,
-    "incremental": false,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
 
     /* Linting */
     "strict": false,
@@ -14,14 +20,7 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": false,
 
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "sourceMap": false,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
 
