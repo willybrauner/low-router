@@ -2,15 +2,10 @@ import autoprefixer from "autoprefixer"
 import { ConfigEnv, defineConfig, loadEnv, UserConfig } from "vite"
 import { resolve } from "path"
 import config from "./config/config.js"
-import debug from "@wbe/debug"
 import preact from "@preact/preset-vite"
-import { visualizer } from "rollup-plugin-visualizer"
 import checker from "vite-plugin-checker"
 import { viteMaestroCustomLogger } from "./config/vite-plugins/vite-custom-logger"
-import legacy from "@vitejs/plugin-legacy"
 import portFinderSync from "portfinder-sync"
-const log = debug("config:vite.config")
-import os from "node:os"
 
 /**
  * Vite config
@@ -91,14 +86,6 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         enableBuild: true,
         overlay: true,
         terminal: true,
-      }),
-      legacy({
-        targets: ["defaults", "not IE 11"],
-      }),
-      visualizer({
-        filename: "./dist/stats.html",
-        gzipSize: true,
-        title: "Generated bundle stats",
       }),
     ],
   }

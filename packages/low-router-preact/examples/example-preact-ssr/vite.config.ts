@@ -64,7 +64,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
           api: "modern-compiler",
           silenceDeprecations: ["legacy-js-api"],
         },
-      }
+      },
     },
 
     build: {

@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@wbe/debug": "^3.2.0",
-    "@wbe/low-router": "workspace:*",
+    "@wbe/low-router": "latest",
     "@wbe/utils": "^0.3.1"
   },
   "peerDependencies": {

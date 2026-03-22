@@ -11,6 +11,7 @@
     "build": "pnpm --parallel --color --filter '@wbe/*' run build",
     "build:watch": "pnpm --parallel --color --filter '@wbe/*' run build:watch",
     "dev": "pnpm --parallel --color --filter './packages/**/examples/*' run dev",
+    "dev:example-preact-ssr": "pnpm --filter example-preact-ssr dev",
     "test:watch": "vitest --reporter verbose",
     "test": "vitest run",
     "size": "size-limit",
