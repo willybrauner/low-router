@@ -1,5 +1,14 @@
 # @wbe/low-router-preact
 
+## 0.11.3
+
+### Patch Changes
+
+- bddb05a: Update the repository
+  - Bump all dependencies
+  - Remove turbo
+  - Update examples
+
 ## 0.11.2
 
 ### Patch Changes
@@ -42,7 +51,6 @@
   ```
 
   Others changes:
-
   - Add Stack `as` props
   - Add Stack `className` props
   - Breaking change: Remove the "Stack" string className from the root of `Stack` component
@@ -52,7 +60,6 @@
 ### Minor Changes
 
 - 50c1e3e: Add compilePath as constructor option
-
   - Make `compilePath` configurable via `RouterOptions`, following the same pattern as `matcher`
   - Align internal `compilePath` regex with `pathToRegexp` to support all param modifiers (`?`, `+`, `*`)
   - Export `CompilePath` type for custom implementations
