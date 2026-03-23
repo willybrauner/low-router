@@ -30,5 +30,5 @@
       "react-dom": ["./node_modules/preact/compat/"]
     }
   },
-  "include": ["src", "config", ".env"]
+  "include": ["src", "config", "config.ts"]
 }

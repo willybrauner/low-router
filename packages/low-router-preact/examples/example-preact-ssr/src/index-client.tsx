@@ -1,25 +1,13 @@
 import "preact/debug"
 import "./index.scss"
 import App from "~/src/components/App/App"
-import * as packageJson from "../package.json"
-import debug from "@wbe/debug"
 import { hydrate } from "preact"
 import { locales, routes, defaultLocaleInUrl } from "~/src/routes"
 import { createBrowserHistory, LowRouter } from "@wbe/low-router"
 import { StrictMode } from "preact/compat"
 import { I18n, Router } from "@wbe/low-router-preact"
 
-const log = debug("front:index")
-log("version:", packageJson["version"])
-log("public env:", import.meta.env)
-
-/**
- * Base
- * Load process.env base if is available by external load, else we get vite app base
- * (process.env.VITE_APP_BASE is replaced on build by vite (check vite.config.ts)
- */
-const base: string = process.env.VITE_APP_BASE || import.meta.env.VITE_APP_BASE
-log("Selected base", base)
+const base: string = "/"
 
 // Init router
 const i18n = new I18n(locales, { base, defaultLocaleInUrl })

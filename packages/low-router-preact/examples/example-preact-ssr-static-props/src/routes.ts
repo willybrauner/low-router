@@ -1,6 +1,5 @@
 import HomePage from "~/src/pages/HomePage"
 import WorkPage from "~/src/pages/WorkPage"
-import { Locale } from "@wbe/low-router-preact"
 import { Route } from "@wbe/low-router"
 
 export const routes = [
@@ -14,7 +13,9 @@ export const routes = [
       )
       const res = await data.json()
       return {
-        title: `hello home`,
+        title: `
+        - data come from getStaticProps ⬇
+        `,
         content: res,
       }
     },
@@ -31,9 +32,3 @@ export const routes = [
     },
   },
 ] as const satisfies Route[]
-
-/**
- * Locale
- */
-export const locales: Locale[] = [{ code: "fr" }]
-export const defaultLocaleInUrl = false
