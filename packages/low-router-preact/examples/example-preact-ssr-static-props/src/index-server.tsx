@@ -1,20 +1,8 @@
-import App from "~/components/App/App"
-import { ScriptsTags } from "~/core/server-utils/ScriptsTags"
-import { RawScript } from "~/core/server-utils/RawScript"
-import { locales, routes, defaultLocaleInUrl } from "~/routes"
+import App from "~/src/App"
+import { routes } from "~/src/routes"
 import { LowRouter, normalizePath } from "@wbe/low-router"
-import { getStaticPropsFromUrl, I18n, Router } from "@wbe/low-router-preact"
-import debug from "@wbe/debug"
+import { getStaticPropsFromUrl, Router } from "@wbe/low-router-preact"
 
-const log = debug("low-router-preact:index-server")
-
-/**
- * Server render
- * @param staticLocation URL to render
- * @param isPrerender
- * @param scripts
- * @param base
- */
 export async function render(
   staticLocation: string,
   scripts,
@@ -22,23 +10,16 @@ export async function render(
   base: string,
 ): Promise<any> {
   // prepare base & URL, remove trailing slashes
-  staticLocation = normalizePath(`${isPrerender ? base : ""}${staticLocation}`)
-  log("staticLocation:", staticLocation)
-
+  staticLocation = normalizePath(`${isPrerender ? base || "/" : ""}${staticLocation}`)
   // Init router
-  const i18n = new I18n(locales, { base, defaultLocaleInUrl, staticLocation })
-  const router = new LowRouter(i18n.addLocaleParamToRoutes(routes), { base, id: 1 })
-
+  const router = new LowRouter(routes, { base, id: 1 })
   // Request initial static props
-  const initialStaticProps = await getStaticPropsFromUrl(staticLocation, router, i18n)
-  log("initialStaticProps", initialStaticProps)
-
+  const initialStaticProps = await getStaticPropsFromUrl(staticLocation, router)
   // Current route props
   const props = initialStaticProps && Object.values(initialStaticProps)?.[0]
-  log("props", props)
 
   return (
-    <html lang={i18n.currentLocale.code}>
+    <html lang={"en"}>
       <head>
         <meta charSet="UTF-8" />
         <meta httpEquiv="x-ua-compatible" content="IE=Edge" />
@@ -46,13 +27,10 @@ export async function render(
         <title>{props?.title || "app"}</title>
         <meta name="description" content={props?.description || ""} />
         <link rel="icon" type="image/png" sizes="32x32" href={"#"} />
-        <ScriptsTags scripts={scripts.css} />
-        <ScriptsTags scripts={scripts.woff2} />
       </head>
       <body>
         <div id="root">
           <Router
-            i18n={i18n}
             router={router}
             staticLocation={staticLocation}
             initialStaticProps={initialStaticProps}
@@ -61,9 +39,30 @@ export async function render(
           </Router>
         </div>
         <ScriptsTags scripts={scripts.js} />
-        <RawScript name={"__INITIAL_STATIC_PROPS__"} data={initialStaticProps} />
-        <RawScript name={"__GLOBAL_DATA__"} data={{}} />
+        <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `window.__INITIAL_STATIC_PROPS__=${JSON.stringify(initialStaticProps, null, 2)?.replace(/\n\s+/g, "")}`,
+          }}
+        />
       </body>
     </html>
   )
 }
+
+// Utils
+
+type TScript = { tag: string; attr: { [x: string]: string } }
+
+const ScriptTag = ({ tag, attr }: TScript) => {
+  const T = tag as any
+  if (attr.noModule === "") return <T {...attr} noModule />
+  else return <T {...attr} />
+}
+const ScriptsTags = ({ scripts }: { scripts: TScript[] }) => (
+  <>
+    {scripts?.map((script, i) => (
+      <ScriptTag key={i} {...script} />
+    ))}
+  </>
+)

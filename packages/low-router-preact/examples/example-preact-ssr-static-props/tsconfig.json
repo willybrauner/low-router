@@ -6,7 +6,13 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "allowJs": true,
-    "incremental": false,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
 
     /* Linting */
     "strict": false,
@@ -14,24 +20,15 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": false,
 
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "sourceMap": false,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
 
-    "baseUrl": "./src",
     "paths": {
-      "*": ["*.d.ts"],
       "~/*": ["./*"],
       "react": ["./node_modules/preact/compat/"],
       "react-dom": ["./node_modules/preact/compat/"]
     }
   },
-  "include": ["src", "prerender", "config", ".env"]
+  "include": ["src", "config", "config.ts"]
 }

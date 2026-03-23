@@ -1,14 +1,14 @@
 import fastify from "fastify"
 import fastifyMiddie from "@fastify/middie"
-import { createServer, loadEnv } from "vite"
+import { createServer } from "vite"
 import { renderToStringAsync } from "preact-render-to-string"
 import portFinderSync from "portfinder-sync"
 import chalk from "chalk"
-import config from "./config/config"
+import path from "path"
 
 const BASE = "/"
-const PORT = portFinderSync.getPort(5173)
-const INDEX_SERVER_PATH = `${config.srcDir}/index-server.tsx`
+const PORT = portFinderSync.getPort(5184)
+const INDEX_SERVER_PATH = path.resolve("src/index-server.tsx")
 const DEV_SCRIPTS = {
   js: [{ tag: "script", attr: { type: "module", src: "/src/index-client.tsx" } }],
 }
@@ -20,7 +20,7 @@ async function server() {
     base: BASE,
     appType: "custom",
     logLevel: "info",
-    server: { middlewareMode: true, cors: false },
+    server: { middlewareMode: true, cors: false, hmr: { port: 24684 } },
   })
 
   // Handle vite dev-server script HMR & filter requests
@@ -30,11 +30,9 @@ async function server() {
   app.route({
     method: "GET",
     url: "*",
-    onResponse: () => {
-      // need to be set to make elapsed time available in handler callback
-    },
     handler: async (req, reply) => {
-      if (req.url === "/favicon.ico") return
+      const accept = req.headers.accept || ""
+      if (!accept.includes("text/html")) return
 
       try {
         // Transforms the ESM source code to be usable in Node.js
@@ -48,7 +46,7 @@ async function server() {
         reply.header("Content-Type", "text/html; charset=utf-8")
         reply.send("<!DOCTYPE html>" + html)
         console.log(
-          chalk.white(`GET ${req.originalUrl}`),
+          `GET ${req.originalUrl}`,
           chalk.green(reply.statusCode),
           `in ${Math.round(reply.elapsedTime)}ms`,
         )
@@ -70,5 +68,7 @@ server().then((app) =>
       app.log.error(err)
       process.exit(1)
     }
+
+    console.log("Server is running at: " + chalk.cyan(`http://localhost:${PORT}${BASE}`))
   }),
 )

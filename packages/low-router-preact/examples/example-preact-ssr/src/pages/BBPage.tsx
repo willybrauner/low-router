@@ -1,20 +1,13 @@
-import debug from "@wbe/debug"
 import { useImperativeHandle, useRef } from "preact/hooks"
 import { MutableRefObject, forwardRef } from "preact/compat"
-import { defaultTransitions } from "~/helpers/defaultTransitions"
+import { defaultTransitions } from "~/src/helpers/defaultTransitions"
 import { Link, Router, Stack, useCreateRouter } from "@wbe/low-router-preact"
 
 interface IProps {
   className?: string
-  title
+  title: string
 }
 
-const componentName = "BBPage"
-const log = debug(`front:${componentName}`)
-
-/**
- * @name BBPage
- */
 function BBPage(props: IProps, ref: MutableRefObject<any>) {
   const rootRef = useRef(null)
 
@@ -24,7 +17,6 @@ function BBPage(props: IProps, ref: MutableRefObject<any>) {
       playIn: () => defaultTransitions(rootRef.current).playIn(),
       playOut: () => defaultTransitions(rootRef.current).playOut(),
       root: rootRef.current,
-      name: componentName,
     }),
     [],
   )
@@ -33,7 +25,7 @@ function BBPage(props: IProps, ref: MutableRefObject<any>) {
 
   return (
     <div className={props.className} ref={rootRef}>
-      {componentName} {props.title}
+      BBPage {props?.title}
       <Router router={subRouter}>
         <div>
           <Link to={{ name: "cc" }}>cc</Link>

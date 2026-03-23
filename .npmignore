@@ -16,4 +16,3 @@ jest.config.ts
 tsconfig.json
 vitest.config.ts
 vite.config.ts
-.turbo

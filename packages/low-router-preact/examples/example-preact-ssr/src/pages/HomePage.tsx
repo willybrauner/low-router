@@ -1,7 +1,6 @@
-import debug from "@wbe/debug"
 import { useImperativeHandle, useRef } from "preact/hooks"
 import { MutableRefObject, forwardRef } from "preact/compat"
-import { defaultTransitions } from "~/helpers/defaultTransitions"
+import { defaultTransitions } from "~/src/helpers/defaultTransitions"
 import { Link, Router, Stack, useCreateRouter } from "@wbe/low-router-preact"
 
 interface IProps {
@@ -9,12 +8,6 @@ interface IProps {
   title: string
 }
 
-const componentName = "HomePage"
-const log = debug(`front:${componentName}`)
-
-/**
- * @name HomePage
- */
 function HomePage(props: IProps, ref: MutableRefObject<any>) {
   const rootRef = useRef(null)
 
@@ -24,7 +17,6 @@ function HomePage(props: IProps, ref: MutableRefObject<any>) {
       playIn: () => defaultTransitions(rootRef.current).playIn(),
       playOut: () => defaultTransitions(rootRef.current).playOut(),
       root: rootRef.current,
-      name: componentName,
     }),
     [],
   )
@@ -33,7 +25,7 @@ function HomePage(props: IProps, ref: MutableRefObject<any>) {
 
   return (
     <div className={props.className} ref={rootRef}>
-      {componentName} {props.title}
+      HomePage {props.title}
       <Router router={subRouter}>
         <div>
           <Link to={{ name: "home-sub-a" }}>home-sub-a</Link>

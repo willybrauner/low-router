@@ -1,31 +1,27 @@
-import debug from "@wbe/debug"
 import { useImperativeHandle, useRef } from "preact/hooks"
 import { MutableRefObject, forwardRef } from "preact/compat"
-import { defaultTransitions } from "~/helpers/defaultTransitions"
+import { defaultTransitions } from "~/src/helpers/defaultTransitions"
 
 interface IProps {
-  title: string
+  className?: string
 }
 
-const componentName = "NotFoundPage"
-const log = debug(`front:${componentName}`)
-
-/**
- * @name NotFoundPage
- */
 function NotFoundPage(props: IProps, ref: MutableRefObject<any>) {
-  const rootRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef(null)
 
-  useImperativeHandle(ref, () => ({
-    componentName,
-    playIn: () => defaultTransitions(rootRef.current).playIn(),
-    playOut: () => defaultTransitions(rootRef.current).playOut(),
-    root: rootRef.current,
-  }))
+  useImperativeHandle(
+    ref,
+    () => ({
+      playIn: () => defaultTransitions(rootRef.current).playIn(),
+      playOut: () => defaultTransitions(rootRef.current).playOut(),
+      root: rootRef.current,
+    }),
+    [],
+  )
 
   return (
-    <div ref={rootRef}>
-      {componentName} - {props.title}
+    <div className={props.className} ref={rootRef}>
+      NotFoundPage
     </div>
   )
 }
