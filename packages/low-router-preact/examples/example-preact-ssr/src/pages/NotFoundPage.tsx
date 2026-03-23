@@ -3,24 +3,25 @@ import { MutableRefObject, forwardRef } from "preact/compat"
 import { defaultTransitions } from "~/src/helpers/defaultTransitions"
 
 interface IProps {
-  title: string
+  className?: string
 }
 
-const componentName = "NotFoundPage"
-
 function NotFoundPage(props: IProps, ref: MutableRefObject<any>) {
-  const rootRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef(null)
 
-  useImperativeHandle(ref, () => ({
-    componentName,
-    playIn: () => defaultTransitions(rootRef.current).playIn(),
-    playOut: () => defaultTransitions(rootRef.current).playOut(),
-    root: rootRef.current,
-  }))
+  useImperativeHandle(
+    ref,
+    () => ({
+      playIn: () => defaultTransitions(rootRef.current).playIn(),
+      playOut: () => defaultTransitions(rootRef.current).playOut(),
+      root: rootRef.current,
+    }),
+    [],
+  )
 
   return (
-    <div ref={rootRef}>
-      {componentName} - {props.title}
+    <div className={props.className} ref={rootRef}>
+      NotFoundPage
     </div>
   )
 }

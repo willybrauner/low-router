@@ -24,13 +24,12 @@
     "@fastify/middie": "^9.3.1",
     "@preact/preset-vite": "^2.10.5",
     "@types/node": "^25.5.0",
-    "autoprefixer": "^10.4.27",
     "chalk": "^5.6.2",
     "portfinder-sync": "^0.0.2",
+    "sass-embedded": "^1.98.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite": "^8.0.1",
-    "vite-plugin-checker": "^0.12.0",
-    "vitest": "^4.1.0"
+    "vite-plugin-checker": "^0.12.0"
   }
 }

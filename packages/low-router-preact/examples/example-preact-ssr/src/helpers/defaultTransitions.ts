@@ -1,6 +1,4 @@
 import { Interpol } from "@wbe/interpol"
-import debug from "@wbe/debug"
-const log = debug("front:defaultTransitions")
 
 export const defaultTransitions = (el, duration = 500) => {
   const playInItp = new Interpol({
@@ -22,13 +20,11 @@ export const defaultTransitions = (el, duration = 500) => {
 
   return {
     playIn: () => {
-      log("playIn")
       playOutItp.stop()
       playInItp.refresh()
       return playInItp.play()
     },
     playOut: () => {
-      log("playOut")
       playInItp.stop()
       playOutItp.refresh()
       return playOutItp.play()

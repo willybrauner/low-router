@@ -8,7 +8,6 @@ interface IProps {
   title: string
 }
 
-const componentName = "AboutPage"
 function AboutPage(props: IProps, ref: MutableRefObject<any>) {
   const rootRef = useRef(null)
 
@@ -18,15 +17,15 @@ function AboutPage(props: IProps, ref: MutableRefObject<any>) {
       playIn: () => defaultTransitions(rootRef.current).playIn(),
       playOut: () => defaultTransitions(rootRef.current).playOut(),
       root: rootRef.current,
-      name: componentName,
     }),
     [],
   )
+
   const subRouter = useCreateRouter({ from: "about", id: "[about-sub]" })
 
   return (
     <div className={props.className} ref={rootRef}>
-      {componentName} {props?.title}
+      AboutPage {props?.title}
       <Router router={subRouter}>
         <div>
           <Link to={{ name: "foo" }}>foo</Link>

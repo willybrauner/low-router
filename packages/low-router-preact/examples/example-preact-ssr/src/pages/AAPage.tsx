@@ -6,8 +6,6 @@ interface IProps {
   className?: string
 }
 
-const componentName = "AAPage"
-
 function AAPage(props: IProps, ref: MutableRefObject<any>) {
   const rootRef = useRef(null)
 
@@ -17,14 +15,13 @@ function AAPage(props: IProps, ref: MutableRefObject<any>) {
       playIn: () => defaultTransitions(rootRef.current).playIn(),
       playOut: () => defaultTransitions(rootRef.current).playOut(),
       root: rootRef.current,
-      name: componentName,
     }),
     [],
   )
 
   return (
     <div className={props.className} ref={rootRef}>
-      {componentName}
+      AAPage
     </div>
   )
 }

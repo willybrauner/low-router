@@ -8,8 +8,6 @@ interface IProps {
   params: { id: string }
 }
 
-const componentName = "WorkPage"
-
 function WorkPage(props: IProps, ref: MutableRefObject<any>) {
   const rootRef = useRef<HTMLDivElement>(null)
   const { i18n } = useRouter()
@@ -20,7 +18,6 @@ function WorkPage(props: IProps, ref: MutableRefObject<any>) {
       playIn: () => defaultTransitions(rootRef.current).playIn(),
       playOut: () => defaultTransitions(rootRef.current).playOut(),
       root: rootRef.current,
-      name: componentName,
     }),
     [],
   )

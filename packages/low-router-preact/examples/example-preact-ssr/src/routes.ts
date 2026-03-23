@@ -59,7 +59,7 @@ export const routes = [
     children: [
       {
         path: "",
-        name: "root-about", // needed for computeUrlByRouteName
+        name: "root-about",
       },
       {
         path: "/foo",

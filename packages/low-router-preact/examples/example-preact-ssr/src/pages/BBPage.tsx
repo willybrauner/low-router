@@ -8,8 +8,6 @@ interface IProps {
   title: string
 }
 
-const componentName = "BBPage"
-
 function BBPage(props: IProps, ref: MutableRefObject<any>) {
   const rootRef = useRef(null)
 
@@ -19,7 +17,6 @@ function BBPage(props: IProps, ref: MutableRefObject<any>) {
       playIn: () => defaultTransitions(rootRef.current).playIn(),
       playOut: () => defaultTransitions(rootRef.current).playOut(),
       root: rootRef.current,
-      name: componentName,
     }),
     [],
   )
@@ -28,7 +25,7 @@ function BBPage(props: IProps, ref: MutableRefObject<any>) {
 
   return (
     <div className={props.className} ref={rootRef}>
-      {componentName} {props.title}
+      BBPage {props?.title}
       <Router router={subRouter}>
         <div>
           <Link to={{ name: "cc" }}>cc</Link>

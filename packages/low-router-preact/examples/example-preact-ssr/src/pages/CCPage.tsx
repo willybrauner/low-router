@@ -7,8 +7,6 @@ interface IProps {
   title: string
 }
 
-const componentName = "CCPage"
-
 function CCPage(props: IProps, ref: MutableRefObject<any>) {
   const rootRef = useRef(null)
 
@@ -18,14 +16,13 @@ function CCPage(props: IProps, ref: MutableRefObject<any>) {
       playIn: () => defaultTransitions(rootRef.current).playIn(),
       playOut: () => defaultTransitions(rootRef.current).playOut(),
       root: rootRef.current,
-      name: componentName,
     }),
     [],
   )
 
   return (
     <div className={props.className} ref={rootRef}>
-      {componentName} {props.title}
+      CCPage {props?.title}
     </div>
   )
 }
