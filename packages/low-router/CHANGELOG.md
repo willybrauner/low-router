@@ -1,5 +1,14 @@
 # @wbe/low-router
 
+## 0.10.2
+
+### Patch Changes
+
+- bddb05a: Update the repository
+  - Bump all dependencies
+  - Remove turbo
+  - Update examples
+
 ## 0.10.1
 
 ### Patch Changes
@@ -11,7 +20,6 @@
 ### Minor Changes
 
 - 50c1e3e: Add compilePath as constructor option
-
   - Make `compilePath` configurable via `RouterOptions`, following the same pattern as `matcher`
   - Align internal `compilePath` regex with `pathToRegexp` to support all param modifiers (`?`, `+`, `*`)
   - Export `CompilePath` type for custom implementations
@@ -182,7 +190,6 @@
 ### Minor Changes
 
 - 4ce916c: Install [@wbe/debug](https://github.com/willybrauner/debug) dependency
-
   - browser debug:
 
     ```shell
