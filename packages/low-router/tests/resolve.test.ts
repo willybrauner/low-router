@@ -97,6 +97,42 @@ describe.concurrent("resolve", () => {
     })
   })
 
+  it("should not throw on unmatched pathname", async () => {
+    const router = new LowRouter([{ path: "/foo", action: () => "foo" }])
+    const { response, context } = await router.resolve("/nope")
+    expect(response).toBeUndefined()
+    expect(context).toBeUndefined()
+  })
+
+  it("should call onError and skip onResolve on 404", async () => {
+    const onResolve = vi.fn()
+    const onError = vi.fn()
+    const router = new LowRouter([{ path: "/foo" }], { onResolve, onError })
+    await router.resolve("/nope")
+    expect(onError).toHaveBeenCalledTimes(1)
+    expect(onResolve).not.toHaveBeenCalled()
+  })
+
+  it("should resolve by { name, params }", async () => {
+    const routes = [{ path: "/u/:id", name: "user", action: (ctx: any) => ctx.params.id }]
+    const router = new LowRouter(routes)
+    const { response } = await router.resolve({ name: "user", params: { id: "42" } })
+    expect(response).toBe("42")
+  })
+
+  it("should break parent chain and call onDispose", () => {
+    const onDispose = vi.fn()
+    const router = new LowRouter(
+      [{ path: "/", children: [{ path: "/z", children: [{ path: "/c" }] }] }],
+      { onDispose }
+    )
+    router.resolveSync("/z/c")
+    expect(router.currentContext).toBeDefined()
+    router.dispose()
+    expect(router.currentContext).toBeUndefined()
+    expect(onDispose).toHaveBeenCalledTimes(1)
+  })
+
   it("should resolve child route", () => {
     return new Promise(async (resolve: any) => {
       const routes = [

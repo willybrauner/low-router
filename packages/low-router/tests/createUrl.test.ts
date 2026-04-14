@@ -99,4 +99,32 @@ describe.concurrent("createUrl", () => {
     )
     expect(router.createUrl({ name: "f", params: { lang: "en" } })).toBe("/en/test/f")
   })
+
+  it("should append query and hash", () => {
+    const routes = [
+      { path: "/", name: "home" },
+      { path: "/user/:id", name: "user" },
+    ]
+    const router = new LowRouter(routes)
+
+    expect(router.createUrl({ name: "user", params: { id: "1" }, query: { tab: "profile" } })).toBe(
+      "/user/1?tab=profile"
+    )
+    expect(router.createUrl({ name: "user", params: { id: "1" }, hash: "top" })).toBe("/user/1#top")
+    expect(
+      router.createUrl({
+        name: "user",
+        params: { id: "1" },
+        query: { tab: "x", y: "z" },
+        hash: "#anchor",
+      })
+    ).toBe("/user/1?tab=x&y=z#anchor")
+    // undefined/null values are skipped
+    expect(
+      router.createUrl({
+        name: "home",
+        query: { a: "1", b: undefined as any, c: null as any },
+      })
+    ).toBe("/?a=1")
+  })
 })

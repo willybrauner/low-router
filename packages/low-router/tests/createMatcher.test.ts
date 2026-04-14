@@ -78,6 +78,19 @@ describe("path to regex", () => {
     ])
   })
 
+  it("should reuse cached regex for same pattern", () => {
+    const calls: string[] = []
+    const regexFn = (p: string) => {
+      calls.push(p)
+      return { keys: [], regexp: new RegExp(`^${p}$`) }
+    }
+    const matcher = createMatcher(regexFn)
+    matcher("/foo", "/foo")
+    matcher("/foo", "/foo")
+    matcher("/foo", "/foo")
+    expect(calls.length).toBe(1)
+  })
+
   it("should returns params even if pattern and path doesn't match", () => {
     const path = "/base/:lang/a-propos/bar"
     const matcher = createMatcher()
