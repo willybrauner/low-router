@@ -5,7 +5,9 @@ export type RouteParams = { [paramName: string]: string }
 export type QueryParams = { [paramName: string]: string }
 export type Hash = string
 export type RouteProps = Record<string, any>
-export type PathnameOrObject = string | { name: string; params: RouteParams }
+export type PathnameOrObject =
+  | string
+  | { name: string; params?: RouteParams; query?: QueryParams; hash?: string }
 
 export interface RouteContext {
   pathname: string
@@ -20,7 +22,7 @@ export interface RouteContext {
 
 export interface Resolve {
   response: any
-  context: RouteContext
+  context: RouteContext | undefined
 }
 
 export interface Route {
@@ -36,7 +38,7 @@ export interface RouterOptions {
   onInit: () => void
   onResolve: ({ response, context }: Resolve) => void
   onDispose: () => void
-  onError: () => void
+  onError: (info: { pathname?: string; input: PathnameOrObject }) => void
   matcher: Matcher
   compilePath: CompilePath
   id?: number | string

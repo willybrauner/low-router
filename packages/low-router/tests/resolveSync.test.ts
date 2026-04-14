@@ -85,6 +85,13 @@ describe.concurrent("resolveSync", () => {
       expect(response).toBe("action response!")
   })
 
+  it("should not throw on unmatched pathname", () => {
+    const router = new LowRouter([{ path: "/foo", action: () => "foo" }])
+    const { response, context } = router.resolveSync("/nope")
+    expect(response).toBeUndefined()
+    expect(context).toBeUndefined()
+  })
+
   it("should resolve child route", () => {
       const routes = [
         {
