@@ -15,11 +15,29 @@ export type Matcher = (pattern: string, path: string) => [boolean, RouteParams, 
  * and return { keys: Record<"name", string>[]; regexp: RegExp }
  */
 
-export const createMatcher: CreateMatcher = (regexFn: RegexFn = pathToRegexp): Matcher => {
-  let cache = {}
+const DEFAULT_CACHE_SIZE = 1000
 
-  // obtains a cached regexp version of the pattern
-  const getRegexp = (pattern) => cache[pattern] || (cache[pattern] = regexFn(pattern))
+export const createMatcher: CreateMatcher = (regexFn: RegexFn = pathToRegexp): Matcher => {
+  // bounded LRU via insertion-ordered Map
+  const cache = new Map<string, { keys: Record<"name", string>[]; regexp: RegExp }>()
+
+  const getRegexp = (pattern: string) => {
+    const hit = cache.get(pattern)
+    if (hit) {
+      // refresh recency
+      cache.delete(pattern)
+      cache.set(pattern, hit)
+      return hit
+    }
+    const value = regexFn(pattern)
+    if (cache.size >= DEFAULT_CACHE_SIZE) {
+      // evict oldest
+      const oldest = cache.keys().next().value
+      if (oldest !== undefined) cache.delete(oldest)
+    }
+    cache.set(pattern, value)
+    return value
+  }
 
   // pattern is path with dynamic params
   // pathname is static URL pathname we want to compare with pattern

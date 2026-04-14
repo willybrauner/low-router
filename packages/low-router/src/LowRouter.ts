@@ -1,5 +1,5 @@
 import debug from "@wbe/debug"
-import { PathnameOrObject, Resolve, Route, RouteContext, RouteParams, RouterOptions } from "./types"
+import { PathnameOrObject, QueryParams, Resolve, Route, RouteContext, RouteParams, RouterOptions } from "./types"
 import { createMatcher, Matcher } from "./utils/createMatcher"
 import { compilePath as defaultCompilePath, CompilePath } from "./utils/compilePath"
 import { normalizePath } from "./utils/normalizePath"
@@ -35,10 +35,10 @@ export class LowRouter {
    */
   public async resolve(pathnameOrObject: PathnameOrObject): Promise<Resolve> {
     const obj = this.#resolver(pathnameOrObject)
-    if (typeof obj.context.route?.action === "function") {
+    if (typeof obj.context?.route?.action === "function") {
       obj.response = await obj.context.route.action(obj.context)
     }
-    this.options.onResolve?.(obj)
+    if (obj.context) this.options.onResolve?.(obj)
     return Promise.resolve(obj)
   }
 
@@ -51,7 +51,7 @@ export class LowRouter {
     if (typeof obj.context?.route?.action === "function") {
       obj.response = obj.context.route.action(obj.context)
     }
-    this.options.onResolve?.(obj)
+    if (obj.context) this.options.onResolve?.(obj)
     return obj
   }
 
@@ -65,7 +65,7 @@ export class LowRouter {
     const routeContext = this.matchRoute(
       typeof pathnameOrObject === "string"
         ? pathnameOrObject
-        : this.createUrl({ name: pathnameOrObject?.name, params: pathnameOrObject?.params })
+        : this.createUrl(pathnameOrObject)
     )
     // error
     if (!routeContext) {
@@ -81,7 +81,14 @@ export class LowRouter {
   }
 
   public dispose(): void {
-    this.currentContext = null
+    // walk the parent chain to break references and help GC
+    let ctx: RouteContext | undefined | null = this.currentContext
+    while (ctx) {
+      const parent = ctx.parent
+      ctx.parent = null
+      ctx = parent
+    }
+    this.currentContext = undefined
     this.options.onDispose?.()
   }
 
@@ -102,7 +109,9 @@ export class LowRouter {
         let relativePathname: string | undefined
         try {
           relativePathname = this.compilePath(route.path)(params)
-        } catch {}
+        } catch (e) {
+          this.#log("compilePath error", route.path, e)
+        }
 
         const ctx = {
           pathname,
@@ -132,9 +141,20 @@ export class LowRouter {
    * ex:
    *  createUrl({ name: "home" }) => "/"
    *  createUrl({ name: "user", params: { id: "1" } }) => "/user/1"
+   *  createUrl({ name: "user", params: { id: "1" }, query: { tab: "x" }, hash: "top" }) => "/user/1?tab=x#top"
    */
-  public createUrl({ name, params = {} }: { name: string; params?: RouteParams }): string {
-    const next = (name, params, routes, curBase): string => {
+  public createUrl({
+    name,
+    params = {},
+    query,
+    hash,
+  }: {
+    name: string
+    params?: RouteParams
+    query?: QueryParams
+    hash?: string
+  }): string | undefined {
+    const next = (name, params, routes, curBase): string | undefined => {
       for (let route of routes) {
         const compiledPath = normalizePath(this.compilePath(curBase + route.path)(params))
         if (route.name === name) {
@@ -145,7 +165,23 @@ export class LowRouter {
         }
       }
     }
-    return next(name, params, this.routes, this.options.base)
+    const pathname = next(name, params, this.routes, this.options.base)
+    if (!pathname) return undefined
+
+    // append query string
+    let qs = ""
+    if (query) {
+      const sp = new URLSearchParams()
+      for (const k in query) {
+        const v = query[k]
+        if (v != null) sp.append(k, String(v))
+      }
+      const s = sp.toString()
+      if (s) qs = `?${s}`
+    }
+    // append hash
+    const h = hash ? (hash[0] === "#" ? hash : `#${hash}`) : ""
+    return pathname + qs + h
   }
 
   #log(...rest: any[]): void {
