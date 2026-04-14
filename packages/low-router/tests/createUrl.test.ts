@@ -115,7 +115,7 @@ describe.concurrent("createUrl", () => {
       router.createUrl({
         name: "user",
         params: { id: "1" },
-        query: { tab: "x", y: "z" },
+        query: { tab: "x", y: "z", },
         hash: "#anchor",
       })
     ).toBe("/user/1?tab=x&y=z#anchor")
@@ -123,7 +123,7 @@ describe.concurrent("createUrl", () => {
     expect(
       router.createUrl({
         name: "home",
-        query: { a: "1", b: undefined as any, c: null as any },
+        query: { a: "1", b: undefined, c: null },
       })
     ).toBe("/?a=1")
   })
