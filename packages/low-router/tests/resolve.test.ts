@@ -110,7 +110,16 @@ describe.concurrent("resolve", () => {
     const router = new LowRouter([{ path: "/foo" }], { onResolve, onError })
     await router.resolve("/nope")
     expect(onError).toHaveBeenCalledTimes(1)
+    expect(onError).toHaveBeenCalledWith({ pathname: "/nope", input: "/nope" })
     expect(onResolve).not.toHaveBeenCalled()
+  })
+
+  it("should pass input object to onError when name is unknown", async () => {
+    const onError = vi.fn()
+    const router = new LowRouter([{ path: "/foo", name: "foo" }], { onError })
+    const input = { name: "missing", params: {} }
+    await router.resolve(input)
+    expect(onError).toHaveBeenCalledWith({ pathname: undefined, input })
   })
 
   it("should resolve by { name, params }", async () => {

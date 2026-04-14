@@ -62,15 +62,15 @@ export class LowRouter {
    */
   #resolver(pathnameOrObject: PathnameOrObject) {
     // match route
-    const routeContext = this.matchRoute(
+    const pathname =
       typeof pathnameOrObject === "string"
         ? pathnameOrObject
         : this.createUrl(pathnameOrObject)
-    )
+    const routeContext = pathname ? this.matchRoute(pathname) : undefined
     // error
     if (!routeContext) {
-      this.#log(`No matching route found with pathname ${pathnameOrObject}`, this.routes)
-      this.options.onError?.()
+      this.#log(`No matching route found with pathname ${pathname}`, this.routes)
+      this.options.onError?.({ pathname, input: pathnameOrObject })
       return { response: undefined, context: undefined }
     }
     // save current context

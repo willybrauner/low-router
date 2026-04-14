@@ -38,7 +38,7 @@ export interface RouterOptions {
   onInit: () => void
   onResolve: ({ response, context }: Resolve) => void
   onDispose: () => void
-  onError: () => void
+  onError: (info: { pathname?: string; input: PathnameOrObject }) => void
   matcher: Matcher
   compilePath: CompilePath
   id?: number | string
