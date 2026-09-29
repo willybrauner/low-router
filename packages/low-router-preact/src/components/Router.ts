@@ -114,6 +114,30 @@ function LowReactRouter(props: {
     }
   }
 
+  const _prevCtx = useRef<RouteContext>(null)
+
+  /**
+   * CLIENT SIDE (first render)
+   * Resolve the first context synchronously as the server does, so the first render (hydration)
+   * matches the server markup. Only if its props don't need an async request.
+   * handleHistory will then skip this same route in the client side effect.
+   */
+  const getFirstContextSync = (): RouteContext => {
+    const { pathname, search, hash } = window.location
+    let context = props.router.matchRoute(joinPaths([pathname, search, hash]))
+    while (context?.parent) context = context.parent
+    const url = context && composeUrlByRouteName(context.route?.name, context.params)
+    const initialStaticProps = ROUTERS.initialStaticProps?.[url]
+    if (!context || (!initialStaticProps && context.route.getStaticProps)) return null
+    context.route._props = context.route._props || context.route.props || {}
+    if (initialStaticProps) {
+      context.route.props = safeMergeObjects(context.route.props, initialStaticProps)
+      useCache(ROUTERS.staticPropsCache, id).set(url, context.route.props)
+    }
+    context.routeId = ROUTE_ID++
+    return (ROUTERS.currentContext = _prevCtx.current = context)
+  }
+
   /**
    * Global reducer to store current and previous context
    */
@@ -136,6 +160,10 @@ function LowReactRouter(props: {
       currentContext: null,
       counter: 0,
     },
+    (initialState) => {
+      const currentContext = !IS_SERVER && IS_ROOT_ROUTER ? getFirstContextSync() : null
+      return currentContext ? { ...initialState, currentContext, counter: 1 } : initialState
+    },
   )
 
   /**
@@ -148,7 +176,6 @@ function LowReactRouter(props: {
   /**
    * Handle history
    */
-  const _prevCtx = useRef<RouteContext>(null)
   const handleHistory = async ({ location }): Promise<void> => {
     // Update counters
     if (IS_ROOT_ROUTER) {
