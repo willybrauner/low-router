@@ -104,7 +104,10 @@ export function Stack({ transitions, clampRoutesRender = true, as = "div", class
       }
     },
     {
-      stackRoutes: [] as RouteContext[],
+      // client: the root Router resolves the first route on its first render (hydration),
+      // rendered from the first render too, as the server does. Else the first render is
+      // an empty Stack, and preact drops the page rendered by the server to create it again
+      stackRoutes: (!isServer() && currentContext ? [currentContext] : []) as RouteContext[],
       currentContext,
       prevContext,
       updateId: 0,
@@ -126,11 +129,15 @@ export function Stack({ transitions, clampRoutesRender = true, as = "div", class
    */
   useLayoutEffect(() => {
     if (!currentContext) return
+    // the first route, already in the stack since the first render
+    const lastRoute = state.stackRoutes?.[state.stackRoutes.length - 1]
+    if (lastRoute?.routeId === currentContext.routeId) return
     dispatch({ type: "update", prevContext, currentContext })
   }, [prevContext, currentContext])
 
   /**
    * Execute transitions function after dispatch
+   * (on mount too: the first route, in the stack since the first render, plays in)
    */
   useLayoutEffect(() => {
     if (state.stackRoutes?.length === 0) return
