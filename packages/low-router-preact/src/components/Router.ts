@@ -1,12 +1,6 @@
 import { LowRouter, Route, RouterOptions, RouteContext, HistoryAPI } from "@wbe/low-router"
 import { ComponentChildren } from "preact"
-import {
-  useRef,
-  createContext,
-  createElement,
-  useEffect,
-  useReducer,
-} from "../preact-deps"
+import { useRef, createContext, createElement, useEffect, useReducer } from "../preact-deps"
 
 import debug from "@wbe/debug"
 import { isServer } from "@wbe/utils"
@@ -117,23 +111,46 @@ function LowReactRouter(props: {
   const _prevCtx = useRef<RouteContext>(null)
 
   /**
+   * The root context matching a location, & its url
+   * Saves the props of the route before any merge (if not already saved)
+   */
+  const matchRootContext = (location: {
+    pathname: string
+    search: string
+    hash: string
+  }): { context: RouteContext; url: string } | undefined => {
+    let context = props.router.matchRoute(
+      joinPaths([location.pathname, location.search, location.hash]),
+    )
+    if (!context) return
+    // Select parent context if exist recursively
+    while (context.parent) context = context.parent
+    context.route._props = context.route._props || context.route.props || {}
+    // the matcher will match even if the URL ends with a slash
+    return { context, url: composeUrlByRouteName(context.route?.name, context.params) }
+  }
+
+  /**
+   * Merge the initial static props of an url in the route props, & cache them
+   */
+  const assignInitialStaticProps = (context: RouteContext, url: string): void => {
+    context.route.props = safeMergeObjects(context.route.props, ROUTERS.initialStaticProps?.[url])
+    useCache(ROUTERS.staticPropsCache, id).set(url, context.route.props)
+  }
+
+  /**
    * CLIENT SIDE (first render)
    * Resolve the first context synchronously as the server does, so the first render (hydration)
    * matches the server markup. Only if its props don't need an async request.
    * handleHistory will then skip this same route in the client side effect.
    */
   const getFirstContextSync = (): RouteContext => {
-    const { pathname, search, hash } = window.location
-    let context = props.router.matchRoute(joinPaths([pathname, search, hash]))
-    while (context?.parent) context = context.parent
-    const url = context && composeUrlByRouteName(context.route?.name, context.params)
-    const initialStaticProps = ROUTERS.initialStaticProps?.[url]
-    if (!context || (!initialStaticProps && context.route.getStaticProps)) return null
-    context.route._props = context.route._props || context.route.props || {}
-    if (initialStaticProps) {
-      context.route.props = safeMergeObjects(context.route.props, initialStaticProps)
-      useCache(ROUTERS.staticPropsCache, id).set(url, context.route.props)
-    }
+    const match = matchRootContext(window.location)
+    if (!match) return null
+    const { context, url } = match
+    if (ROUTERS.initialStaticProps?.[url]) assignInitialStaticProps(context, url)
+    // its props need an async request: resolved by the client side effect
+    else if (context.route.getStaticProps) return null
     context.routeId = ROUTE_ID++
     return (ROUTERS.currentContext = _prevCtx.current = context)
   }
@@ -183,21 +200,13 @@ function LowReactRouter(props: {
       ROUTERS.isFirstRoute = ROUTERS.routeCounter === 1
     }
 
-    // Get matching context
-    const ctx = props.router.matchRoute(
-      joinPaths([location.pathname, location.search, location.hash]),
-    )
-
-    if (!ctx) {
+    // Get matching root context
+    const match = matchRootContext(location)
+    if (!match) {
       log(id, "no context found, return.")
       return
     }
-
-    // Select parent context if exist recursively
-    let context: RouteContext = ctx
-    while (context.parent) {
-      context = context.parent
-    }
+    const { context, url } = match
     log(id, "context", context)
 
     // check if this is the same route 'relative pathname', and if true, return
@@ -209,13 +218,6 @@ function LowReactRouter(props: {
 
     // get cache object from STORE
     const cache = useCache(ROUTERS.staticPropsCache, id)
-
-    // the matcher will match even if the URL ends with a slash
-    let url = composeUrlByRouteName(context.route?.name, context.params)
-
-    // save props stored on the route object before mute it
-    // if it had been already saved, return it
-    context.route._props = context.route._props || context.route.props || {}
 
     // Request get static props
     // update props with saved route._props
@@ -238,11 +240,7 @@ function LowReactRouter(props: {
     if (IS_SERVER) {
       if (ROUTERS.initialStaticProps) {
         // log(id, "[firstRoute | isServer] assign initialStaticProps to route.props & set cache")
-        context.route.props = safeMergeObjects(
-          context.route.props,
-          ROUTERS.initialStaticProps?.[url],
-        )
-        cache.set(url, context.route.props)
+        assignInitialStaticProps(context, url)
       }
     }
     // CLIENT
@@ -251,11 +249,7 @@ function LowReactRouter(props: {
       if (ROUTERS.isFirstRoute) {
         if (ROUTERS.initialStaticProps?.[url]) {
           // log(id, "[firstRoute | isClient] assign initialStaticProps to route.props & set cache")
-          context.route.props = safeMergeObjects(
-            context.route.props,
-            ROUTERS.initialStaticProps?.[url],
-          )
-          cache.set(url, context.route.props)
+          assignInitialStaticProps(context, url)
         } else if (context.route.getStaticProps) {
           // log(id, "[firstRoute | isClient] request getStaticProps & set cache")
           await _requestAndCacheStaticProps(context, cache, url)
