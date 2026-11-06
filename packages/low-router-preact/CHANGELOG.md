@@ -1,5 +1,21 @@
 # @wbe/low-router-preact
 
+## 0.11.4
+
+### Patch Changes
+
+- 7113122: Resolve the first route synchronously on client first render (hydration)
+
+  On the server, the root Router resolves the first route during render, but on the client `currentContext` was only set in an effect. Components reading `currentContext` rendered another markup on the first client render than on the server (hydration mismatch).
+
+  The root Router now resolves the first route synchronously on client first render when its props are already known (`initialStaticProps` available for this url, or no `getStaticProps`). Otherwise, the first route is still resolved in the client side effect.
+
+- 7113122: Stack: render the first route from the client first render (hydration)
+
+  On the client, the Stack started with no route and added the first one in an effect. The first render of the hydration was an empty Stack: preact dropped the page rendered by the server, then created it again from scratch (its DOM rebuilt, its images downloaded at once whatever their `loading="lazy"`).
+
+  With the first route resolved by the root Router on its first render, the Stack now renders it from its first render too: the hydration keeps the server markup, and the route plays in as before. When the first route can't be resolved synchronously (async `getStaticProps` without `initialStaticProps`), the Stack still adds it in the client side effect.
+
 ## 0.11.3
 
 ### Patch Changes
